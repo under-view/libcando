@@ -6,7 +6,7 @@
  * to be unused and instructs compiler to not issue
  * a warning on the variable.
  */
-#define LIBHANDY_UNUSED __attribute__((unused))
+#define HANDY_UNUSED __attribute__((unused))
 
 /*
  * "always_inline" instructs GCC to
@@ -15,7 +15,7 @@
  *    function with external linkage.
  * 3. Ignore inlining limits. Use alloca to inline.
  */
-#define LIBHANDY_INLINE inline __attribute__((always_inline))
-#define LIBHANDY_INLINE_STATIC static inline __attribute__((always_inline))
+#define HANDY_INLINE inline __attribute__((always_inline))
+#define HANDY_STATIC_INLINE static inline __attribute__((always_inline))
 
 #endif /* HANDY_MACROS_H */
