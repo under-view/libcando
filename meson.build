@@ -12,16 +12,18 @@ project(
 )
 
 pargs = []
-so_version = meson.project_version()
+project_name = meson.project_name()
+so_version = '.'.join(meson.project_version())
 cc = meson.get_compiler('c')
 
 inc = include_directories('include')
 
+subdir('include')
 subdir('src')
 
 libhandy = library(
-  meson.project_name(),
-  version: '.'.join(so_version),
+  project_name,
+  version: so_version,
   link_whole: libhandy_static,
   include_directories: inc,
   c_args: pargs,
@@ -31,3 +33,14 @@ libhandy = library(
 if get_option('tests')
   subdir('tests')
 endif
+
+pkg = import('pkgconfig')
+
+pkglibs = [libhandy]
+pkgsubdirs = []
+pkg.generate(libraries: pkglibs,
+             subdirs : pkgsubdirs,
+             version : so_version,
+             name : project_name,
+             filebase : 'handy',
+             description : 'A common utility library for C programs/libraries.')
