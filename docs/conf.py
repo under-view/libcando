@@ -19,7 +19,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'handy'
+project = 'libhandy'
 copyright = '2023, Vincent Davis Jr'
 author = 'Vincent Davis Jr.'
 
@@ -118,7 +118,7 @@ html_static_path = []
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'handydoc'
+htmlhelp_basename = 'libhandydoc'
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -145,7 +145,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'handy.tex', 'handy Documentation',
+    (master_doc, 'libhandy.tex', 'libhandy Documentation',
      'Vincent Davis Jr.', 'manual'),
 ]
 
@@ -155,7 +155,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'handy', 'handy Documentation',
+    (master_doc, 'libhandy', 'libhandy Documentation',
      [author], 1)
 ]
 
@@ -166,8 +166,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'handy', 'handy Documentation',
-     author, 'handy', 'One line description of project.',
+    (master_doc, 'libhandy', 'libhandy Documentation',
+     author, 'libhandy', 'One line description of project.',
      'Miscellaneous'),
 ]
 
