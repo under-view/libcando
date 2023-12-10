@@ -12,9 +12,11 @@ project(
 )
 
 pargs = []
-project_name = meson.project_name()
-so_version = '.'.join(meson.project_version())
 cc = meson.get_compiler('c')
+so_version = '.'.join(meson.project_version())
+project_name = meson.project_name()
+src_root_dir = meson.current_source_dir()
+build_root_dir = meson.current_build_dir()
 
 inc = include_directories('include')
 
@@ -30,10 +32,6 @@ libhandy = library(
   install: true
 )
 
-if get_option('tests')
-  subdir('tests')
-endif
-
 pkg = import('pkgconfig')
 
 pkglibs = [libhandy]
@@ -44,3 +42,20 @@ pkg.generate(libraries: pkglibs,
              name : project_name,
              filebase : 'handy',
              description : 'A common utility library for C programs/libraries.')
+
+if get_option('tests')
+  subdir('tests')
+endif
+
+if get_option('docs')
+  docs_dir = src_root_dir + '/docs'
+  docs_build_dir = build_root_dir + '/docs'
+  sphinx = find_program('sphinx-build-5', 'sphinx-build', required: true)
+
+  if sphinx.found()
+    subdir('docs')
+    custom_target('docs',
+                  command: [sphinx, '-W', '-b', 'html', docs_dir, '@OUTPUT@'],
+                  input: docs_src, output: 'docs', install: false, install_dir: '')
+  endif
+endif

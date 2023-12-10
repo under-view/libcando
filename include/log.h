@@ -31,11 +31,12 @@ enum handy_log_level_type {
 
 
 /*
- * handy_log_level_set: Sets which type of messages that are
- *                      allowed to be printed to stdout.
+ * handy_log_level_set: Sets which type of messages that are allowed
+ *                      to be printed to an open file stream.
  *
  * parameters:
- * @level - 32-bit integer representing the logs to print to stdout.
+ * @level - 32-bit integer representing the type of log to print to
+ *          an open file stream. Each log type has a different color.
  */
 void
 handy_log_level_set (enum handy_log_level_type level);
