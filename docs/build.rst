@@ -9,7 +9,16 @@ Meson
 
         $ meson setup [options] build
         $ ninja -C build -j$(nproc)
-        $ sudo ninja -C build install
+
+.. code-block::
+        :linenos:
+
+	# Yocto Project SDK Builds
+	$ meson setup --prefix="${SDKTARGETSYSROOT}/usr" \
+	              --libdir="${SDKTARGETSYSROOT}/usr/lib64" \
+		      [options] \
+	              build
+        $ ninja -C build -j$(nproc)
 
 **Meson Options**
 
