@@ -35,7 +35,7 @@ static const char *term_colors[] = {
 
 
 void
-handy_log_impl (enum handy_log_level_type type, FILE *stream, const char *fmt, ...)
+handy_log (enum handy_log_level_type type, FILE *stream, const char *fmt, ...)
 {
 	va_list args;
 	time_t rawtime;
