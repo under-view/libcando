@@ -49,7 +49,7 @@ https://www.sphinx-doc.org/en/master/man/sphinx-build.html
 
 .. code-block::
 
-        $ git clone https://github.com/under-view/handy.git
+        $ git clone https://github.com/under-view/libhandy.git
         $ cd handy
         $ sudo pip3 install -r docs/requirements.txt
 
