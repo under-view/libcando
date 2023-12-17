@@ -135,3 +135,19 @@ handy_logme
 		#define handy_logme(logType, fmt, ...) \
 			handy_log(logType, stdout, "[%s:%s:%d] " fmt, basename(__FILE__), __func__, __LINE__, ##__VA_ARGS__)
 
+===============
+handy_logme_err
+===============
+
+.. c:macro:: handy_logme_err(fmt, ...)
+
+	Log format
+
+	timestamp - [file:function:line] message
+
+	Prints to ``stderr`` with the color **RED**
+
+	.. code-block::
+
+		#define handy_logme_err(fmt, ...) \
+			handy_log(HANDY_LOG_DANGER, stderr, "[%s:%s:%d] " fmt, basename(__FILE__), __func__, __LINE__, ##__VA_ARGS__)

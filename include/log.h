@@ -16,6 +16,7 @@
 
 #include "macros.h"
 
+
 /*
  * enum handy_log_level_type (Handy Log Level Type)
  *
