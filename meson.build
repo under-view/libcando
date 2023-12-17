@@ -21,20 +21,10 @@ build_root_dir = meson.current_build_dir()
 inc = include_directories('include')
 
 subdir('include')
-subdir('src')
-
-libhandy = library(
-  project_name,
-  version: so_version,
-  link_whole: libhandy_static,
-  include_directories: inc,
-  c_args: pargs,
-  install: true
-)
 
 pkg = import('pkgconfig')
 
-pkglibs = [libhandy]
+pkglibs = []
 pkgsubdirs = []
 pkg.generate(libraries: pkglibs,
              subdirs : pkgsubdirs,
