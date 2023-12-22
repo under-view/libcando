@@ -59,7 +59,7 @@ https://www.sphinx-doc.org/en/master/man/sphinx-build.html
 .. code-block::
 
         $ git clone https://github.com/under-view/libcando.git
-        $ cd cando
+        $ cd libcando
         $ sudo pip3 install -r docs/requirements.txt
 
         # If no build directory exists
