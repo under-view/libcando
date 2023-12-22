@@ -12,7 +12,9 @@ Table of contents (click to go)
 Macros
 ======
 
-1. :c:macro:`handy_logme`
+1. :c:macro:`handy_log`
+#. :c:macro:`handy_log_err`
+#. :c:macro:`handy_log_print`
 
 =====
 Enums
@@ -33,7 +35,8 @@ Functions
 =========
 
 1. :c:func:`handy_log_level_set`
-#. :c:func:`handy_log`
+#. :c:func:`handy_log_time`
+#. :c:func:`handy_log_notime`
 
 API Documentation
 ~~~~~~~~~~~~~~~~~
@@ -103,14 +106,31 @@ handy_log_level_set
 
 =========================================================================================================================================
 
-=========
-handy_log
-=========
+==============
+handy_log_time
+==============
 
-.. c:function:: void handy_log(enum handy_log_level_type type, FILE *stream, const char *fmt, ...);
+.. c:function:: void handy_log_time(enum handy_log_level_type type, FILE *stream, const char *fmt, ...);
 
-	Provides applications/library way to write to ``stream`` injecting
-	asnsi character to display colors for different message types.
+	Provides applications/library way to write to ``stream``
+	with a time stamp and ansi color codes to colorize
+	different message.
+
+	Parameters:
+		| **type:** The type of color to use with log
+		| **stream:** Pointer to open file stream to print messages to
+		| **fmt:** Format of the log passed to va_args
+		| **... :** Variable list arguments
+
+================
+handy_log_notime
+================
+
+.. c:function:: void handy_log_notime(enum handy_log_level_type type, FILE *stream, const char *fmt, ...);
+
+	Provides applications/library way to write to ``stream``
+	without time stamp with ansi color codes to colorize
+	different message.
 
 	Parameters:
 		| **type:** The type of color to use with log
@@ -120,34 +140,49 @@ handy_log
 
 =========================================================================================================================================
 
-===========
-handy_logme
-===========
+=========
+handy_log
+=========
 
-.. c:macro:: handy_logme(logType, fmt, ...)
-
-	Log format
-
-	timestamp - [file:function:line] message
-
-	.. code-block::
-
-		#define handy_logme(logType, fmt, ...) \
-			handy_log(logType, stdout, "[%s:%s:%d] " fmt, basename(__FILE__), __func__, __LINE__, ##__VA_ARGS__)
-
-===============
-handy_logme_err
-===============
-
-.. c:macro:: handy_logme_err(fmt, ...)
+.. c:macro:: handy_log(logType, fmt, ...)
 
 	Log format
 
 	timestamp - [file:function:line] message
 
-	Prints to ``stderr`` with the color **RED**
+	Prints to ``stdout`` using ansi color codes to color text.
 
 	.. code-block::
 
-		#define handy_logme_err(fmt, ...) \
-			handy_log(HANDY_LOG_DANGER, stderr, "[%s:%s:%d] " fmt, basename(__FILE__), __func__, __LINE__, ##__VA_ARGS__)
+		#define handy_log(logType, fmt, ...) \
+			handy_log_time(logType, stdout, "[%s:%s:%d] " fmt, basename(__FILE__), __func__, __LINE__, ##__VA_ARGS__)
+
+=============
+handy_log_err
+=============
+
+.. c:macro:: handy_log_err(fmt, ...)
+
+	Log format
+
+	timestamp - [file:function:line] message
+
+	Prints to ``stderr`` with ansi color codes the color **RED**
+
+	.. code-block::
+
+		#define handy_log_err(fmt, ...) \
+			handy_log_time(HANDY_LOG_DANGER, stderr, "[%s:%s:%d] " fmt, basename(__FILE__), __func__, __LINE__, ##__VA_ARGS__)
+
+===============
+handy_log_print
+===============
+
+.. c:macro:: handy_log_print(logType, fmt, ...)
+
+	Prints to ``stdout`` using ansi color codes to color text.
+
+	.. code-block::
+
+		#define handy_log_print(logType, fmt, ...) \
+			handy_log_notime(logType, stdout, fmt, ##__VA_ARGS__)

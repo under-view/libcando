@@ -74,7 +74,8 @@ static const char *tcolors[] = {
 
 /*
  * handy_log_time: Provides applications/library way to write to @stream
- *                 with colors to display different error message.
+ *                 with a time stamp and ansi color codes to colorize
+ *                 different message.
  *
  * paramaters:
  * @type   - The type of color to use with log
@@ -113,8 +114,8 @@ handy_log_time (enum handy_log_level_type type, FILE *stream, const char *fmt, .
 
 /*
  * handy_log_notime: Provides applications/library way to write to @stream
- *                   without time stamp with colors to display different
- *                   error message.
+ *                   without time stamp with ansi color codes to colorize
+ *                   different message.
  *
  * paramaters:
  * @type   - The type of color to use with log
