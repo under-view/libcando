@@ -1,19 +1,19 @@
-# libhandy
+# libcando
 
 <p align="center">
-    <a href="https://libhandy.readthedocs.io/en/latest/?badge=latest">
-        <img src="https://readthedocs.org/projects/libhandy/badge/?version=latest" alt="Documentation Status">
+    <a href="https://libcando.readthedocs.io/en/latest/?badge=latest">
+        <img src="https://readthedocs.org/projects/libcando/badge/?version=latest" alt="Documentation Status">
     </a>
 </p>
 
 ---
 
-libhandy is soley a C library with functions that are commonly
+libcando is soley a C library with functions that are commonly
 used by a variety of underview software.
 
 #### 📚 Documentation
 
-Complete documentation: https://libhandy.readthedocs.io
+Complete documentation: https://libcando.readthedocs.io
 
 **Building**
 ```
@@ -34,7 +34,7 @@ $ ninja install -C build
 
 **Inclusion**
 ```C
-#include <handy/handy.h>
+#include <cando/cando.h>
 ```
 
 **Testing**

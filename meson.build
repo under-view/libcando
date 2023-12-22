@@ -1,5 +1,5 @@
 project(
-  'handy',
+  'cando',
   'c',
   version: '0.0.1',
   license: 'MIT',
@@ -30,7 +30,7 @@ pkg.generate(libraries: pkglibs,
              subdirs : pkgsubdirs,
              version : so_version,
              name : project_name,
-             filebase : 'handy',
+             filebase : 'cando',
              description : 'A common utility library for C programs/libraries.')
 
 if get_option('tests')

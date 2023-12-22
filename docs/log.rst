@@ -3,7 +3,7 @@
 log
 ===
 
-Header: handy/log.h
+Header: cando/log.h
 
 Table of contents (click to go)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -12,15 +12,15 @@ Table of contents (click to go)
 Macros
 ======
 
-1. :c:macro:`handy_log`
-#. :c:macro:`handy_log_err`
-#. :c:macro:`handy_log_print`
+1. :c:macro:`cando_log`
+#. :c:macro:`cando_log_err`
+#. :c:macro:`cando_log_print`
 
 =====
 Enums
 =====
 
-1. :c:enum:`handy_log_level_type`
+1. :c:enum:`cando_log_level_type`
 
 ======
 Unions
@@ -34,68 +34,68 @@ Structs
 Functions
 =========
 
-1. :c:func:`handy_log_level_set`
-#. :c:func:`handy_log_time`
-#. :c:func:`handy_log_notime`
+1. :c:func:`cando_log_level_set`
+#. :c:func:`cando_log_time`
+#. :c:func:`cando_log_notime`
 
 API Documentation
 ~~~~~~~~~~~~~~~~~
 
 ====================
-handy_log_level_type
+cando_log_level_type
 ====================
 
-.. c:enum:: handy_log_level_type
+.. c:enum:: cando_log_level_type
 
 	.. c:macro::
-		HANDY_LOG_NONE
-		HANDY_LOG_SUCCESS
-		HANDY_LOG_DANGER
-		HANDY_LOG_INFO
-		HANDY_LOG_WARNING
-		HANDY_LOG_RESET
-		HANDY_LOG_ALL
+		CANDO_LOG_NONE
+		CANDO_LOG_SUCCESS
+		CANDO_LOG_DANGER
+		CANDO_LOG_INFO
+		CANDO_LOG_WARNING
+		CANDO_LOG_RESET
+		CANDO_LOG_ALL
 
 	Log level options used by
-		:c:func:`handy_log_level_set`
-		:c:func:`handy_log`
-		:c:macro:`handy_logme`
+		:c:func:`cando_log_level_set`
+		:c:func:`cando_log`
+		:c:macro:`cando_logme`
 
-	:c:macro:`HANDY_LOG_NONE`
+	:c:macro:`CANDO_LOG_NONE`
 		| Value set to ``0x00000000``
 		| Term color
 
-	:c:macro:`HANDY_LOG_SUCCESS`
+	:c:macro:`CANDO_LOG_SUCCESS`
 		| Value set to ``0x00000001``
 		| Green
 
-	:c:macro:`HANDY_LOG_DANGER`
+	:c:macro:`CANDO_LOG_DANGER`
 		| Value set to ``0x00000002``
 		| Red
 
-	:c:macro:`HANDY_LOG_INFO`
+	:c:macro:`CANDO_LOG_INFO`
 		| Value set to ``0x00000004``
 		| Light purple
 
-	:c:macro:`HANDY_LOG_WARNING`
+	:c:macro:`CANDO_LOG_WARNING`
 		| Value set to ``0x00000008``
 		| Yellow
 
-	:c:macro:`HANDY_LOG_RESET`
+	:c:macro:`CANDO_LOG_RESET`
 		| Value set to ``0x00000010``
 		| Term color
 
-	:c:macro:`HANDY_LOG_ALL`
+	:c:macro:`CANDO_LOG_ALL`
 		| Value set to ``0xFFFFFFFF``
 		| Term color
 
 =========================================================================================================================================
 
 ===================
-handy_log_level_set
+cando_log_level_set
 ===================
 
-.. c:function:: void handy_log_level_set(enum handy_log_level_type level);
+.. c:function:: void cando_log_level_set(enum cando_log_level_type level);
 
 	Sets which type of messages that are allowed to be printed to an open file stream.
 
@@ -107,10 +107,10 @@ handy_log_level_set
 =========================================================================================================================================
 
 ==============
-handy_log_time
+cando_log_time
 ==============
 
-.. c:function:: void handy_log_time(enum handy_log_level_type type, FILE *stream, const char *fmt, ...);
+.. c:function:: void cando_log_time(enum cando_log_level_type type, FILE *stream, const char *fmt, ...);
 
 	Provides applications/library way to write to ``stream``
 	with a time stamp and ansi color codes to colorize
@@ -123,10 +123,10 @@ handy_log_time
 		| **... :** Variable list arguments
 
 ================
-handy_log_notime
+cando_log_notime
 ================
 
-.. c:function:: void handy_log_notime(enum handy_log_level_type type, FILE *stream, const char *fmt, ...);
+.. c:function:: void cando_log_notime(enum cando_log_level_type type, FILE *stream, const char *fmt, ...);
 
 	Provides applications/library way to write to ``stream``
 	without time stamp with ansi color codes to colorize
@@ -141,10 +141,10 @@ handy_log_notime
 =========================================================================================================================================
 
 =========
-handy_log
+cando_log
 =========
 
-.. c:macro:: handy_log(logType, fmt, ...)
+.. c:macro:: cando_log(logType, fmt, ...)
 
 	Log format
 
@@ -154,14 +154,14 @@ handy_log
 
 	.. code-block::
 
-		#define handy_log(logType, fmt, ...) \
-			handy_log_time(logType, stdout, "[%s:%s:%d] " fmt, basename(__FILE__), __func__, __LINE__, ##__VA_ARGS__)
+		#define cando_log(logType, fmt, ...) \
+			cando_log_time(logType, stdout, "[%s:%s:%d] " fmt, basename(__FILE__), __func__, __LINE__, ##__VA_ARGS__)
 
 =============
-handy_log_err
+cando_log_err
 =============
 
-.. c:macro:: handy_log_err(fmt, ...)
+.. c:macro:: cando_log_err(fmt, ...)
 
 	Log format
 
@@ -171,18 +171,18 @@ handy_log_err
 
 	.. code-block::
 
-		#define handy_log_err(fmt, ...) \
-			handy_log_time(HANDY_LOG_DANGER, stderr, "[%s:%s:%d] " fmt, basename(__FILE__), __func__, __LINE__, ##__VA_ARGS__)
+		#define cando_log_err(fmt, ...) \
+			cando_log_time(CANDO_LOG_DANGER, stderr, "[%s:%s:%d] " fmt, basename(__FILE__), __func__, __LINE__, ##__VA_ARGS__)
 
 ===============
-handy_log_print
+cando_log_print
 ===============
 
-.. c:macro:: handy_log_print(logType, fmt, ...)
+.. c:macro:: cando_log_print(logType, fmt, ...)
 
 	Prints to ``stdout`` using ansi color codes to color text.
 
 	.. code-block::
 
-		#define handy_log_print(logType, fmt, ...) \
-			handy_log_notime(logType, stdout, fmt, ##__VA_ARGS__)
+		#define cando_log_print(logType, fmt, ...) \
+			cando_log_notime(logType, stdout, fmt, ##__VA_ARGS__)

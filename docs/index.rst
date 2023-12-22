@@ -1,7 +1,7 @@
-.. libhandy documentation master file, created by
+.. libcando documentation master file, created by
    sphinx-quickstart on Tue July 21 20:21:30 2023.
 
-libhandy Documentation
+libcando Documentation
 ======================
 
 .. toctree::

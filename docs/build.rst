@@ -1,4 +1,4 @@
-Build libhandy
+Build libcando
 ==============
 
 Meson
@@ -38,17 +38,17 @@ All options/features are disabled by default.
 .. code-block::
         :linenos:
 
-        # Clone libhandy or create a handy.wrap under <source_root>/subprojects
+        # Clone libcando or create a cando.wrap under <source_root>/subprojects
         project('name', 'c')
 
-        handy_dep = dependency('handy', fallback : 'handy', 'handy_dep')
+        cando_dep = dependency('cando', fallback : 'cando', 'cando_dep')
 
-        executable('exe', 'src/main.c', dependencies : handy_dep)
+        executable('exe', 'src/main.c', dependencies : cando_dep)
 
 Documentation (Sphinx)
 ~~~~~~~~~~~~~~~~~~~~~~
 
-libhandy uses sphinx framework for documentation. Primarily utilizing `The C Domain`_.
+libcando uses sphinx framework for documentation. Primarily utilizing `The C Domain`_.
 
 https://www.sphinx-doc.org/en/master/man/sphinx-build.html
 
@@ -58,8 +58,8 @@ https://www.sphinx-doc.org/en/master/man/sphinx-build.html
 
 .. code-block::
 
-        $ git clone https://github.com/under-view/libhandy.git
-        $ cd handy
+        $ git clone https://github.com/under-view/libcando.git
+        $ cd cando
         $ sudo pip3 install -r docs/requirements.txt
 
         # If no build directory exists

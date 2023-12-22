@@ -1,5 +1,5 @@
-#ifndef HANDY_LOG_H
-#define HANDY_LOG_H
+#ifndef CANDO_LOG_H
+#define CANDO_LOG_H
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -18,44 +18,44 @@
 
 
 /*
- * enum handy_log_level_type (Handy Log Level Type)
+ * enum cando_log_level_type (Handy Log Level Type)
  *
  * Sets which messages of a given type to print and is used to
  * help determine which ANSI Escape Codes to utilize.
  *
  * @macros
- * HANDY_LOG_NONE    - Term color
- * HANDY_LOG_SUCCESS - Green
- * HANDY_LOG_DANGER  - Red
- * HANDY_LOG_INFO    - Light purple
- * HANDY_LOG_WARNING - Yellow
- * HANDY_LOG_RESET   - Term color
- * HANDY_LOG_ALL     - Term color
+ * CANDO_LOG_NONE    - Term color
+ * CANDO_LOG_SUCCESS - Green
+ * CANDO_LOG_DANGER  - Red
+ * CANDO_LOG_INFO    - Light purple
+ * CANDO_LOG_WARNING - Yellow
+ * CANDO_LOG_RESET   - Term color
+ * CANDO_LOG_ALL     - Term color
  */
-enum handy_log_level_type {
-	HANDY_LOG_NONE     = 0x00000000,
-	HANDY_LOG_SUCCESS  = 0x00000001,
-	HANDY_LOG_DANGER   = 0x00000002,
-	HANDY_LOG_INFO     = 0x00000004,
-	HANDY_LOG_WARNING  = 0x00000008,
-	HANDY_LOG_RESET    = 0x00000010,
-	HANDY_LOG_ALL      = 0xFFFFFFFF
+enum cando_log_level_type {
+	CANDO_LOG_NONE     = 0x00000000,
+	CANDO_LOG_SUCCESS  = 0x00000001,
+	CANDO_LOG_DANGER   = 0x00000002,
+	CANDO_LOG_INFO     = 0x00000004,
+	CANDO_LOG_WARNING  = 0x00000008,
+	CANDO_LOG_RESET    = 0x00000010,
+	CANDO_LOG_ALL      = 0xFFFFFFFF
 };
 
 
-enum handy_log_level_type logLevel = HANDY_LOG_ALL;
+enum cando_log_level_type logLevel = CANDO_LOG_ALL;
 
 
 /*
- * handy_log_level_set: Sets which type of messages that are allowed
+ * cando_log_level_set: Sets which type of messages that are allowed
  *                      to be printed to an open file stream.
  *
  * parameters:
  * @level - 32-bit integer representing the type of log to print to
  *          an open file stream. Each log type has a different color.
  */
-HANDY_STATIC_INLINE void
-handy_log_level_set (enum handy_log_level_type level)
+CANDO_STATIC_INLINE void
+cando_log_level_set (enum cando_log_level_type level)
 {
 	logLevel = level;
 }
@@ -63,17 +63,17 @@ handy_log_level_set (enum handy_log_level_type level)
 
 /* ANSI Escape Codes */
 static const char *tcolors[] = {
-	[HANDY_LOG_NONE]    = "",
-	[HANDY_LOG_SUCCESS] = "\e[32;1m",
-	[HANDY_LOG_DANGER]  = "\e[31;1m",
-	[HANDY_LOG_INFO]    = "\e[35;1m",
-	[HANDY_LOG_WARNING] = "\e[33;1m",
-	[HANDY_LOG_RESET]   = "\x1b[0m"
+	[CANDO_LOG_NONE]    = "",
+	[CANDO_LOG_SUCCESS] = "\e[32;1m",
+	[CANDO_LOG_DANGER]  = "\e[31;1m",
+	[CANDO_LOG_INFO]    = "\e[35;1m",
+	[CANDO_LOG_WARNING] = "\e[33;1m",
+	[CANDO_LOG_RESET]   = "\x1b[0m"
 };
 
 
 /*
- * handy_log_time: Provides applications/library way to write to @stream
+ * cando_log_time: Provides applications/library way to write to @stream
  *                 with a time stamp and ansi color codes to colorize
  *                 different message.
  *
@@ -84,7 +84,7 @@ static const char *tcolors[] = {
  * @...    - Variable list arguments
  */
 void
-handy_log_time (enum handy_log_level_type type, FILE *stream, const char *fmt, ...)
+cando_log_time (enum cando_log_level_type type, FILE *stream, const char *fmt, ...)
 {
 	va_list args;
 	time_t rawtime;
@@ -108,12 +108,12 @@ handy_log_time (enum handy_log_level_type type, FILE *stream, const char *fmt, .
 	va_end(args);
 
 	/* Reset terminal colors */
-	fprintf(stream, "%s", tcolors[HANDY_LOG_RESET]);
+	fprintf(stream, "%s", tcolors[CANDO_LOG_RESET]);
 }
 
 
 /*
- * handy_log_notime: Provides applications/library way to write to @stream
+ * cando_log_notime: Provides applications/library way to write to @stream
  *                   without time stamp with ansi color codes to colorize
  *                   different message.
  *
@@ -124,7 +124,7 @@ handy_log_time (enum handy_log_level_type type, FILE *stream, const char *fmt, .
  * @...    - Variable list arguments
  */
 void
-handy_log_notime (enum handy_log_level_type type, FILE *stream, const char *fmt, ...)
+cando_log_notime (enum cando_log_level_type type, FILE *stream, const char *fmt, ...)
 {
 	va_list args;
 
@@ -139,7 +139,7 @@ handy_log_notime (enum handy_log_level_type type, FILE *stream, const char *fmt,
 	va_end(args);
 
 	/* Reset terminal colors */
-	fprintf(stream, "%s", tcolors[HANDY_LOG_RESET]);
+	fprintf(stream, "%s", tcolors[CANDO_LOG_RESET]);
 }
 
 
@@ -147,13 +147,13 @@ handy_log_notime (enum handy_log_level_type type, FILE *stream, const char *fmt,
  * Macros defined to structure the message
  * timestamp - [file:function:line] message
  */
-#define handy_log(logType, fmt, ...) \
-	handy_log_time(logType, stdout, "[%s:%s:%d] " fmt, basename(__FILE__), __func__, __LINE__, ##__VA_ARGS__)
+#define cando_log(logType, fmt, ...) \
+	cando_log_time(logType, stdout, "[%s:%s:%d] " fmt, basename(__FILE__), __func__, __LINE__, ##__VA_ARGS__)
 
-#define handy_log_err(fmt, ...) \
-	handy_log_time(HANDY_LOG_DANGER, stderr, "[%s:%s:%d] " fmt, basename(__FILE__), __func__, __LINE__, ##__VA_ARGS__)
+#define cando_log_err(fmt, ...) \
+	cando_log_time(CANDO_LOG_DANGER, stderr, "[%s:%s:%d] " fmt, basename(__FILE__), __func__, __LINE__, ##__VA_ARGS__)
 
-#define handy_log_print(logType, fmt, ...) \
-	handy_log_notime(logType, stdout, fmt, ##__VA_ARGS__)
+#define cando_log_print(logType, fmt, ...) \
+	cando_log_notime(logType, stdout, fmt, ##__VA_ARGS__)
 
-#endif /* HANDY_LOG_H */
+#endif /* CANDO_LOG_H */

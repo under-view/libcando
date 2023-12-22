@@ -1,5 +1,5 @@
 main_headers = [
-  'handy.h', 'log.h', 'macros.h'
+  'cando.h', 'log.h', 'macros.h'
 ]
 
-install_headers(main_headers, subdir: 'handy')
+install_headers(main_headers, subdir: 'cando')
