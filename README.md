@@ -13,31 +13,5 @@ used by a variety of underview software.
 
 #### 📚 Documentation
 
-Complete documentation: https://libcando.readthedocs.io
+See documentation: https://libcando.readthedocs.io for build and install.
 
-**Building**
-```
-$ meson build
-$ ninja -C build
-
-# For Yocto SDK builds
-$ meson setup --prefix="${SDKTARGETSYSROOT}/usr" \
-              --libdir="${SDKTARGETSYSROOT}/usr/lib64" \
-              build
-$ ninja -C build
-```
-
-**Install**
-```sh
-$ ninja install -C build
-```
-
-**Inclusion**
-```C
-#include <cando/cando.h>
-```
-
-**Testing**
-```sh
-$ ninja test -C build
-```
