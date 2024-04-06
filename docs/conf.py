@@ -14,9 +14,6 @@ release = '0.0.1'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-# https://github.com/readthedocs/sphinx_rtd_theme
-import sphinx_rtd_theme
-
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
@@ -68,19 +65,25 @@ pygments_style = None
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-# https://www.sphinx-doc.org/en/master/usage/theming.html
-html_theme = "sphinx_rtd_theme"
-
-# Theme options are theme-specific and customize the look and feel of a theme
-# further.  For a list of options available for each theme, see the
-# documentation.
 #
-# html_theme_options = {}
+
+try:
+    import sphinx_rtd_theme
+    html_theme = 'sphinx_rtd_theme'
+    html_theme_options = {
+        'sticky_navigation': False,
+    }
+except ImportError:
+    sys.stderr.write("The Sphinx sphinx_rtd_theme HTML theme was not found.\
+    \nPlease make sure to install the sphinx_rtd_theme Python package.\n")
+    sys.exit(1)
+
+pygments_style = 'monokai'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = []
+html_static_path = ['sphinx-static']
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
@@ -91,7 +94,15 @@ html_static_path = []
 # 'searchbox.html']``.
 #
 # html_sidebars = {}
+# Add customm CSS and JS files
+html_css_files = ['theme_overrides.css']
+html_js_files = []
 
+# Hide 'Created using Sphinx' text
+html_show_sphinx = False
+
+# Add 'Last updated' on each page
+html_last_updated_fmt = '%b %d, %Y'
 
 # -- Options for HTMLHelp output ---------------------------------------------
 
