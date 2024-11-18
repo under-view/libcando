@@ -21,12 +21,21 @@ build_root_dir = meson.current_build_dir()
 inc = include_directories('include')
 
 subdir('include')
+subdir('src')
+
+libcando = library(
+  project_name, files(fs),
+  version: '.'.join(so_version),
+  include_directories: inc,
+  c_args: pargs,
+  install: true
+)
 
 pkg = import('pkgconfig')
 
 pkglibs = []
 pkgsubdirs = []
-pkg.generate(libraries: pkglibs,
+pkg.generate(libraries: [pkglibs, libcando],
              subdirs : pkgsubdirs,
              version : so_version,
              name : project_name,
