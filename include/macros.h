@@ -1,6 +1,14 @@
 #ifndef CANDO_MACROS_H
 #define CANDO_MACROS_H
 
+/* Prevent c++ name mangling */
+#ifdef __cplusplus
+#define CANDO_EXTERNC extern "C"
+#else
+#define CANDO_EXTERNC
+#endif
+
+
 /*
  * Informs the compiler that you expect a variable
  * to be unused and instructs compiler to not issue

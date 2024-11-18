@@ -38,7 +38,7 @@ enum cando_log_level_type {
  * @level - 32-bit integer representing the type of log to print to
  *          an open file stream. Each log type has a different color.
  */
-void
+CANDO_EXTERNC void
 cando_log_level_set (enum cando_log_level_type level);
 
 
@@ -53,7 +53,7 @@ cando_log_level_set (enum cando_log_level_type level);
  * @fmt    - Format of the log passed to va_args
  * @...    - Variable list arguments
  */
-void
+CANDO_EXTERNC void
 cando_log_time (enum cando_log_level_type type,
                 void *stream,
 		const char *fmt,
@@ -71,7 +71,7 @@ cando_log_time (enum cando_log_level_type type,
  * @fmt    - Format of the log passed to va_args
  * @...    - Variable list arguments
  */
-void
+CANDO_EXTERNC void
 cando_log_notime (enum cando_log_level_type type,
                   void *stream,
 		  const char *fmt,
