@@ -109,6 +109,7 @@ cando_log_time (enum cando_log_level_type type, FILE *stream, const char *fmt, .
 
 	/* Reset terminal colors */
 	fprintf(stream, "%s", tcolors[CANDO_LOG_RESET]);
+	fflush(stream);
 }
 
 
@@ -140,6 +141,7 @@ cando_log_notime (enum cando_log_level_type type, FILE *stream, const char *fmt,
 
 	/* Reset terminal colors */
 	fprintf(stream, "%s", tcolors[CANDO_LOG_RESET]);
+	fflush(stream);
 }
 
 
