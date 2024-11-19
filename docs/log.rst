@@ -35,7 +35,7 @@ Functions
 =========
 
 1. :c:func:`cando_log_level_set`
-1. :c:func:`cando_log_write_fd_set`
+#. :c:func:`cando_log_write_fd_set`
 #. :c:func:`cando_log_time`
 #. :c:func:`cando_log_notime`
 
@@ -115,7 +115,7 @@ cando_log_write_fd_set
 .. c:function:: void cando_log_write_fd_set(int fd);
 
 	Sets the internal global write file descriptor
-	to caller define file descriptor to.
+	to caller define file descriptor.
 
 	Default is set to ``STDOUT_FILENO``.
 
@@ -168,8 +168,9 @@ cando_log
 	timestamp - [file:function:line] message
 
 	Default prints to ``stdout`` using ansi color codes to color text.
-	Caller may change the open file in which logs are printed to.
-	:c:func:`cando_log_write_fd_set`
+
+	Caller may change the open file in which logs are printed to via
+	a call to :c:func:`cando_log_write_fd_set`
 
 	.. code-block::
 
@@ -186,9 +187,10 @@ cando_log_err
 
 	timestamp - [file:function:line] message
 
-	Prints to ``stderr`` with ansi color codes the color **RED**
-	Caller may change the open file in which logs are printed to.
-	:c:func:`cando_log_write_fd_set`
+	Prints to ``stderr`` with ansi color codes the color **RED**.
+
+	Caller may change the open file in which logs are printed to via
+	a call to :c:func:`cando_log_write_fd_set`
 
 	.. code-block::
 
@@ -206,8 +208,9 @@ cando_log_print
 	NONE
 
 	Default prints to ``stdout`` using ansi color codes to color text.
-	Caller may change the open file in which logs are printed to.
-	:c:func:`cando_log_write_fd_set`
+
+	Caller may change the open file in which logs are printed to via
+	a call to :c:func:`cando_log_write_fd_set`
 
 	.. code-block::
 
