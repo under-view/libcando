@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
 #include <libgen.h>
 #include <stdint.h>
 #include <stdarg.h>
@@ -13,7 +14,7 @@
 
 #include "log.h"
 
-/* ANSI Escape Codes */
+/* ANSI Escape Codes, terminal colors */
 static const char *tcolors[] = {
 	[CANDO_LOG_NONE]    = "",
 	[CANDO_LOG_SUCCESS] = "\e[32;1m",
@@ -23,6 +24,8 @@ static const char *tcolors[] = {
 	[CANDO_LOG_RESET]   = "\x1b[0m"
 };
 
+
+static int writefd = STDOUT_FILENO;
 
 static enum cando_log_level_type logLevel = CANDO_LOG_ALL;
 
@@ -35,8 +38,14 @@ cando_log_level_set (enum cando_log_level_type level)
 
 
 void
+cando_log_write_fd_set (int fd)
+{
+	writefd = fd;
+}
+
+
+void
 cando_log_time (enum cando_log_level_type type,
-                void *stream,
 		const char *fmt,
 		...)
 {
@@ -52,24 +61,23 @@ cando_log_time (enum cando_log_level_type type,
 
 	/* generate time */
 	strftime(buffer, sizeof(buffer), "%F %T - ", localtime_r(&rawtime, &(struct tm){}));
-	fprintf(stream, "%s", buffer);
+	dprintf(writefd, "%s", buffer);
 
 	/* Set terminal color */
-	fprintf(stream, "%s", tcolors[type]);
+	dprintf(writefd, "%s", tcolors[type]);
 
 	va_start(args, fmt);
-	vfprintf(stream, fmt, args);
+	vdprintf(writefd, fmt, args);
 	va_end(args);
 
 	/* Reset terminal colors */
-	fprintf(stream, "%s", tcolors[CANDO_LOG_RESET]);
-	fflush(stream);
+	dprintf(writefd, "%s", tcolors[CANDO_LOG_RESET]);
+	fsync(writefd);
 }
 
 
 void
 cando_log_notime (enum cando_log_level_type type,
-                  void *stream,
 		  const char *fmt,
 		  ...)
 {
@@ -79,13 +87,13 @@ cando_log_notime (enum cando_log_level_type type,
 		return;
 
 	/* Set terminal color */
-	fprintf(stream, "%s", tcolors[type]);
+	dprintf(writefd, "%s", tcolors[type]);
 
 	va_start(args, fmt);
-	vfprintf(stream, fmt, args);
+	vdprintf(writefd, fmt, args);
 	va_end(args);
 
 	/* Reset terminal colors */
-	fprintf(stream, "%s", tcolors[CANDO_LOG_RESET]);
-	fflush(stream);
+	dprintf(writefd, "%s", tcolors[type]);
+	fsync(writefd);
 }

@@ -1,6 +1,8 @@
 #ifndef CANDO_LOG_H
 #define CANDO_LOG_H
 
+#include <libgen.h>
+
 #include "macros.h"
 
 
@@ -43,19 +45,29 @@ cando_log_level_set (enum cando_log_level_type level);
 
 
 /*
+ * cando_log_write_fd_set: Sets the internal global write file descriptor
+ *                         to caller define file descriptor to open file.
+ *                         Default is set to STDOUT_FILENO.
+ *
+ * parameters:
+ * @fd - file descriptor to an open file
+ */
+CANDO_EXTERNC void
+cando_log_write_fd_set (int fd);
+
+
+/*
  * cando_log_time: Provides applications/library way to write to @stream
  *                 with a time stamp and ansi color codes to colorize
  *                 different message.
  *
  * paramaters:
- * @type   - The type of color to use with log
- * @stream - Pointer to open file stream to print messages to
- * @fmt    - Format of the log passed to va_args
- * @...    - Variable list arguments
+ * @type - The type of color to use with log
+ * @fmt  - Format of the log passed to va_args
+ * @...  - Variable list arguments
  */
 CANDO_EXTERNC void
 cando_log_time (enum cando_log_level_type type,
-                void *stream,
 		const char *fmt,
 		...);
 
@@ -66,14 +78,12 @@ cando_log_time (enum cando_log_level_type type,
  *                   different message.
  *
  * paramaters:
- * @type   - The type of color to use with log
- * @stream - Pointer to open file stream to print messages to
- * @fmt    - Format of the log passed to va_args
- * @...    - Variable list arguments
+ * @type - The type of color to use with log
+ * @fmt  - Format of the log passed to va_args
+ * @...  - Variable list arguments
  */
 CANDO_EXTERNC void
 cando_log_notime (enum cando_log_level_type type,
-                  void *stream,
 		  const char *fmt,
 		  ...);
 
@@ -82,12 +92,12 @@ cando_log_notime (enum cando_log_level_type type,
  * timestamp - [file:function:line] message
  */
 #define cando_log(logType, fmt, ...) \
-	cando_log_time(logType, stdout, "[%s:%s:%d] " fmt, basename(__FILE__), __func__, __LINE__, ##__VA_ARGS__)
+	cando_log_time(logType, "[%s:%s:%d] " fmt, basename(__FILE__), __func__, __LINE__, ##__VA_ARGS__)
 
 #define cando_log_err(fmt, ...) \
-	cando_log_time(CANDO_LOG_DANGER, stderr, "[%s:%s:%d] " fmt, basename(__FILE__), __func__, __LINE__, ##__VA_ARGS__)
+	cando_log_time(CANDO_LOG_DANGER, "[%s:%s:%d] " fmt, basename(__FILE__), __func__, __LINE__, ##__VA_ARGS__)
 
 #define cando_log_print(logType, fmt, ...) \
-	cando_log_notime(logType, stdout, fmt, ##__VA_ARGS__)
+	cando_log_notime(logType, fmt, ##__VA_ARGS__)
 
 #endif /* CANDO_LOG_H */
