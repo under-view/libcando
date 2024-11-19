@@ -19,7 +19,7 @@
  * CANDO_LOG_INFO    - Light purple
  * CANDO_LOG_WARNING - Yellow
  * CANDO_LOG_RESET   - Term color
- * CANDO_LOG_ALL     - Term color
+ * CANDO_LOG_ALL     - All above colors
  */
 enum cando_log_level_type {
 	CANDO_LOG_NONE    = 0x00000000,
@@ -34,7 +34,7 @@ enum cando_log_level_type {
 
 /*
  * cando_log_level_set: Sets which type of messages that are allowed
- *                      to be printed to an open file stream.
+ *                      to be printed to an open file.
  *
  * parameters:
  * @level - 32-bit integer representing the type of log to print to
@@ -46,18 +46,19 @@ cando_log_level_set (enum cando_log_level_type level);
 
 /*
  * cando_log_write_fd_set: Sets the internal global write file descriptor
- *                         to caller define file descriptor to open file.
+ *                         to caller define file descriptor.
+ *
  *                         Default is set to STDOUT_FILENO.
  *
  * parameters:
- * @fd - file descriptor to an open file
+ * @fd - File descriptor to an open file
  */
 CANDO_EXTERNC void
 cando_log_write_fd_set (int fd);
 
 
 /*
- * cando_log_time: Provides applications/library way to write to @stream
+ * cando_log_time: Provides applications/library way to write to an open file
  *                 with a time stamp and ansi color codes to colorize
  *                 different message.
  *
@@ -73,7 +74,7 @@ cando_log_time (enum cando_log_level_type type,
 
 
 /*
- * cando_log_notime: Provides applications/library way to write to @stream
+ * cando_log_notime: Provides applications/library way to write to an open file
  *                   without time stamp with ansi color codes to colorize
  *                   different message.
  *
