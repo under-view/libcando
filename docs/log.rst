@@ -35,6 +35,7 @@ Functions
 =========
 
 1. :c:func:`cando_log_level_set`
+1. :c:func:`cando_log_write_fd_set`
 #. :c:func:`cando_log_time`
 #. :c:func:`cando_log_notime`
 
@@ -58,8 +59,9 @@ cando_log_level_type
 
 	Log level options used by
 		:c:func:`cando_log_level_set`
-		:c:func:`cando_log`
-		:c:macro:`cando_logme`
+		:c:macro:`cando_log`
+		:c:macro:`cando_log_err`
+		:c:macro:`cando_log_print`
 
 	:c:macro:`CANDO_LOG_NONE`
 		| Value set to ``0x00000000``
@@ -97,7 +99,7 @@ cando_log_level_set
 
 .. c:function:: void cando_log_level_set(enum cando_log_level_type level);
 
-	Sets which type of messages that are allowed to be printed to an open file stream.
+	Sets which type of messages that are allowed to be printed to an open file.
 
 	Parameters:
 		| **level:**
@@ -106,19 +108,35 @@ cando_log_level_set
 
 =========================================================================================================================================
 
+======================
+cando_log_write_fd_set
+======================
+
+.. c:function:: void cando_log_write_fd_set(int fd);
+
+	Sets the internal global write file descriptor
+	to caller define file descriptor to.
+
+	Default is set to ``STDOUT_FILENO``.
+
+	Parameters:
+		| **fd:**
+		| File descriptor to an open file.
+
+=========================================================================================================================================
+
 ==============
 cando_log_time
 ==============
 
-.. c:function:: void cando_log_time(enum cando_log_level_type type, FILE *stream, const char *fmt, ...);
+.. c:function:: void cando_log_time(enum cando_log_level_type type, const char *fmt, ...);
 
-	Provides applications/library way to write to ``stream``
+	Provides applications/library way to write to an open file
 	with a time stamp and ansi color codes to colorize
 	different message.
 
 	Parameters:
 		| **type:** The type of color to use with log
-		| **stream:** Pointer to open file stream to print messages to
 		| **fmt:** Format of the log passed to va_args
 		| **... :** Variable list arguments
 
@@ -126,15 +144,14 @@ cando_log_time
 cando_log_notime
 ================
 
-.. c:function:: void cando_log_notime(enum cando_log_level_type type, FILE *stream, const char *fmt, ...);
+.. c:function:: void cando_log_notime(enum cando_log_level_type type, const char *fmt, ...);
 
-	Provides applications/library way to write to ``stream``
+	Provides applications/library way to write to an open file
 	without time stamp with ansi color codes to colorize
 	different message.
 
 	Parameters:
 		| **type:** The type of color to use with log
-		| **stream:** Pointer to open file stream to print messages to
 		| **fmt:** Format of the log passed to va_args
 		| **... :** Variable list arguments
 
@@ -150,12 +167,14 @@ cando_log
 
 	timestamp - [file:function:line] message
 
-	Prints to ``stdout`` using ansi color codes to color text.
+	Default prints to ``stdout`` using ansi color codes to color text.
+	Caller may change the open file in which logs are printed to.
+	:c:func:`cando_log_write_fd_set`
 
 	.. code-block::
 
 		#define cando_log(logType, fmt, ...) \
-			cando_log_time(logType, stdout, "[%s:%s:%d] " fmt, basename(__FILE__), __func__, __LINE__, ##__VA_ARGS__)
+			cando_log_time(logType, "[%s:%s:%d] " fmt, basename(__FILE__), __func__, __LINE__, ##__VA_ARGS__)
 
 =============
 cando_log_err
@@ -168,11 +187,13 @@ cando_log_err
 	timestamp - [file:function:line] message
 
 	Prints to ``stderr`` with ansi color codes the color **RED**
+	Caller may change the open file in which logs are printed to.
+	:c:func:`cando_log_write_fd_set`
 
 	.. code-block::
 
 		#define cando_log_err(fmt, ...) \
-			cando_log_time(CANDO_LOG_DANGER, stderr, "[%s:%s:%d] " fmt, basename(__FILE__), __func__, __LINE__, ##__VA_ARGS__)
+			cando_log_time(CANDO_LOG_DANGER, "[%s:%s:%d] " fmt, basename(__FILE__), __func__, __LINE__, ##__VA_ARGS__)
 
 ===============
 cando_log_print
@@ -180,9 +201,15 @@ cando_log_print
 
 .. c:macro:: cando_log_print(logType, fmt, ...)
 
-	Prints to ``stdout`` using ansi color codes to color text.
+	Log format
+
+	NONE
+
+	Default prints to ``stdout`` using ansi color codes to color text.
+	Caller may change the open file in which logs are printed to.
+	:c:func:`cando_log_write_fd_set`
 
 	.. code-block::
 
 		#define cando_log_print(logType, fmt, ...) \
-			cando_log_notime(logType, stdout, fmt, ##__VA_ARGS__)
+			cando_log_notime(logType, fmt, ##__VA_ARGS__)
