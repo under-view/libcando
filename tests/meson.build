@@ -1,13 +1,13 @@
 libcmocka = dependency('cmocka', required: true)
 
-progs = [ ]
+progs = [ 'test-log.c' ]
 
 original_args = pargs
 foreach p : progs
   exec_name = p.substring(0,-2) # remove .c extension from name
 
   exec = executable(exec_name, p,
-                    link_with: libuprovision,
+                    link_with: libcando,
                     dependencies: [libcmocka],
                     include_directories: [inc],
                     c_args: pargs,
