@@ -94,6 +94,6 @@ cando_log_notime (enum cando_log_level_type type,
 	va_end(args);
 
 	/* Reset terminal colors */
-	dprintf(writefd, "%s", tcolors[type]);
+	dprintf(writefd, "%s", tcolors[CANDO_LOG_RESET]);
 	fsync(writefd);
 }

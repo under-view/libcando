@@ -88,6 +88,7 @@ cando_log_notime (enum cando_log_level_type type,
 		  const char *fmt,
 		  ...);
 
+
 /*
  * Macros defined to structure the message
  * timestamp - [file:function:line] message
