@@ -15,7 +15,8 @@
 
 
 static void CANDO_UNUSED
-test_log (void CANDO_UNUSED **state) {
+test_log (void CANDO_UNUSED **state)
+{
 	cando_log(CANDO_LOG_SUCCESS, "SUCCESS\n");
 	cando_log(CANDO_LOG_DANGER, "DANGER\n");
 	cando_log(CANDO_LOG_INFO, "INFO\n");
@@ -30,7 +31,8 @@ test_log (void CANDO_UNUSED **state) {
 
 
 static void CANDO_UNUSED
-test_log_print (void CANDO_UNUSED **state) {
+test_log_print (void CANDO_UNUSED **state)
+{
 	cando_log_print(CANDO_LOG_SUCCESS, "SUCCESS\n");
 	cando_log_print(CANDO_LOG_DANGER, "DANGER\n");
 	cando_log_print(CANDO_LOG_INFO, "INFO\n");
@@ -45,7 +47,8 @@ test_log_print (void CANDO_UNUSED **state) {
 
 
 static void CANDO_UNUSED
-test_log_set_write_fd (void CANDO_UNUSED **state) {
+test_log_set_write_fd (void CANDO_UNUSED **state)
+{
 	int fd = -1;
 
 	const char *testFile = "/tmp/test-file.txt";

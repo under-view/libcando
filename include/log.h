@@ -12,7 +12,7 @@
  * Sets which messages of a given type to print and is used to
  * help determine which ANSI Escape Codes to utilize.
  *
- * @macros
+ * macros:
  * CANDO_LOG_NONE    - Term color
  * CANDO_LOG_SUCCESS - Green
  * CANDO_LOG_DANGER  - Red
