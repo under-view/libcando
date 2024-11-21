@@ -5,3 +5,7 @@ option('tests',
 option('docs',
       type: 'boolean', value: false,
       description: 'Build documentation')
+
+option('file-ops',
+       type: 'feature', value: 'disabled',
+       description: 'Build with file-operations support')
