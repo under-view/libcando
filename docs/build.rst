@@ -61,6 +61,7 @@ Build/Install (Normal)
 
 	$ meson setup -Dtests="true" \
 	              -Ddocs="false" \
+		      -Dfile-ops="enabled" \
 	              build
 
 ===================
@@ -82,6 +83,7 @@ Build/Install (SDK)
 	              --libdir="${SDKTARGETSYSROOT}/usr/lib64" \
 		      -Dtests="true" \
 		      -Ddocs="false" \
+		      -Dfile-ops="enabled" \
 		      build
 
 =======
