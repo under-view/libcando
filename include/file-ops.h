@@ -11,13 +11,19 @@ struct cando_file_ops;
  * @brief Cando File Operations Create Info Structure
  *
  * @member fileName   - Full path to file caller wants to open(2)|creat(2).
- * @member byteSize   - Size in bytes caller wants newly created file to be.
+ * @member dataSize   - Size in bytes caller wants newly created file to be.
+ *                      If the file already exist or @createPipe is true
+ *                      this member is ignored.
+ * @member offset     - Offset within the file to mmap(2).
+ *                      If the file already exist or @createPipe is true
+ *                      this member is ignored.
  * @member createPipe - Boolean to enable/disable creation of a pipe(2).
  */
 struct cando_file_ops_create_info {
-	const char        *fileName;
-	long unsigned int byteSize;
-	unsigned int      createPipe : 1;
+	char              *fileName;
+	long unsigned int dataSize;
+	off_t             offset;
+	unsigned char     createPipe : 1;
 };
 
 
@@ -25,13 +31,30 @@ struct cando_file_ops_create_info {
  * @brief Creates or opens caller define file
  *
  * @param fileInfo - Pointer to a struct cando_file_ops_create_info.
+ *                   The use of pointer to a void is to limit amount
+ *                   of columns required to define a function.
  *                 
  * @returns
  * 	on success: Pointer to a struct cando_file_ops
  * 	on failure: NULL
  */
 struct cando_file_ops *
-cando_file_ops_create (struct cando_file_ops_create_info *fileInfo);
+cando_file_ops_create (const void *fileInfo);
+
+
+/*
+ * @brief Adjust file to a size of precisely length bytes
+ *
+ * @param flops    - Pointer to a valid struct cando_file_ops
+ * @param dataSize - Size in bytes caller wants newly created file to be.
+ *
+ * @returns
+ * 	on succes: 0
+ * 	on failure: # < 0
+ */
+int
+cando_file_ops_truncate_file (struct cando_file_ops *flops,
+                              const long unsigned int dataSize);
 
 
 /*
