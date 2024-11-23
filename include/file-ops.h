@@ -10,7 +10,7 @@ struct cando_file_ops;
 /*
  * @brief Cando File Operations Create Info Structure
  *
- * @member fileName   - Full path to file caller wants to open|create.
+ * @member fileName   - Full path to file caller wants to open(2)|creat(2).
  * @member byteSize   - Size in bytes caller wants newly created file to be.
  * @member createPipe - Boolean to enable/disable creation of a pipe(2).
  */
@@ -39,11 +39,6 @@ cando_file_ops_create (struct cando_file_ops_create_info *fileInfo);
  *        cando_file_ops_create() call.
  *
  * @param flops - Pointer to a valid struct cando_file_ops
- *
- *                Free'd members with fd's closed
- *                struct cando_file_ops {
- *          	      int pipefds[2];
- *                }
  */
 void
 cando_file_ops_destroy (struct cando_file_ops *flops);

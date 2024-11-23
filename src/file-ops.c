@@ -71,5 +71,6 @@ cando_file_ops_destroy (struct cando_file_ops *flops)
 	close(flops->pipefds[0]);
 	close(flops->pipefds[1]);
 	close(flops->fd);
+	free(flops->fname);
 	free(flops);
 }
