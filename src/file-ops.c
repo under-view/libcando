@@ -96,19 +96,17 @@ cando_file_ops_create (const void *_fileCreateInfo)
 	} else {
 		ret = cando_file_ops_truncate_file(flops, flops->dataSize);
 		if (ret < 0 && flops->dataSize) {
-			cando_log_err("dataSize: %lu\n", flops->dataSize);
 			cando_file_ops_destroy(flops);
 			return NULL;
 		}
 
 		flops->data = mmap(NULL,
 				   flops->dataSize,
-				   PROT_READ|PROT_WRITE,
+				   PROT_READ,
 				   MAP_SHARED,
 				   flops->fd,
 				   fileCreateInfo->offset);
 		if (flops->data == (void*)-1 && flops->dataSize) {
-			cando_log_err("dataSize: %lu, fd = %d\n", flops->dataSize, flops->fd);
 			cando_file_ops_destroy(flops);
 			return NULL;
 		}
@@ -147,6 +145,28 @@ cando_file_ops_truncate_file (struct cando_file_ops *flops,
 /*************************************************
  * End of cando_file_ops_truncate_file functions *
  *************************************************/
+
+
+/*****************************************
+ * Start of cando_file_ops_get functions *
+ *****************************************/
+
+const void *
+cando_file_ops_get_data (struct cando_file_ops *flops,
+                         const unsigned long int offset)
+{
+	if (!flops || \
+            !(flops->data))
+	{
+		return NULL;
+	}
+
+	return flops->data + offset;
+}
+
+/***************************************
+ * End of cando_file_ops_get functions *
+ ***************************************/
 
 
 /*********************************************

@@ -10,6 +10,10 @@ original_args = pargs
 foreach p : progs
   exec_name = p.substring(0,-2) # remove .c extension from name
 
+  if exec_name == 'test-file-ops'
+    pargs += ['-DTESTER_FILE_ONE="@0@/tests/tester-file-one.txt"'.format(src_root_dir)]
+  endif
+
   exec = executable(exec_name, p,
                     link_with: libcando,
                     dependencies: [libcmocka],

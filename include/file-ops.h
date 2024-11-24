@@ -49,12 +49,27 @@ cando_file_ops_create (const void *fileInfo);
  * @param dataSize - Size in bytes caller wants newly created file to be.
  *
  * @returns
- * 	on succes: 0
+ * 	on success: 0
  * 	on failure: # < 0
  */
 int
 cando_file_ops_truncate_file (struct cando_file_ops *flops,
                               const long unsigned int dataSize);
+
+
+/*
+ * @brief Returns file data stored at a given offset
+ *
+ * @param flops  - Pointer to a valid struct cando_file_ops
+ * @param offset - Byte offset within the file
+ *
+ * @returns
+ * 	on success: Pointer to file data at a given index
+ * 	on failure: NULL
+ */
+const void *
+cando_file_ops_get_data (struct cando_file_ops *flops,
+                         const unsigned long int offset);
 
 
 /*
