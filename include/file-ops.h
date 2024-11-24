@@ -74,6 +74,22 @@ cando_file_ops_get_data (struct cando_file_ops *flops,
 
 
 /*
+ * @brief Returns file data stored at a given line.
+ *        Returned output excludes newline character.
+ *
+ * @param flops   - Pointer to a valid struct cando_file_ops
+ * @param lineNum - Line in file to get data from
+ *
+ * @returns
+ * 	on success: Pointer to file data at a given index
+ * 	on failure: NULL
+ */
+const char *
+cando_file_ops_get_line (struct cando_file_ops *flops,
+			 const unsigned long int lineNum);
+
+
+/*
  * @brief Returns the amount of lines a file contains
  *
  * @param flops  - Pointer to a valid struct cando_file_ops

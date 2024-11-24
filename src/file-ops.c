@@ -28,13 +28,13 @@
  */
 struct cando_file_ops
 {
-	int               fd;
-	char              *fname;
-	int               pipefds[2];
-	void              *data;
-	unsigned long int dataSize;
-	void              *retData;
-	unsigned long int retDataSize;
+	int    fd;
+	char   *fname;
+	int    pipefds[2];
+	void   *data;
+	size_t dataSize;
+	void   *retData;
+	size_t retDataSize;
 };
 
 
@@ -111,6 +111,16 @@ cando_file_ops_create (const void *_fileCreateInfo)
 			cando_file_ops_destroy(flops);
 			return NULL;
 		}
+
+		flops->retData = mmap(NULL,
+				      flops->dataSize,
+				      PROT_READ,
+				      MAP_PRIVATE|MAP_ANONYMOUS,
+				      -1, 0);
+		if (flops->data == (void*)-1 && flops->dataSize) {
+			cando_file_ops_destroy(flops);
+			return NULL;
+		}
 	}
 
 	return flops;
@@ -162,6 +172,52 @@ cando_file_ops_get_data (struct cando_file_ops *flops,
 	}
 
 	return flops->data + offset;
+}
+
+
+const char *
+cando_file_ops_get_line (struct cando_file_ops *flops,
+			 const unsigned long int lineNum)
+{
+	int ret = -1;
+
+	unsigned long int offset, c, line = 0;
+
+	if (!flops || \
+            !(flops->data) || \
+	    !lineNum)
+	{
+		return NULL;
+	}
+
+	for (offset = 0, c = 0; offset < flops->dataSize; offset++,c++) {
+		if (*((char*) flops->data+offset) == '\n') {
+			line++;
+
+			if (line == lineNum) {
+				break;
+			} else {
+				c = 0;
+			}
+		}
+	}
+
+	ret = mprotect(flops->retData, flops->dataSize, PROT_WRITE);
+	if (ret == -1) {
+		return NULL;
+	}
+
+	c -= (lineNum == 1) ? 0 : 1;
+	memset(flops->retData, 0, c);
+	memcpy(flops->retData, flops->data+(offset-c), c);
+	*((char*)(flops->retData+c)) = '\0';
+
+	ret = mprotect(flops->retData, flops->dataSize, PROT_READ);
+	if (ret == -1) {
+		return NULL;
+	}
+
+	return flops->retData;
 }
 
 
@@ -239,10 +295,10 @@ cando_file_ops_destroy (struct cando_file_ops *flops)
 		return;
 
 	munmap(flops->data, flops->dataSize);
+	munmap(flops->retData, flops->dataSize);
 	close(flops->pipefds[0]);
 	close(flops->pipefds[1]);
 	close(flops->fd);
-	free(flops->retData);
 	free(flops->fname);
 	free(flops);
 }

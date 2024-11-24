@@ -102,6 +102,39 @@ test_file_ops_get_data (void CANDO_UNUSED **state)
 
 
 static void CANDO_UNUSED
+test_file_ops_get_line (void CANDO_UNUSED **state)
+{
+	const void *data = NULL;
+
+	struct cando_file_ops *flops = NULL;
+
+	struct stat fstats;
+	struct cando_file_ops_create_info flopsCreateInfo;
+
+	memset(&fstats, 0, sizeof(fstats));
+	memset(&flopsCreateInfo, 0, sizeof(flopsCreateInfo));
+
+	flopsCreateInfo.fileName = TESTER_FILE_ONE;
+	flops = cando_file_ops_create(&flopsCreateInfo);
+	assert_non_null(flops);
+
+	data = cando_file_ops_get_line(flops, 0);
+	assert_null(data);
+
+	data = cando_file_ops_get_line(flops, 1);
+	assert_string_equal(data, "line one");
+
+	data = cando_file_ops_get_line(flops, 2);
+	assert_string_equal(data, "line two");
+
+	data = cando_file_ops_get_line(flops, 4);
+	assert_string_equal(data, "line four : check me");
+
+	cando_file_ops_destroy(flops);
+}
+
+
+static void CANDO_UNUSED
 test_file_ops_get_line_count (void CANDO_UNUSED **state)
 {
 	unsigned long int lineCount = 0;
@@ -175,6 +208,7 @@ main (void)
 		cmocka_unit_test(test_file_ops_create),
 		cmocka_unit_test(test_file_ops_create_empty_file),
 		cmocka_unit_test(test_file_ops_get_data),
+		cmocka_unit_test(test_file_ops_get_line),
 		cmocka_unit_test(test_file_ops_get_line_count),
 		cmocka_unit_test(test_file_ops_set_data),
 	};
