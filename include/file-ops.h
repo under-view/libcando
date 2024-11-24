@@ -74,6 +74,19 @@ cando_file_ops_get_data (struct cando_file_ops *flops,
 
 
 /*
+ * @brief Returns the amount of lines a file contains
+ *
+ * @param flops  - Pointer to a valid struct cando_file_ops
+ *
+ * @returns
+ * 	on success: Line count
+ * 	on failure: -1
+ */
+long int
+cando_file_ops_get_line_count (struct cando_file_ops *flops);
+
+
+/*
  * @brief Cando File Operations Set Data Info
  *
  * @member offset   - Byte offset within the file
