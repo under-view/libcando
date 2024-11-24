@@ -28,13 +28,13 @@
  */
 struct cando_file_ops
 {
-	int    fd;
-	char   *fname;
-	int    pipefds[2];
-	void   *data;
-	size_t dataSize;
-	void   *retData;
-	size_t retDataSize;
+	int      fd;
+	char     *fname;
+	int      pipefds[2];
+	void     *data;
+	long int dataSize;
+	void     *retData;
+	long int retDataSize;
 };
 
 
@@ -162,6 +162,25 @@ cando_file_ops_get_data (struct cando_file_ops *flops,
 	}
 
 	return flops->data + offset;
+}
+
+
+long int
+cando_file_ops_get_line_count (struct cando_file_ops *flops)
+{
+	long int offset, line = 0;
+
+	if (!flops || \
+            !(flops->data))
+	{
+		return -1;
+	}
+
+	for (offset = 0; offset < flops->dataSize; offset++)
+		if (*((char*)flops->data + offset) == '\n')
+			line++;
+
+	return line;
 }
 
 /***************************************
