@@ -11,7 +11,7 @@ struct cando_file_ops;
  * @brief Cando File Operations Create Info Structure
  *
  * @member fileName   - Full path to file caller wants to open(2)|creat(2).
- * @member dataSize   - Size in bytes caller wants newly created file to be.
+ * @member dataSize   - Size in bytes caller newly created file will be.
  *                      If the file already exist or @createPipe is true
  *                      this member is ignored.
  * @member offset     - Offset within the file to mmap(2).
@@ -19,9 +19,10 @@ struct cando_file_ops;
  *                      this member is ignored.
  * @member createPipe - Boolean to enable/disable creation of a pipe(2).
  */
-struct cando_file_ops_create_info {
+struct cando_file_ops_create_info
+{
 	char              *fileName;
-	long unsigned int dataSize;
+	unsigned long int dataSize;
 	off_t             offset;
 	unsigned char     createPipe : 1;
 };
@@ -46,7 +47,7 @@ cando_file_ops_create (const void *fileInfo);
  * @brief Adjust file to a size of precisely length bytes
  *
  * @param flops    - Pointer to a valid struct cando_file_ops
- * @param dataSize - Size in bytes caller wants newly created file to be.
+ * @param dataSize - Size in bytes newly created file will be
  *
  * @returns
  * 	on success: 0
@@ -70,6 +71,38 @@ cando_file_ops_truncate_file (struct cando_file_ops *flops,
 const void *
 cando_file_ops_get_data (struct cando_file_ops *flops,
                          const unsigned long int offset);
+
+
+/*
+ * @brief Cando File Operations Set Data Info
+ *
+ * @member offset   - Byte offset within the file
+ * @member dataSize - Size in bytes to copy into file at @offset
+ * @member data     - Data to copy at the given offset.
+ */
+struct cando_file_ops_set_data_info
+{
+	unsigned long int offset;
+	size_t dataSize;
+	const void *data;
+};
+
+
+/*
+ * @brief Sets data in a file at a given offset up to a given size.
+ *
+ * @param flops    - Pointer to a valid struct cando_file_ops
+ * @param fileInfo - Pointer to a struct cando_file_ops_set_data_info.
+ *                   The use of pointer to a void is to limit amount
+ *                   of columns required to define a function.
+ *                 
+ * @returns
+ * 	on success: Pointer to file data at a given index
+ * 	on failure: NULL
+ */
+int
+cando_file_ops_set_data (struct cando_file_ops *flops,
+                         const void *fileInfo);
 
 
 /*

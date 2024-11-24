@@ -105,6 +105,47 @@ test_file_ops_get_data (void CANDO_UNUSED **state)
  **************************************/
 
 
+/****************************************
+ * Start of test_file_ops_set functions *
+ ****************************************/
+
+static void CANDO_UNUSED
+test_file_ops_set_data (void CANDO_UNUSED **state)
+{
+	int ret = -1;
+
+	const void *data = NULL;
+
+	struct cando_file_ops *flops = NULL;
+
+	struct cando_file_ops_create_info flopsCreateInfo;
+	struct cando_file_ops_set_data_info setDataInfo;
+
+	memset(&setDataInfo, 0, sizeof(setDataInfo));
+	memset(&flopsCreateInfo, 0, sizeof(flopsCreateInfo));
+
+	flopsCreateInfo.fileName = "/tmp/testing-one.txt";
+	flopsCreateInfo.dataSize = 1 << 9;
+	flops = cando_file_ops_create(&flopsCreateInfo);
+	assert_non_null(flops);
+
+	setDataInfo.offset = 0;
+	setDataInfo.data = "Adding data on line one.\n";
+	setDataInfo.dataSize = strnlen(setDataInfo.data, flopsCreateInfo.dataSize);
+	ret = cando_file_ops_set_data(flops, &setDataInfo);
+	assert_int_equal(ret, 0);
+
+	data = cando_file_ops_get_data(flops, 0);
+	assert_string_equal(data, setDataInfo.data);
+
+	cando_file_ops_destroy(flops);
+}
+
+/**************************************
+ * End of test_file_ops_set functions *
+ **************************************/
+
+
 int
 main (void)
 {
@@ -112,6 +153,7 @@ main (void)
 		cmocka_unit_test(test_file_ops_create),
 		cmocka_unit_test(test_file_ops_create_empty_file),
 		cmocka_unit_test(test_file_ops_get_data),
+		cmocka_unit_test(test_file_ops_set_data),
 	};
 
 	return cmocka_run_group_tests(tests, NULL, NULL);

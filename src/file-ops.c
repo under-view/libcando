@@ -26,7 +26,8 @@
  * @member retData     - Pointer to data returned to caller.
  * @member retDataSize - Size of data returned to caller.
  */
-struct cando_file_ops {
+struct cando_file_ops
+{
 	int    fd;
 	char   *fname;
 	int    pipefds[2];
@@ -135,7 +136,6 @@ cando_file_ops_truncate_file (struct cando_file_ops *flops,
 
 	ret = ftruncate64(flops->fd, dataSize);
 	if (ret == -1) {
-		cando_log_err("truncate: %s\n", strerror(errno));
 		return -errno;
 	}
 
@@ -166,6 +166,46 @@ cando_file_ops_get_data (struct cando_file_ops *flops,
 
 /***************************************
  * End of cando_file_ops_get functions *
+ ***************************************/
+
+
+/*****************************************
+ * Start of cando_file_ops_set functions *
+ *****************************************/
+
+int
+cando_file_ops_set_data (struct cando_file_ops *flops,
+                         const void *_fileInfo)
+{
+	int ret = -1;
+
+	const struct cando_file_ops_set_data_info *fileInfo = _fileInfo;
+
+	if (!flops || \
+            !(flops->data) || \
+	    !fileInfo || \
+	    !(fileInfo->data))
+	{
+		return -1;
+	}
+
+	ret = mprotect(flops->data, fileInfo->dataSize, PROT_WRITE);
+	if (ret == -1) {
+		return -1;
+	}
+
+	memcpy(flops->data + fileInfo->offset, fileInfo->data, fileInfo->dataSize);
+
+	ret = mprotect(flops->data, fileInfo->dataSize, PROT_READ);
+	if (ret == -1) {
+		return -1;
+	}
+
+	return 0;
+}
+
+/***************************************
+ * End of cando_file_ops_set functions *
  ***************************************/
 
 
