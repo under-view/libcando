@@ -28,13 +28,13 @@
  */
 struct cando_file_ops
 {
-	int      fd;
-	char     *fname;
-	int      pipefds[2];
-	void     *data;
-	long int dataSize;
-	void     *retData;
-	long int retDataSize;
+	int               fd;
+	char              *fname;
+	int               pipefds[2];
+	void              *data;
+	unsigned long int dataSize;
+	void              *retData;
+	unsigned long int retDataSize;
 };
 
 
@@ -104,7 +104,7 @@ cando_file_ops_create (const void *_fileCreateInfo)
 		flops->data = mmap(NULL,
 				   flops->dataSize,
 				   PROT_READ,
-				   MAP_SHARED,
+				   MAP_PRIVATE,
 				   flops->fd,
 				   fileCreateInfo->offset);
 		if (flops->data == (void*)-1 && flops->dataSize) {
@@ -176,7 +176,7 @@ cando_file_ops_get_line_count (struct cando_file_ops *flops)
 		return -1;
 	}
 
-	for (offset = 0; offset < flops->dataSize; offset++)
+	for (offset = 0; offset < (long int) flops->dataSize; offset++)
 		if (*((char*)flops->data + offset) == '\n')
 			line++;
 
