@@ -313,7 +313,7 @@ cando_file_ops_get_fd (struct cando_file_ops *flops)
 
 
 size_t
-cando_file_ops_get_file_size (struct cando_file_ops *flops)
+cando_file_ops_get_data_size (struct cando_file_ops *flops)
 {
 	if (!flops)
 		return -1;
