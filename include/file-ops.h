@@ -59,6 +59,45 @@ cando_file_ops_truncate_file (struct cando_file_ops *flops,
 
 
 /*
+ * @brief Cando File Operations Zero Copy Info
+ *
+ * @dataSize  - Total size of the data to copy
+ * @infd      - Input file descriptor to copy data from
+ * @inOffset  - Byte offset in the @infd open file to copy from
+ *              NOTE: splice(2) may updates the variable
+ * @outfd     - Output file descriptor to copy data to
+ * @outOffset - Byte offset in the @outfd open file to copy X amount
+ *              of data from the given offset.
+ *              NOTE: splice(2) may updates the variable
+ */
+struct cando_file_ops_zero_copy_info
+{
+	size_t dataSize;
+	int    infd;
+	off_t  *inOffset;
+	int    outfd;
+	off_t  *outOffset;
+};
+
+
+/*
+ * @brief Sets data in a file at a given offset up to a given size.
+ *
+ * @param flops    - Pointer to a valid struct cando_file_ops
+ * @param fileInfo - Pointer to a struct cando_file_ops_zero_copy_info.
+ *                   The use of pointer to a void is to limit amount
+ *                   of columns required to define a function.
+ *
+ * @returns
+ * 	on success: 0
+ * 	on failure: -1
+ */
+int
+cando_file_ops_zero_copy (struct cando_file_ops *flops,
+                          const void *fileInfo);
+
+
+/*
  * @brief Returns file data stored at a given offset
  *
  * @param flops  - Pointer to a valid struct cando_file_ops
@@ -100,6 +139,19 @@ cando_file_ops_get_line (struct cando_file_ops *flops,
  */
 int
 cando_file_ops_get_fd (struct cando_file_ops *flops);
+
+
+/*
+ * @brief Returns size of the open file
+ *
+ * @param flops - Pointer to a valid struct cando_file_ops
+ *
+ * @returns
+ * 	on success: Size of the open file
+ * 	on failure: -1
+ */
+size_t
+cando_file_ops_get_file_size (struct cando_file_ops *flops);
 
 
 /*
@@ -153,8 +205,8 @@ struct cando_file_ops_set_data_info
  *                   of columns required to define a function.
  *                 
  * @returns
- * 	on success: Pointer to file data at a given index
- * 	on failure: NULL
+ * 	on success: 0
+ * 	on failure: -1
  */
 int
 cando_file_ops_set_data (struct cando_file_ops *flops,
@@ -169,6 +221,5 @@ cando_file_ops_set_data (struct cando_file_ops *flops,
  */
 void
 cando_file_ops_destroy (struct cando_file_ops *flops);
-
 
 #endif /* CANDO_FILE_OPS_H */

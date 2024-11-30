@@ -13,13 +13,15 @@
 #include "file-ops.h"
 
 #define FILE_NAME_LEN_MAX (1<<12)
-
+#define PIPE_MAX_BUFF_SIZE (1<<16)
 
 /*
  * @brief struct defining cando_file_ops instance
  *
  * @member fd       - File descriptor to open file.
  * @member pipefds  - File descriptors associated with an open pipe.
+ *                    pipefds[0] - Read end of the pipe
+ *                    pipefds[1] - Write end of the pipe
  * @member fname    - String representing the file name.
  * @member dataSize - Total size of the file.
  * @member data     - Pointer to mmap(2) file data.
@@ -162,6 +164,59 @@ cando_file_ops_truncate_file (struct cando_file_ops *flops,
  *************************************************/
 
 
+/***********************************************
+ * Start of cando_file_ops_zero_copy functions *
+ ***********************************************/
+
+int
+cando_file_ops_zero_copy (struct cando_file_ops *flops,
+                          const void *fileInfo)
+{
+	int ret;
+
+	size_t totalBytes = 0;
+
+	const struct cando_file_ops_zero_copy_info *zeroCopyInfo = fileInfo;
+
+	if (!flops || \
+	    !zeroCopyInfo ||
+	    zeroCopyInfo->dataSize == 0)
+	{
+		return -1;
+	}
+
+	do {
+		ret = splice(zeroCopyInfo->infd,
+		             zeroCopyInfo->inOffset,
+			     flops->pipefds[1], 0,
+			     PIPE_MAX_BUFF_SIZE,
+			     SPLICE_F_MOVE|SPLICE_F_MORE);
+		if (ret == 0) {
+			return 0;
+		} else if (ret == -1) {
+			return -1;
+		}
+
+		ret = splice(flops->pipefds[0], 0,
+		             zeroCopyInfo->outfd,
+			     zeroCopyInfo->outOffset,
+			     PIPE_MAX_BUFF_SIZE,
+			     SPLICE_F_MOVE|SPLICE_F_MORE);
+		if (ret == -1) {
+			return -1;
+		}
+
+		totalBytes += ret;
+	} while (totalBytes < zeroCopyInfo->dataSize && ret != 0);
+
+	return 0;
+}
+
+/*********************************************
+ * End of cando_file_ops_zero_copy functions *
+ *********************************************/
+
+
 /*****************************************
  * Start of cando_file_ops_get functions *
  *****************************************/
@@ -254,6 +309,16 @@ cando_file_ops_get_fd (struct cando_file_ops *flops)
 		return -1;
 
 	return flops->fd;
+}
+
+
+size_t
+cando_file_ops_get_file_size (struct cando_file_ops *flops)
+{
+	if (!flops)
+		return -1;
+
+	return flops->dataSize;
 }
 
 
