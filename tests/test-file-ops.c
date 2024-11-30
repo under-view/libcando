@@ -73,6 +73,68 @@ test_file_ops_create_empty_file (void CANDO_UNUSED **state)
  *****************************************/
 
 
+/**********************************************
+ * Start of test_file_ops_zero_copy functions *
+ **********************************************/
+
+static void CANDO_UNUSED
+test_file_ops_zero_copy (void CANDO_UNUSED **state)
+{
+	int ret = -1;
+
+	const char *data = NULL;
+
+	struct cando_file_ops *flops = NULL, *flopsTwo = NULL;
+
+	struct cando_file_ops_create_info flopsCreateInfo;
+	struct cando_file_ops_zero_copy_info zeroCopyInfo;
+
+	memset(&zeroCopyInfo, 0, sizeof(zeroCopyInfo));
+	memset(&flopsCreateInfo, 0, sizeof(flopsCreateInfo));
+
+	flopsCreateInfo.createPipe = 0x01;
+	flopsCreateInfo.fileName = TESTER_FILE_ONE;
+	flops = cando_file_ops_create(&flopsCreateInfo);
+	assert_non_null(flops);
+
+	flopsCreateInfo.createPipe = 0x00;
+	flopsCreateInfo.fileName = "/tmp/test-file.txt";
+	flopsCreateInfo.dataSize = cando_file_ops_get_file_size(flops);
+	flopsTwo = cando_file_ops_create(&flopsCreateInfo);
+	assert_non_null(flopsTwo);
+
+	zeroCopyInfo.dataSize = flopsCreateInfo.dataSize;
+	zeroCopyInfo.infd = cando_file_ops_get_fd(flops);
+	zeroCopyInfo.inOffset = &(off_t){0};
+	zeroCopyInfo.outfd = cando_file_ops_get_fd(flopsTwo);
+	zeroCopyInfo.outOffset = &(off_t){0};
+	ret = cando_file_ops_zero_copy(flops, &zeroCopyInfo);
+	assert_int_equal(ret, 0);
+
+	cando_file_ops_destroy(flops); flops = NULL;
+	cando_file_ops_destroy(flopsTwo); flopsTwo = NULL;
+
+	/* Re-open newly created file */
+	flopsCreateInfo.fileName = "/tmp/test-file.txt";
+	flopsCreateInfo.dataSize = 0;
+	flopsTwo = cando_file_ops_create(&flopsCreateInfo);
+	assert_non_null(flopsTwo);
+
+	data = cando_file_ops_get_line(flopsTwo, 1);
+	assert_string_equal(data, "line one");
+
+	data = cando_file_ops_get_line(flopsTwo, 4);
+	assert_string_equal(data, "line four : check me");
+
+	cando_file_ops_destroy(flopsTwo);
+	remove("/tmp/test-file.txt");
+}
+
+/********************************************
+ * End of test_file_ops_zero_copy functions *
+ ********************************************/
+
+
 /****************************************
  * Start of test_file_ops_get functions *
  ****************************************/
@@ -257,6 +319,7 @@ main (void)
 	const struct CMUnitTest tests[] = {
 		cmocka_unit_test(test_file_ops_create),
 		cmocka_unit_test(test_file_ops_create_empty_file),
+		cmocka_unit_test(test_file_ops_zero_copy),
 		cmocka_unit_test(test_file_ops_get_data),
 		cmocka_unit_test(test_file_ops_get_line),
 		cmocka_unit_test(test_file_ops_get_line_count),
