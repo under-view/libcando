@@ -99,7 +99,7 @@ test_file_ops_zero_copy (void CANDO_UNUSED **state)
 
 	flopsCreateInfo.createPipe = 0x00;
 	flopsCreateInfo.fileName = "/tmp/test-file.txt";
-	flopsCreateInfo.dataSize = cando_file_ops_get_file_size(flops);
+	flopsCreateInfo.dataSize = cando_file_ops_get_data_size(flops);
 	flopsTwo = cando_file_ops_create(&flopsCreateInfo);
 	assert_non_null(flopsTwo);
 
@@ -267,6 +267,31 @@ test_file_ops_get_filename (void CANDO_UNUSED **state)
 	cando_file_ops_destroy(flops);
 }
 
+
+static void CANDO_UNUSED
+test_file_ops_get_data_size (void CANDO_UNUSED **state)
+{
+	size_t dataSize = 0;
+
+	struct cando_file_ops *flops = NULL;
+
+	struct cando_file_ops_create_info flopsCreateInfo;
+
+	memset(&flopsCreateInfo, 0, sizeof(flopsCreateInfo));
+
+	flopsCreateInfo.fileName = TESTER_FILE_ONE;
+	flops = cando_file_ops_create(&flopsCreateInfo);
+	assert_non_null(flops);
+
+	dataSize = cando_file_ops_get_data_size(flops);
+	assert_int_not_equal(dataSize, -1);
+
+	dataSize = cando_file_ops_get_data_size(NULL);
+	assert_int_equal(dataSize, -1);
+
+	cando_file_ops_destroy(flops);
+}
+
 /**************************************
  * End of test_file_ops_get functions *
  **************************************/
@@ -324,6 +349,7 @@ main (void)
 		cmocka_unit_test(test_file_ops_get_line),
 		cmocka_unit_test(test_file_ops_get_line_count),
 		cmocka_unit_test(test_file_ops_get_fd),
+		cmocka_unit_test(test_file_ops_get_data_size),
 		cmocka_unit_test(test_file_ops_get_filename),
 		cmocka_unit_test(test_file_ops_set_data),
 	};
