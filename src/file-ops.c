@@ -65,8 +65,6 @@ cando_file_ops_create (const void *_fileCreateInfo)
 		return NULL;
 	}
 
-	memset(flops, 0, sizeof(struct cando_file_ops));
-
 	if (fileCreateInfo->fileName) {
 		/* Check if file exist */
 		ret = stat(fileCreateInfo->fileName, &fstats);
@@ -179,7 +177,7 @@ cando_file_ops_get_data (struct cando_file_ops *flops,
 		return NULL;
 	}
 
-	return flops->data + offset;
+	return ((char*)flops->data) + offset;
 }
 
 
@@ -218,7 +216,7 @@ cando_file_ops_get_line (struct cando_file_ops *flops,
 
 	c -= (lineNum == 1) ? 0 : 1;
 	memset(flops->retData, 0, c);
-	memcpy(flops->retData, flops->data+(offset-c), c);
+	memcpy(flops->retData, ((char*)flops->data)+(offset-c), c);
 	*((char*)(flops->retData+c)) = '\0';
 
 	ret = mprotect(flops->retData, flops->dataSize, PROT_READ);
@@ -278,7 +276,7 @@ cando_file_ops_set_data (struct cando_file_ops *flops,
 		return -1;
 	}
 
-	memcpy(flops->data + fileInfo->offset, fileInfo->data, fileInfo->dataSize);
+	memcpy(((char*)flops->data)+fileInfo->offset, fileInfo->data, fileInfo->dataSize);
 
 	ret = mprotect(flops->data, fileInfo->dataSize, PROT_READ);
 	if (ret == -1) {
