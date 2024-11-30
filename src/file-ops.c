@@ -246,6 +246,26 @@ cando_file_ops_get_line_count (struct cando_file_ops *flops)
 	return line;
 }
 
+
+int
+cando_file_ops_get_fd (struct cando_file_ops *flops)
+{
+	if (!flops)
+		return -1;
+
+	return flops->fd;
+}
+
+
+const char *
+cando_file_ops_get_filename (struct cando_file_ops *flops)
+{
+	if (!flops)
+		return NULL;
+
+	return flops->fname;
+}
+
 /***************************************
  * End of cando_file_ops_get functions *
  ***************************************/
