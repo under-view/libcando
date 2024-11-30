@@ -90,6 +90,33 @@ cando_file_ops_get_line (struct cando_file_ops *flops,
 
 
 /*
+ * @brief Returns file descriptor to open file
+ *
+ * @param flops - Pointer to a valid struct cando_file_ops
+ *
+ * @returns
+ * 	on success: File descriptor to open file
+ * 	on failure: NULL
+ */
+int
+cando_file_ops_get_fd (struct cando_file_ops *flops);
+
+
+/*
+ * @brief Return file name of open file associated with
+ *        the struct cando_file_ops context.
+ *
+ * @param flops - Pointer to a valid struct cando_file_ops
+ *
+ * @returns
+ * 	on success: File name of open file
+ * 	on failure: NULL
+ */
+const char *
+cando_file_ops_get_filename (struct cando_file_ops *flops);
+
+
+/*
  * @brief Returns the amount of lines a file contains
  *
  * @param flops  - Pointer to a valid struct cando_file_ops
