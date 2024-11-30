@@ -12,29 +12,28 @@
 #include "log.h"
 #include "file-ops.h"
 
-#define FILE_NAME_LEN_MAX (1<<20)
+#define FILE_NAME_LEN_MAX (1<<12)
 
 
 /*
  * @brief struct defining cando_file_ops instance
  *
- * @member fd          - File descriptor to open file.
- * @member fname       - String representing the file name.
- * @member pipefds     - File descriptors associated with an open pipe.
- * @member data        - Pointer to mmap(2) file data.
- * @member dataSize    - Total size of the file.
- * @member retData     - Pointer to data returned to caller.
- * @member retDataSize - Size of data returned to caller.
+ * @member fd       - File descriptor to open file.
+ * @member pipefds  - File descriptors associated with an open pipe.
+ * @member fname    - String representing the file name.
+ * @member dataSize - Total size of the file.
+ * @member data     - Pointer to mmap(2) file data.
+ * @member retData  - Buffer of data that may be manipulated and
+ *                    returned to caller.
  */
 struct cando_file_ops
 {
 	int    fd;
-	char   *fname;
 	int    pipefds[2];
-	void   *data;
+	char   fname[FILE_NAME_LEN_MAX];
 	size_t dataSize;
+	void   *data;
 	void   *retData;
-	size_t retDataSize;
 };
 
 
@@ -57,23 +56,25 @@ cando_file_ops_create (const void *_fileCreateInfo)
 		return NULL;
 	}
 
-	flops = calloc(1, sizeof(struct cando_file_ops));
-	if (!flops) {
+	flops = mmap(NULL,
+		     sizeof(struct cando_file_ops),
+		     PROT_READ|PROT_WRITE,
+		     MAP_PRIVATE|MAP_ANONYMOUS,
+		     -1, 0);
+	if (flops == (void*)-1) {
 		return NULL;
 	}
+
+	memset(flops, 0, sizeof(struct cando_file_ops));
 
 	if (fileCreateInfo->fileName) {
 		/* Check if file exist */
 		ret = stat(fileCreateInfo->fileName, &fstats);
 
-		flops->fname = strndup(fileCreateInfo->fileName, FILE_NAME_LEN_MAX);
-		if (!(flops->fname)) {
-			cando_file_ops_destroy(flops);
-			return NULL;
-		}
+		memccpy(flops->fname, fileCreateInfo->fileName, '\n', FILE_NAME_LEN_MAX);
 
 		flops->fd = open(flops->fname, O_CREAT|O_RDWR, 0644);
-		if ((flops->fd) == -1) {
+		if (flops->fd == -1) {
 			cando_file_ops_destroy(flops);
 			return NULL;
 		}
@@ -117,10 +118,16 @@ cando_file_ops_create (const void *_fileCreateInfo)
 				      PROT_READ,
 				      MAP_PRIVATE|MAP_ANONYMOUS,
 				      -1, 0);
-		if (flops->data == (void*)-1 && flops->dataSize) {
+		if (flops->retData == (void*)-1 && flops->dataSize) {
 			cando_file_ops_destroy(flops);
 			return NULL;
 		}
+	}
+
+	ret = mprotect(flops, sizeof(struct cando_file_ops), PROT_READ);
+	if (ret == -1) {
+		cando_file_ops_destroy(flops);
+		return NULL;
 	}
 
 	return flops;
@@ -166,7 +173,8 @@ cando_file_ops_get_data (struct cando_file_ops *flops,
                          const unsigned long int offset)
 {
 	if (!flops || \
-            !(flops->data))
+	    !(flops->data) ||
+	    offset >= flops->dataSize)
 	{
 		return NULL;
 	}
@@ -185,6 +193,7 @@ cando_file_ops_get_line (struct cando_file_ops *flops,
 
 	if (!flops || \
             !(flops->data) || \
+            !(flops->retData) || \
 	    !lineNum)
 	{
 		return NULL;
@@ -299,8 +308,7 @@ cando_file_ops_destroy (struct cando_file_ops *flops)
 	close(flops->pipefds[0]);
 	close(flops->pipefds[1]);
 	close(flops->fd);
-	free(flops->fname);
-	free(flops);
+	munmap(flops, sizeof(struct cando_file_ops));
 }
 
 /*******************************************
