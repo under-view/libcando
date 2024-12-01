@@ -18,7 +18,8 @@
  * @macro CANDO_LOG_RESET   - Term color
  * @macro CANDO_LOG_ALL     - All above colors
  */
-enum cando_log_level_type {
+enum cando_log_level_type
+{
 	CANDO_LOG_NONE    = 0x00000000,
 	CANDO_LOG_SUCCESS = 0x00000001,
 	CANDO_LOG_DANGER  = 0x00000002,
@@ -26,6 +27,21 @@ enum cando_log_level_type {
 	CANDO_LOG_WARNING = 0x00000008,
 	CANDO_LOG_RESET   = 0x00000010,
 	CANDO_LOG_ALL     = 0xFFFFFFFF
+};
+
+
+/*
+ * @brief Structured used to store and acquire
+ *        error string and code for multiple
+ *        struct context's.
+ *
+ * @member code   - Error code or errno
+ * @member buffer - Buffer to store error string
+ */
+struct cando_log_error_struct
+{
+	unsigned int code;
+	char         buffer[CANDO_PAGE_SIZE];
 };
 
 
@@ -55,17 +71,37 @@ cando_log_write_fd_set (int fd);
 
 
 /*
+ * @brief Sets internal struct cando_log_error_struct global
+ *        variable values. Functions should only be utilized
+ *        in underview API's *_create() functions.
+ *
+ *        NOTE: Do not utilize an anything other than *_create() functions.
+ *        Instead opt to set the string yourself then make a call to
+ *        cando_log_get_error(3) or cando_log_get_error_code(3)
+ *
+ * @param code   - Error code or errno
+ * @param buffer - String to return to caller
+ */
+CANDO_API
+void
+cando_log_set_global_error (int code,
+                            const char *buffer);
+
+
+/*
  * @brief Returns a string with the error defined given
  *        a context with first members of the context
- *        being
- *        	* int code;
- *        	* char error[4096];
+ *        being:
+ *        	* unsigned int code;
+ *        	* char error[CANDO_PAGE_SIZE];
  *
- * @param context - Pointer to an arbitrary context
+ * @param context - Pointer to an arbitrary context.
+ *                  If NULL passed the internal global will be utilized.
  *
  * @returns
- * 	on success: Error string
- * 	on failure: NULL
+ * 	on success: Passed context error string
+ * 	on failure: Internal global error code or errno
+ * 	            NOTE: Not actually a failure.
  */
 CANDO_API
 const char *
@@ -73,13 +109,19 @@ cando_log_get_error (void *context);
 
 
 /*
- * @brief Returns error code of a given context
+ * @brief Returns unsigned integer with the error code
+ *        define given context with first members of the
+ *        context being:
+ *        	* unsigned int code;
+ *        	* char error[CANDO_PAGE_SIZE];
  *
- * @param context - Pointer to an arbitrary context
+ * @param context - Pointer to an arbitrary context.
+ *                  If NULL passed the internal global will be utilized.
  *
  * @returns
- * 	on success: error code or errno
- * 	on failure: 0
+ * 	on success: Passed context error code or errno
+ * 	on failure: Internal global error code or errno.
+ * 	            NOTE: Not actually a failure.
  */
 CANDO_API
 unsigned int

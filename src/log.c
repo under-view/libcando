@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 #include <libgen.h>
 #include <stdint.h>
@@ -15,7 +16,8 @@
 #include "log.h"
 
 /* ANSI Escape Codes, terminal colors */
-static const char *tcolors[] = {
+static const char *tcolors[] =
+{
 	[CANDO_LOG_NONE]    = "",
 	[CANDO_LOG_SUCCESS] = "\e[32;1m",
 	[CANDO_LOG_DANGER]  = "\e[31;1m",
@@ -26,7 +28,7 @@ static const char *tcolors[] = {
 
 
 static int writefd = STDOUT_FILENO;
-
+static struct cando_log_error_struct globalError;
 static enum cando_log_level_type logLevel = CANDO_LOG_ALL;
 
 
@@ -41,6 +43,29 @@ void
 cando_log_write_fd_set (int fd)
 {
 	writefd = fd;
+}
+
+
+void
+cando_log_set_global_error (int code,
+                            const char *buffer)
+{
+	globalError.code = code;
+	strncpy(globalError.buffer, buffer, CANDO_PAGE_SIZE-1);
+}
+
+
+const char *
+cando_log_get_error (void *context)
+{
+	return (context) ? ((struct cando_log_error_struct*)context)->buffer : globalError.buffer;
+}
+
+
+unsigned int
+cando_log_get_error_code (void *context)
+{
+	return (context) ? ((struct cando_log_error_struct*)context)->code : globalError.code;
 }
 
 
