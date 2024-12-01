@@ -3,9 +3,9 @@
 
 /* Prevent c++ name mangling */
 #ifdef __cplusplus
-#define CANDO_EXTERNC extern "C"
+#define CANDO_API extern "C"
 #else
-#define CANDO_EXTERNC
+#define CANDO_API
 #endif
 
 

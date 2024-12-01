@@ -1,6 +1,8 @@
 #ifndef CANDO_FILE_OPS_H
 #define CANDO_FILE_OPS_H
 
+#include "macros.h"
+
 /*
  * Stores information about the cando_file_ops instance.
  */
@@ -37,6 +39,7 @@ struct cando_file_ops_create_info
  * 	on success: Pointer to a struct cando_file_ops
  * 	on failure: NULL
  */
+CANDO_API
 struct cando_file_ops *
 cando_file_ops_create (const void *fileInfo);
 
@@ -51,6 +54,7 @@ cando_file_ops_create (const void *fileInfo);
  * 	on success: 0
  * 	on failure: # < 0
  */
+CANDO_API
 int
 cando_file_ops_truncate_file (struct cando_file_ops *flops,
                               const long unsigned int dataSize);
@@ -91,6 +95,7 @@ struct cando_file_ops_zero_copy_info
  * 	on success: 0
  * 	on failure: -1
  */
+CANDO_API
 int
 cando_file_ops_zero_copy (struct cando_file_ops *flops,
                           const void *fileInfo);
@@ -106,6 +111,7 @@ cando_file_ops_zero_copy (struct cando_file_ops *flops,
  * 	on success: Pointer to file data at a given index
  * 	on failure: NULL
  */
+CANDO_API
 const void *
 cando_file_ops_get_data (struct cando_file_ops *flops,
                          const unsigned long int offset);
@@ -122,6 +128,7 @@ cando_file_ops_get_data (struct cando_file_ops *flops,
  * 	on success: Pointer to file data at a given line
  * 	on failure: NULL
  */
+CANDO_API
 const char *
 cando_file_ops_get_line (struct cando_file_ops *flops,
 			 const unsigned long int lineNum);
@@ -136,6 +143,7 @@ cando_file_ops_get_line (struct cando_file_ops *flops,
  * 	on success: Line count
  * 	on failure: -1
  */
+CANDO_API
 long int
 cando_file_ops_get_line_count (struct cando_file_ops *flops);
 
@@ -149,6 +157,7 @@ cando_file_ops_get_line_count (struct cando_file_ops *flops);
  * 	on success: File descriptor to open file
  * 	on failure: -1
  */
+CANDO_API
 int
 cando_file_ops_get_fd (struct cando_file_ops *flops);
 
@@ -163,6 +172,7 @@ cando_file_ops_get_fd (struct cando_file_ops *flops);
  * 	on success: Size of the mmap(2) buffer
  * 	on failure: -1
  */
+CANDO_API
 size_t
 cando_file_ops_get_data_size (struct cando_file_ops *flops);
 
@@ -177,6 +187,7 @@ cando_file_ops_get_data_size (struct cando_file_ops *flops);
  * 	on success: File name of open file
  * 	on failure: NULL
  */
+CANDO_API
 const char *
 cando_file_ops_get_filename (struct cando_file_ops *flops);
 
@@ -208,6 +219,7 @@ struct cando_file_ops_set_data_info
  * 	on success: 0
  * 	on failure: -1
  */
+CANDO_API
 int
 cando_file_ops_set_data (struct cando_file_ops *flops,
                          const void *fileInfo);
@@ -219,6 +231,7 @@ cando_file_ops_set_data (struct cando_file_ops *flops,
  *
  * @param flops - Pointer to a valid struct cando_file_ops
  */
+CANDO_API
 void
 cando_file_ops_destroy (struct cando_file_ops *flops);
 

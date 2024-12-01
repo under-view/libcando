@@ -1,8 +1,6 @@
 #ifndef CANDO_LOG_H
 #define CANDO_LOG_H
 
-#include <libgen.h>
-
 #include "macros.h"
 
 
@@ -40,7 +38,8 @@ enum cando_log_level_type {
  * @level - 32-bit integer representing the type of log to print to
  *          an open file stream. Each log type has a different color.
  */
-CANDO_EXTERNC void
+CANDO_API
+void
 cando_log_level_set (enum cando_log_level_type level);
 
 
@@ -53,7 +52,8 @@ cando_log_level_set (enum cando_log_level_type level);
  * parameters:
  * @fd - File descriptor to an open file
  */
-CANDO_EXTERNC void
+CANDO_API
+void
 cando_log_write_fd_set (int fd);
 
 
@@ -67,7 +67,8 @@ cando_log_write_fd_set (int fd);
  * @fmt  - Format of the log passed to va_args
  * @...  - Variable list arguments
  */
-CANDO_EXTERNC void
+CANDO_API
+void
 cando_log_time (enum cando_log_level_type type,
 		const char *fmt,
 		...);
@@ -83,7 +84,8 @@ cando_log_time (enum cando_log_level_type type,
  * @fmt  - Format of the log passed to va_args
  * @...  - Variable list arguments
  */
-CANDO_EXTERNC void
+CANDO_API
+void
 cando_log_notime (enum cando_log_level_type type,
 		  const char *fmt,
 		  ...);
@@ -94,10 +96,10 @@ cando_log_notime (enum cando_log_level_type type,
  * timestamp - [file:function:line] message
  */
 #define cando_log(logType, fmt, ...) \
-	cando_log_time(logType, "[%s:%s:%d] " fmt, basename(__FILE__), __func__, __LINE__, ##__VA_ARGS__)
+	cando_log_time(logType, "[%s:%s:%d] " fmt, __FILE_NAME__, __func__, __LINE__, ##__VA_ARGS__)
 
 #define cando_log_err(fmt, ...) \
-	cando_log_time(CANDO_LOG_DANGER, "[%s:%s:%d] " fmt, basename(__FILE__), __func__, __LINE__, ##__VA_ARGS__)
+	cando_log_time(CANDO_LOG_DANGER, "[%s:%s:%d] " fmt, __FILE_NAME__, __func__, __LINE__, ##__VA_ARGS__)
 
 #define cando_log_print(logType, fmt, ...) \
 	cando_log_notime(logType, fmt, ##__VA_ARGS__)
