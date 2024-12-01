@@ -5,19 +5,18 @@
 
 
 /*
- * enum cando_log_level_type (Handy Log Level Type)
+ * @brief enum cando_log_level_type (Handy Log Level Type)
  *
- * Sets which messages of a given type to print and is used to
- * help determine which ANSI Escape Codes to utilize.
+ *        Sets which messages of a given type to print and is used to
+ *        help determine which ANSI Escape Codes to utilize.
  *
- * macros:
- * CANDO_LOG_NONE    - Term color
- * CANDO_LOG_SUCCESS - Green
- * CANDO_LOG_DANGER  - Red
- * CANDO_LOG_INFO    - Light purple
- * CANDO_LOG_WARNING - Yellow
- * CANDO_LOG_RESET   - Term color
- * CANDO_LOG_ALL     - All above colors
+ * @macro CANDO_LOG_NONE    - Term color
+ * @macro CANDO_LOG_SUCCESS - Green
+ * @macro CANDO_LOG_DANGER  - Red
+ * @macro CANDO_LOG_INFO    - Light purple
+ * @macro CANDO_LOG_WARNING - Yellow
+ * @macro CANDO_LOG_RESET   - Term color
+ * @macro CANDO_LOG_ALL     - All above colors
  */
 enum cando_log_level_type {
 	CANDO_LOG_NONE    = 0x00000000,
@@ -31,12 +30,11 @@ enum cando_log_level_type {
 
 
 /*
- * cando_log_level_set: Sets which type of messages that are allowed
- *                      to be printed to an open file.
+ * @brief Sets which type of messages that are allowed
+ *        to be printed to an open file.
  *
- * parameters:
- * @level - 32-bit integer representing the type of log to print to
- *          an open file stream. Each log type has a different color.
+ * @param level - 32-bit integer representing the type of log to print to
+ *                an open file stream. Each log type has a different color.
  */
 CANDO_API
 void
@@ -44,13 +42,12 @@ cando_log_level_set (enum cando_log_level_type level);
 
 
 /*
- * cando_log_write_fd_set: Sets the internal global write file descriptor
- *                         to caller define file descriptor.
+ * @brief Sets the internal global write file descriptor
+ *        to caller define file descriptor.
  *
- *                         Default is set to STDOUT_FILENO.
+ *        Default is set to STDOUT_FILENO.
  *
- * parameters:
- * @fd - File descriptor to an open file
+ * @param fd - File descriptor to an open file
  */
 CANDO_API
 void
@@ -58,14 +55,45 @@ cando_log_write_fd_set (int fd);
 
 
 /*
- * cando_log_time: Provides applications/library way to write to an open file
- *                 with a time stamp and ansi color codes to colorize
- *                 different message.
+ * @brief Returns a string with the error defined given
+ *        a context with first members of the context
+ *        being
+ *        	* int code;
+ *        	* char error[4096];
  *
- * paramaters:
- * @type - The type of color to use with log
- * @fmt  - Format of the log passed to va_args
- * @...  - Variable list arguments
+ * @param context - Pointer to an arbitrary context
+ *
+ * @returns
+ * 	on success: Error string
+ * 	on failure: NULL
+ */
+CANDO_API
+const char *
+cando_log_get_error (void *context);
+
+
+/*
+ * @brief Returns error code of a given context
+ *
+ * @param context - Pointer to an arbitrary context
+ *
+ * @returns
+ * 	on success: error code or errno
+ * 	on failure: 0
+ */
+CANDO_API
+unsigned int
+cando_log_get_error_code (void *context);
+
+
+/*
+ * @brief Provides applications/library way to write to an open file
+ *        with a time stamp and ansi color codes to colorize
+ *        different message.
+ *
+ * @param type - The type of color to use with log
+ * @param fmt  - Format of the log passed to va_args
+ * @param ...  - Variable list arguments
  */
 CANDO_API
 void
@@ -75,14 +103,13 @@ cando_log_time (enum cando_log_level_type type,
 
 
 /*
- * cando_log_notime: Provides applications/library way to write to an open file
- *                   without time stamp with ansi color codes to colorize
- *                   different message.
+ * @brief Provides applications/library way to write to an open file
+ *        without time stamp with ansi color codes to colorize
+ *        different message.
  *
- * paramaters:
- * @type - The type of color to use with log
- * @fmt  - Format of the log passed to va_args
- * @...  - Variable list arguments
+ * @param type - The type of color to use with log
+ * @param fmt  - Format of the log passed to va_args
+ * @param ...  - Variable list arguments
  */
 CANDO_API
 void
