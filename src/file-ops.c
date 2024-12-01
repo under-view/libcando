@@ -23,10 +23,10 @@
  *                    pipefds[0] - Read end of the pipe
  *                    pipefds[1] - Write end of the pipe
  * @member fname    - String representing the file name.
- * @member dataSize - Total size of the file.
+ * @member dataSize - Total size of the file that was mapped with mmap(2).
  * @member data     - Pointer to mmap(2) file data.
- * @member retData  - Buffer of data that may be manipulated and
- *                    returned to caller.
+ * @member retData  - Buffer of data that may be manipulated prior to
+ *                    returning to caller.
  */
 struct cando_file_ops
 {

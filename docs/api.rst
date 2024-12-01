@@ -2,7 +2,8 @@
 ====================
 
 .. toctree::
-        :maxdepth: 1
-        :caption: API documentations
+	:maxdepth: 1
+	:caption: API documentations
 
-        log
+	log
+	file-ops
