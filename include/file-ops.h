@@ -147,19 +147,20 @@ cando_file_ops_get_line_count (struct cando_file_ops *flops);
  *
  * @returns
  * 	on success: File descriptor to open file
- * 	on failure: NULL
+ * 	on failure: -1
  */
 int
 cando_file_ops_get_fd (struct cando_file_ops *flops);
 
 
 /*
- * @brief Returns size of the open file
+ * @brief Returns size of the mmap(2)'d buffer associated
+ *        with the open file.
  *
  * @param flops - Pointer to a valid struct cando_file_ops
  *
  * @returns
- * 	on success: Size of the open file
+ * 	on success: Size of the mmap(2) buffer
  * 	on failure: -1
  */
 size_t

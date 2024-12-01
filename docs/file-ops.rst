@@ -215,6 +215,145 @@ cando_file_ops_zero_copy
 
 =========================================================================================================================================
 
+=======================
+cando_file_ops_get_data
+=======================
+
+.. c:function:: const void *cando_file_ops_get_data(struct cando_file_ops *flops, const unsigned long int offset);
+
+	Returns file data stored at a given offset
+
+	.. list-table::
+		:header-rows: 1
+
+		* - Param
+	          - Decription
+		* - flops
+		  - Pointer to a valid `struct` :c:struct:`cando_file_ops`
+		* - offset
+		  - Byte offset within the file
+
+	Returns:
+		| **on success:** Pointer to file data at a given index
+		| **on failure:** NULL
+
+=========================================================================================================================================
+
+=======================
+cando_file_ops_get_line
+=======================
+
+.. c:function:: const char *cando_file_ops_get_line(struct cando_file_ops *flops, const unsigned long int lineNum);
+
+	Returns file data stored at a given line.
+	Returned output excludes newline character.
+
+	.. list-table::
+		:header-rows: 1
+
+		* - Param
+	          - Decription
+		* - flops
+		  - Pointer to a valid `struct` :c:struct:`cando_file_ops`
+		* - lineNum
+		  - Line in file to get data from
+
+	Returns:
+		| **on success:** Pointer to file data at a given index
+		| **on failure:** NULL
+
+=========================================================================================================================================
+
+=============================
+cando_file_ops_get_line_count
+=============================
+
+.. c:function:: long int cando_file_ops_get_line_count(struct cando_file_ops *flops);
+
+	Returns the amount of lines a file contains
+
+	.. list-table::
+		:header-rows: 1
+
+		* - Param
+	          - Decription
+		* - flops
+		  - Pointer to a valid `struct` :c:struct:`cando_file_ops`
+
+	Returns:
+		| **on success:** Line count
+		| **on failure:** -1
+
+=========================================================================================================================================
+
+=====================
+cando_file_ops_get_fd
+=====================
+
+.. c:function:: int cando_file_ops_get_fd(struct cando_file_ops *flops);
+
+	Returns file descriptor to open file
+
+	.. list-table::
+		:header-rows: 1
+
+		* - Param
+	          - Decription
+		* - flops
+		  - Pointer to a valid `struct` :c:struct:`cando_file_ops`
+
+	Returns:
+		| **on success:** File descriptor to open file
+		| **on failure:** -1
+
+=========================================================================================================================================
+
+============================
+cando_file_ops_get_data_size
+============================
+
+.. c:function:: size_t cando_file_ops_get_data_size(struct cando_file_ops *flops);
+
+	Returns size of the `mmap(2)`_'d buffer associated
+	with the open file.
+
+	.. list-table::
+		:header-rows: 1
+
+		* - Param
+	          - Decription
+		* - flops
+		  - Pointer to a valid `struct` :c:struct:`cando_file_ops`
+
+	Returns:
+		| **on success:** Size of the `mmap(2)`_ buffer
+		| **on failure:** -1
+
+=========================================================================================================================================
+
+===========================
+cando_file_ops_get_filename
+===========================
+
+.. c:function:: const char *cando_file_ops_get_filename(struct cando_file_ops *flops);
+
+	Return file name of open file associated with
+	the `struct` :c:struct:`cando_file_ops` context.
+
+	.. list-table::
+		:header-rows: 1
+
+		* - Param
+	          - Decription
+		* - flops
+		  - Pointer to a valid `struct` :c:struct:`cando_file_ops`
+
+	Returns:
+		| **on success:** File name of open file
+		| **on failure:** NULL
+
+=========================================================================================================================================
+
 .. _mmap(2):  https://man7.org/linux/man-pages/man2/mmap.2.html
 .. _open(2):  https://man7.org/linux/man-pages/man2/open.2.html
 .. _creat(2):  https://man7.org/linux/man-pages/man2/open.2.html
