@@ -79,7 +79,8 @@ struct cando_file_ops_zero_copy_info
 
 
 /*
- * @brief Sets data in a file at a given offset up to a given size.
+ * @brief Sets data in a file at a given offset up to a given size
+ *        without copying the buffer into userspace.
  *
  * @param flops    - Pointer to a valid struct cando_file_ops
  * @param fileInfo - Pointer to a struct cando_file_ops_zero_copy_info.

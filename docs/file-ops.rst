@@ -157,8 +157,67 @@ cando_file_ops_truncate_file
 
 =========================================================================================================================================
 
+=============================
+cando_file_ops_zero_copy_info
+=============================
+
+.. c:struct:: cando_file_ops_zero_copy_info
+
+	.. c:member::
+		size_t dataSize;
+		int    infd;
+		off_t  *inOffset;
+		int    outfd;
+		off_t  *outOffset;
+
+	:c:member:`dataSize`
+		| Total size of the data to copy
+
+	:c:member:`infd`
+		| Input file descriptor to copy data from
+
+	:c:member:`inOffset`
+		| Byte offset in the :c:member:`infd` open file to copy from
+		| **NOTE:** `splice(2)`_ may updates the variable
+
+	:c:member:`outfd`
+		| Output file descriptor to copy data to
+
+	:c:member:`outOffset`
+		| Byte offset in the @outfd open file to copy X amount
+		| of data from the given offset.
+		| **NOTE:** `splice(2)`_ may updates the variable
+
+========================
+cando_file_ops_zero_copy
+========================
+
+.. c:function:: int cando_file_ops_zero_copy(struct cando_file_ops *flops, const void *fileInfo);
+
+	Sets the data in a file at a given offset up to a given size
+	without copying the buffer into userspace.
+
+	.. list-table::
+		:header-rows: 1
+
+		* - Param
+	          - Decription
+		* - flops
+		  - Pointer to a valid `struct` :c:struct:`cando_file_ops`
+		* - fileInfo
+		  - Pointer to a `struct` :c:struct:`cando_file_ops_zero_copy_info`.
+		    The use of pointer to a void is to limit amount
+		    of columns required to define a function.
+
+	Returns:
+		| **on success:** 0
+		| **on failure:** -1
+
+=========================================================================================================================================
+
 .. _mmap(2):  https://man7.org/linux/man-pages/man2/mmap.2.html
 .. _open(2):  https://man7.org/linux/man-pages/man2/open.2.html
 .. _creat(2):  https://man7.org/linux/man-pages/man2/open.2.html
 .. _pipe(2):  https://man7.org/linux/man-pages/man2/pipe.2.html
 .. _truncate(2):  https://man7.org/linux/man-pages/man2/pipe.2.html
+.. _splice(2):  https://man7.org/linux/man-pages/man2/splice.2.html
