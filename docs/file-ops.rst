@@ -400,6 +400,25 @@ cando_file_ops_set_data
 
 =========================================================================================================================================
 
+======================
+cando_file_ops_destroy
+======================
+
+.. c:function:: void cando_file_ops_destroy(struct cando_file_ops *flops);
+
+	Frees any allocated memory and closes FD's (if open) created after
+	:c:func:`cando_file_ops_create` call.
+
+	.. list-table::
+		:header-rows: 1
+
+		* - Param
+	          - Decription
+		* - flops
+		  - Pointer to a valid `struct` :c:struct:`cando_file_ops`
+
+=========================================================================================================================================
+
 .. _mmap(2):  https://man7.org/linux/man-pages/man2/mmap.2.html
 .. _open(2):  https://man7.org/linux/man-pages/man2/open.2.html
 .. _creat(2):  https://man7.org/linux/man-pages/man2/open.2.html
