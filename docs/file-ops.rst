@@ -184,7 +184,7 @@ cando_file_ops_zero_copy_info
 		| Output file descriptor to copy data to
 
 	:c:member:`outOffset`
-		| Byte offset in the @outfd open file to copy X amount
+		| Byte offset in the :c:member:`outfd` open file to copy X amount
 		| of data from the given offset.
 		| **NOTE:** `splice(2)`_ may updates the variable
 
@@ -259,7 +259,7 @@ cando_file_ops_get_line
 		  - Line in file to get data from
 
 	Returns:
-		| **on success:** Pointer to file data at a given index
+		| **on success:** Pointer to file data at a given line
 		| **on failure:** NULL
 
 =========================================================================================================================================
@@ -351,6 +351,52 @@ cando_file_ops_get_filename
 	Returns:
 		| **on success:** File name of open file
 		| **on failure:** NULL
+
+=========================================================================================================================================
+
+============================
+cando_file_ops_set_data_info
+============================
+
+.. c:struct:: cando_file_ops_set_data_info
+
+	.. c:member::
+		unsigned long int offset;
+		size_t            dataSize;
+		const void        *data;
+
+	:c:member:`offset`
+		| Byte offset within the file
+
+	:c:member:`dataSize`
+		| Size in bytes to copy into file at :c:member:`offset`
+
+	:c:member:`data`
+		| Data to copy at the given file offset
+
+=======================
+cando_file_ops_set_data
+=======================
+
+.. c:function:: int cando_file_ops_set_data(struct cando_file_ops *flops, const void *fileInfo);
+
+	Sets data in a file at a given offset up to a given size.
+
+	.. list-table::
+		:header-rows: 1
+
+		* - Param
+	          - Decription
+		* - flops
+		  - Pointer to a valid `struct` :c:struct:`cando_file_ops`
+		* - fileInfo
+		  - Pointer to a `struct` :c:struct:`cando_file_ops_set_data_info`.
+		    The use of pointer to a void is to limit amount
+		    of columns required to define a function.
+
+	Returns:
+		| **on success:** 0
+		| **on failure:** -1
 
 =========================================================================================================================================
 

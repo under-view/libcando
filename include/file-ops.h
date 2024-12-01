@@ -119,7 +119,7 @@ cando_file_ops_get_data (struct cando_file_ops *flops,
  * @param lineNum - Line in file to get data from
  *
  * @returns
- * 	on success: Pointer to file data at a given index
+ * 	on success: Pointer to file data at a given line
  * 	on failure: NULL
  */
 const char *
@@ -186,13 +186,13 @@ cando_file_ops_get_filename (struct cando_file_ops *flops);
  *
  * @member offset   - Byte offset within the file
  * @member dataSize - Size in bytes to copy into file at @offset
- * @member data     - Data to copy at the given offset.
+ * @member data     - Data to copy at the given file offset.
  */
 struct cando_file_ops_set_data_info
 {
 	unsigned long int offset;
-	size_t dataSize;
-	const void *data;
+	size_t            dataSize;
+	const void        *data;
 };
 
 
