@@ -45,7 +45,7 @@ cando_file_ops_create (const void *fileInfo);
  * @brief Adjust file to a size of precisely length bytes
  *
  * @param flops    - Pointer to a valid struct cando_file_ops
- * @param dataSize - Size in bytes newly created file will be
+ * @param dataSize - Size in bytes file will be truncate(2)'d to.
  *
  * @returns
  * 	on success: 0

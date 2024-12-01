@@ -117,13 +117,15 @@ cando_file_ops_create
 
 	Creates or opens caller define file
 
-	========  ==========
-	Param     Decription
-	========  ==========
-	fileInfo  Pointer to a `struct` :c:struct:`cando_file_ops_create_info`.
-	          The use of pointer to a void is to limit amount
-	          of columns required to define a function.
-	========  ==========
+	.. list-table::
+		:header-rows: 1
+
+		* - Param
+	          - Decription
+		* - fileInfo
+		  - Pointer to a `struct` :c:struct:`cando_file_ops_create_info`.
+		    The use of pointer to a void is to limit amount
+		    of columns required to define a function.
 
 	Returns:
 		| **on success:** pointer to a ``struct`` :c:struct:`cando_file_ops`
@@ -131,7 +133,32 @@ cando_file_ops_create
 
 =========================================================================================================================================
 
+============================
+cando_file_ops_truncate_file
+============================
+
+.. c:function:: int cando_file_ops_truncate_file(struct cando_file_ops *flops, const long unsigned int dataSize);
+
+	Adjust file to a size of precisely length bytes
+
+	.. list-table::
+		:header-rows: 1
+
+		* - Param
+	          - Decription
+		* - flops
+		  - Pointer to a valid `struct` :c:struct:`cando_file_ops`
+		* - dataSize
+		  - Size in bytes file will be `truncate(2)`_'d to.
+
+	Returns:
+		| **on success:** 0
+		| **on failure:** # < 0
+
+=========================================================================================================================================
+
 .. _mmap(2):  https://man7.org/linux/man-pages/man2/mmap.2.html
 .. _open(2):  https://man7.org/linux/man-pages/man2/open.2.html
 .. _creat(2):  https://man7.org/linux/man-pages/man2/open.2.html
 .. _pipe(2):  https://man7.org/linux/man-pages/man2/pipe.2.html
+.. _truncate(2):  https://man7.org/linux/man-pages/man2/pipe.2.html
