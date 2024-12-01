@@ -8,6 +8,11 @@
 #define CANDO_API
 #endif
 
+/*
+ * Define typical page size without including
+ * limits.h header.
+ */
+#define CANDO_PAGE_SIZE (1<<12)
 
 /*
  * Informs the compiler that you expect a variable
