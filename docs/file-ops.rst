@@ -123,13 +123,13 @@ cando_file_ops_create
 		* - Param
 	          - Decription
 		* - fileInfo
-		  - Pointer to a `struct` :c:struct:`cando_file_ops_create_info`.
-		    The use of pointer to a void is to limit amount
-		    of columns required to define a function.
+		  - | Pointer to a ``struct`` :c:struct:`cando_file_ops_create_info`.
+		    | The use of pointer to a void is to limit amount
+		    | of columns required to define a function.
 
 	Returns:
 		| **on success:** pointer to a ``struct`` :c:struct:`cando_file_ops`
-		| **on failure:** NULL
+		| **on failure:** ``NULL``
 
 =========================================================================================================================================
 
@@ -147,9 +147,9 @@ cando_file_ops_truncate_file
 		* - Param
 	          - Decription
 		* - flops
-		  - Pointer to a valid `struct` :c:struct:`cando_file_ops`
+		  - | Pointer to a valid ``struct`` :c:struct:`cando_file_ops`
 		* - dataSize
-		  - Size in bytes file will be `truncate(2)`_'d to.
+		  - | Size in bytes file will be `truncate(2)`_'d to.
 
 	Returns:
 		| **on success:** 0
@@ -203,11 +203,11 @@ cando_file_ops_zero_copy
 		* - Param
 	          - Decription
 		* - flops
-		  - Pointer to a valid `struct` :c:struct:`cando_file_ops`
+		  - | Pointer to a valid ``struct`` :c:struct:`cando_file_ops`
 		* - fileInfo
-		  - Pointer to a `struct` :c:struct:`cando_file_ops_zero_copy_info`.
-		    The use of pointer to a void is to limit amount
-		    of columns required to define a function.
+		  - | Pointer to a ``struct`` :c:struct:`cando_file_ops_zero_copy_info`.
+		    | The use of pointer to a void is to limit amount
+		    | of columns required to define a function.
 
 	Returns:
 		| **on success:** 0
@@ -229,13 +229,13 @@ cando_file_ops_get_data
 		* - Param
 	          - Decription
 		* - flops
-		  - Pointer to a valid `struct` :c:struct:`cando_file_ops`
+		  - | Pointer to a valid ``struct`` :c:struct:`cando_file_ops`
 		* - offset
-		  - Byte offset within the file
+		  - | Byte offset within the file
 
 	Returns:
 		| **on success:** Pointer to file data at a given index
-		| **on failure:** NULL
+		| **on failure:** ``NULL``
 
 =========================================================================================================================================
 
@@ -254,13 +254,13 @@ cando_file_ops_get_line
 		* - Param
 	          - Decription
 		* - flops
-		  - Pointer to a valid `struct` :c:struct:`cando_file_ops`
+		  - | Pointer to a valid ``struct`` :c:struct:`cando_file_ops`
 		* - lineNum
-		  - Line in file to get data from
+		  - | Line in file to get data from
 
 	Returns:
 		| **on success:** Pointer to file data at a given line
-		| **on failure:** NULL
+		| **on failure:** ``NULL``
 
 =========================================================================================================================================
 
@@ -278,7 +278,7 @@ cando_file_ops_get_line_count
 		* - Param
 	          - Decription
 		* - flops
-		  - Pointer to a valid `struct` :c:struct:`cando_file_ops`
+		  - | Pointer to a valid ``struct`` :c:struct:`cando_file_ops`
 
 	Returns:
 		| **on success:** Line count
@@ -300,7 +300,7 @@ cando_file_ops_get_fd
 		* - Param
 	          - Decription
 		* - flops
-		  - Pointer to a valid `struct` :c:struct:`cando_file_ops`
+		  - | Pointer to a valid ``struct`` :c:struct:`cando_file_ops`
 
 	Returns:
 		| **on success:** File descriptor to open file
@@ -323,7 +323,7 @@ cando_file_ops_get_data_size
 		* - Param
 	          - Decription
 		* - flops
-		  - Pointer to a valid `struct` :c:struct:`cando_file_ops`
+		  - | Pointer to a valid ``struct`` :c:struct:`cando_file_ops`
 
 	Returns:
 		| **on success:** Size of the `mmap(2)`_ buffer
@@ -338,7 +338,7 @@ cando_file_ops_get_filename
 .. c:function:: const char *cando_file_ops_get_filename(struct cando_file_ops *flops);
 
 	Return file name of open file associated with
-	the `struct` :c:struct:`cando_file_ops` context.
+	the ``struct`` :c:struct:`cando_file_ops` context.
 
 	.. list-table::
 		:header-rows: 1
@@ -346,11 +346,11 @@ cando_file_ops_get_filename
 		* - Param
 	          - Decription
 		* - flops
-		  - Pointer to a valid `struct` :c:struct:`cando_file_ops`
+		  - | Pointer to a valid ``struct`` :c:struct:`cando_file_ops`
 
 	Returns:
 		| **on success:** File name of open file
-		| **on failure:** NULL
+		| **on failure:** ``NULL``
 
 =========================================================================================================================================
 
@@ -388,11 +388,11 @@ cando_file_ops_set_data
 		* - Param
 	          - Decription
 		* - flops
-		  - Pointer to a valid `struct` :c:struct:`cando_file_ops`
+		  - | Pointer to a valid ``struct`` :c:struct:`cando_file_ops`
 		* - fileInfo
-		  - Pointer to a `struct` :c:struct:`cando_file_ops_set_data_info`.
-		    The use of pointer to a void is to limit amount
-		    of columns required to define a function.
+		  - | Pointer to a ``struct`` :c:struct:`cando_file_ops_set_data_info`.
+		    | The use of pointer to a void is to limit amount
+		    | of columns required to define a function.
 
 	Returns:
 		| **on success:** 0
@@ -415,7 +415,7 @@ cando_file_ops_destroy
 		* - Param
 	          - Decription
 		* - flops
-		  - Pointer to a valid `struct` :c:struct:`cando_file_ops`
+		  - | Pointer to a valid ``struct`` :c:struct:`cando_file_ops`
 
 =========================================================================================================================================
 
