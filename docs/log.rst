@@ -30,12 +30,17 @@ Unions
 Structs
 =======
 
+1. :c:struct:`cando_log_error_struct`
+
 =========
 Functions
 =========
 
 1. :c:func:`cando_log_set_level`
 #. :c:func:`cando_log_set_write_fd`
+#. :c:func:`cando_log_set_global_error`
+#. :c:func:`cando_log_get_error`
+#. :c:func:`cando_log_get_error_code`
 #. :c:func:`cando_log_time`
 #. :c:func:`cando_log_notime`
 
@@ -122,6 +127,100 @@ cando_log_set_write_fd
 	Parameters:
 		| **fd:**
 		| File descriptor to an open file.
+
+=========================================================================================================================================
+
+======================
+cando_log_error_struct
+======================
+
+.. c:struct:: cando_log_error_struct
+
+	Structure used to store and acquire
+	error string and code for multiple
+	struct context's.
+
+	.. c:member::
+		unsigned int code;
+		char         buffer[CANDO_PAGE_SIZE];
+
+	:c:member:`code`
+		| Error code or errno
+
+	:c:member:`buffer`
+		| Buffer to store error string
+
+==========================
+cando_log_set_global_error
+==========================
+
+.. c:function:: void cando_log_set_global_error(int code, const char *buffer);
+
+	Sets internal struct cando_log_error_struct global
+	variable values. Functions should only be utilized
+	in underview API's "_*create*()" functions.
+
+	**NOTE:** Do not utilize an anything other than "_*create*()" functions.
+	Instead opt to set the string yourself then make a call to
+	:c:func:`cando_log_get_error` or :c:func:`cando_log_get_error_code`
+
+	.. list-table::
+		:header-rows: 1
+
+		* - Param
+	          - Decription
+		* - code
+		  - | Error code or errno
+		* - buffer
+		  - | String that'll be returned to caller
+
+===================
+cando_log_get_error
+===================
+
+.. c:function:: const char *cando_log_get_error(void *context);
+
+	Returns a string with the error defined given
+	a context with first members of the context
+	being a `struct` :c:struct:`cando_log_error_struct`.
+
+	.. list-table::
+		:header-rows: 1
+
+		* - Param
+	          - Decription
+		* - context
+		  - | Pointer to an arbitrary context.
+		    | Start of context must be a `struct` :c:struct:`cando_log_error_struct`.
+		    | If `NULL` passed the internal global will be utilized.
+
+	Returns:
+		| **on success:** Passed context error string
+		| **on failure:** Internal global error string.
+
+========================
+cando_log_get_error_code
+========================
+
+.. c:function:: unsigned int cando_log_get_error_code(void *context);
+
+	Returns unsigned integer with the error code
+	define given context with first members of the
+	context being a `struct` :c:struct:`cando_log_error_struct`.
+
+	.. list-table::
+		:header-rows: 1
+
+		* - Param
+	          - Decription
+		* - context
+		  - | Pointer to an arbitrary context.
+		    | Start of context must be a `struct` :c:struct:`cando_log_error_struct`.
+		    | If `NULL` passed the internal global will be utilized.
+
+	Returns:
+		| **on success:** Passed context error code or errno
+		| **on failure:** Internal global error code or errno.
 
 =========================================================================================================================================
 
