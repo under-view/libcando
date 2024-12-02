@@ -35,7 +35,7 @@ enum cando_log_level_type
  *        to be printed to an open file.
  *
  * @param level - 32-bit integer representing the type of log to print to
- *                an open file stream. Each log type has a different color.
+ *                an open file. Each log type has a different color.
  */
 CANDO_API
 void
@@ -75,7 +75,7 @@ struct cando_log_error_struct
  *        variable values. Functions should only be utilized
  *        in underview API's *_create*() functions.
  *
- *        NOTE: Do not utilize an anything other than *_create*() functions.
+ *        NOTE: Do not utilize anything other than *_create*() functions.
  *        Instead opt to set the string yourself then make a call to
  *        cando_log_get_error(3) or cando_log_get_error_code(3)
  *
@@ -90,8 +90,8 @@ cando_log_set_global_error (int code,
 
 /*
  * @brief Returns a string with the error defined given
- *        a context with first members of the context
- *        being a struct cando_log_error_struct.
+ *        caller provided a context with first members
+ *        of the context being a struct cando_log_error_struct.
  *
  * @param context - Pointer to an arbitrary context.
  *                  Start of context must be a struct cando_log_error_struct.
@@ -108,8 +108,8 @@ cando_log_get_error (void *context);
 
 /*
  * @brief Returns unsigned integer with the error code
- *        define given context with first members of the
- *        context being a struct cando_log_error_struct.
+ *        given caller provided a context with first members
+ *        of the context being a struct cando_log_error_struct.
  *
  * @param context - Pointer to an arbitrary context.
  *                  Start of context must be a struct cando_log_error_struct.
@@ -117,7 +117,7 @@ cando_log_get_error (void *context);
  *
  * @returns
  * 	on success: Passed context error code or errno
- * 	on failure: Internal global error code or errno.
+ * 	on failure: Internal global error code or errno
  */
 CANDO_API
 unsigned int

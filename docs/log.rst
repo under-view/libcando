@@ -106,10 +106,14 @@ cando_log_set_level
 
 	Sets which type of messages that are allowed to be printed to an open file.
 
-	Parameters:
-		| **level:**
-		| 32-bit integer representing the type of log to print to
-		| an open file stream. Each log type has a different color.
+	.. list-table::
+		:header-rows: 1
+
+		* - Param
+	          - Decription
+		* - level
+		  - | 32-bit integer representing the type of log to print to
+		    | an open file. Each log type has a different color
 
 =========================================================================================================================================
 
@@ -124,9 +128,13 @@ cando_log_set_write_fd
 
 	Default is set to ``STDOUT_FILENO``.
 
-	Parameters:
-		| **fd:**
-		| File descriptor to an open file.
+	.. list-table::
+		:header-rows: 1
+
+		* - Param
+	          - Decription
+		* - fd
+		  - | File descriptor to an open file.
 
 =========================================================================================================================================
 
@@ -156,11 +164,11 @@ cando_log_set_global_error
 
 .. c:function:: void cando_log_set_global_error(int code, const char *buffer);
 
-	Sets internal struct cando_log_error_struct global
+	Sets internal ``struct`` :c:struct:`cando_log_error_struct` global
 	variable values. Functions should only be utilized
-	in underview API's "_*create*()" functions.
+	in underview API's ``_*create*()`` functions.
 
-	**NOTE:** Do not utilize an anything other than "_*create*()" functions.
+	**NOTE:** Do not utilize anything other than ``_*create*()`` functions.
 	Instead opt to set the string yourself then make a call to
 	:c:func:`cando_log_get_error` or :c:func:`cando_log_get_error_code`
 
@@ -181,8 +189,8 @@ cando_log_get_error
 .. c:function:: const char *cando_log_get_error(void *context);
 
 	Returns a string with the error defined given
-	a context with first members of the context
-	being a `struct` :c:struct:`cando_log_error_struct`.
+	caller provided a context with first members
+	of the context being a ``struct`` :c:struct:`cando_log_error_struct`.
 
 	.. list-table::
 		:header-rows: 1
@@ -191,12 +199,12 @@ cando_log_get_error
 	          - Decription
 		* - context
 		  - | Pointer to an arbitrary context.
-		    | Start of context must be a `struct` :c:struct:`cando_log_error_struct`.
-		    | If `NULL` passed the internal global will be utilized.
+		    | Start of context must be a ``struct`` :c:struct:`cando_log_error_struct`.
+		    | If ``NULL`` passed the internal global will be utilized.
 
 	Returns:
 		| **on success:** Passed context error string
-		| **on failure:** Internal global error string.
+		| **on failure:** Internal global error string
 
 ========================
 cando_log_get_error_code
@@ -205,8 +213,8 @@ cando_log_get_error_code
 .. c:function:: unsigned int cando_log_get_error_code(void *context);
 
 	Returns unsigned integer with the error code
-	define given context with first members of the
-	context being a `struct` :c:struct:`cando_log_error_struct`.
+	given caller provided a context with first members
+	of the context being a ``struct`` :c:struct:`cando_log_error_struct`.
 
 	.. list-table::
 		:header-rows: 1
@@ -215,12 +223,12 @@ cando_log_get_error_code
 	          - Decription
 		* - context
 		  - | Pointer to an arbitrary context.
-		    | Start of context must be a `struct` :c:struct:`cando_log_error_struct`.
-		    | If `NULL` passed the internal global will be utilized.
+		    | Start of context must be a ``struct`` :c:struct:`cando_log_error_struct`.
+		    | If ``NULL`` passed the internal global will be utilized.
 
 	Returns:
 		| **on success:** Passed context error code or errno
-		| **on failure:** Internal global error code or errno.
+		| **on failure:** Internal global error code or errno
 
 =========================================================================================================================================
 
@@ -239,6 +247,18 @@ cando_log_time
 		| **fmt:** Format of the log passed to va_args
 		| **... :** Variable list arguments
 
+	.. list-table::
+		:header-rows: 1
+
+		* - Param
+	          - Decription
+		* - type
+		  - | The type of color to use with log 
+		* - fmt
+		  - | Format of the log passed to va_args
+		* - ...
+		  - | Variable list arguments
+
 ================
 cando_log_notime
 ================
@@ -249,10 +269,17 @@ cando_log_notime
 	without time stamp with ansi color codes to colorize
 	different message.
 
-	Parameters:
-		| **type:** The type of color to use with log
-		| **fmt:** Format of the log passed to va_args
-		| **... :** Variable list arguments
+	.. list-table::
+		:header-rows: 1
+
+		* - Param
+	          - Decription
+		* - type
+		  - | The type of color to use with log 
+		* - fmt
+		  - | Format of the log passed to va_args
+		* - ...
+		  - | Variable list arguments
 
 =========================================================================================================================================
 
