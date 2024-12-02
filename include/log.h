@@ -161,13 +161,13 @@ cando_log_notime (enum cando_log_level_type type,
 
 /*
  * Macros defined to structure the message
- * timestamp - [file:function:line] message
+ * timestamp - [file:line] message
  */
 #define cando_log(logType, fmt, ...) \
-	cando_log_time(logType, "[%s:%s:%d] " fmt, __FILE_NAME__, __func__, __LINE__, ##__VA_ARGS__)
+	cando_log_time(logType, "[%s:%d] " fmt, __FILE_NAME__,  __LINE__, ##__VA_ARGS__)
 
 #define cando_log_err(fmt, ...) \
-	cando_log_time(CANDO_LOG_DANGER, "[%s:%s:%d] " fmt, __FILE_NAME__, __func__, __LINE__, ##__VA_ARGS__)
+	cando_log_time(CANDO_LOG_DANGER, "[%s:%d] " fmt, __FILE_NAME__, __LINE__, ##__VA_ARGS__)
 
 #define cando_log_print(logType, fmt, ...) \
 	cando_log_notime(logType, fmt, ##__VA_ARGS__)

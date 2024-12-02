@@ -289,7 +289,7 @@ cando_log
 
 	Log format
 
-	timestamp - [file:function:line] message
+	timestamp - [file:line] message
 
 	Default prints to ``stdout`` using ansi color codes to color text.
 
@@ -299,7 +299,7 @@ cando_log
 	.. code-block::
 
 		#define cando_log(logType, fmt, ...) \
-			cando_log_time(logType, "[%s:%s:%d] " fmt, basename(__FILE__), __func__, __LINE__, ##__VA_ARGS__)
+			cando_log_time(logType, "[%s:%d] " fmt, __FILE_NAME__, __LINE__, ##__VA_ARGS__)
 
 =============
 cando_log_err
@@ -309,7 +309,7 @@ cando_log_err
 
 	Log format
 
-	timestamp - [file:function:line] message
+	timestamp - [file:line] message
 
 	Prints to ``stderr`` with ansi color codes the color **RED**.
 
@@ -319,7 +319,7 @@ cando_log_err
 	.. code-block::
 
 		#define cando_log_err(fmt, ...) \
-			cando_log_time(CANDO_LOG_DANGER, "[%s:%s:%d] " fmt, basename(__FILE__), __func__, __LINE__, ##__VA_ARGS__)
+			cando_log_time(CANDO_LOG_DANGER, "[%s:%d] " fmt, __FILE_NAME__, __LINE__, ##__VA_ARGS__)
 
 ===============
 cando_log_print
