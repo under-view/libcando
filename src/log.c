@@ -33,14 +33,14 @@ static enum cando_log_level_type logLevel = CANDO_LOG_ALL;
 
 
 void
-cando_log_level_set (enum cando_log_level_type level)
+cando_log_set_level (enum cando_log_level_type level)
 {
 	logLevel = level;
 }
 
 
 void
-cando_log_write_fd_set (int fd)
+cando_log_set_write_fd (int fd)
 {
 	writefd = fd;
 }

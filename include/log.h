@@ -54,7 +54,7 @@ struct cando_log_error_struct
  */
 CANDO_API
 void
-cando_log_level_set (enum cando_log_level_type level);
+cando_log_set_level (enum cando_log_level_type level);
 
 
 /*
@@ -67,7 +67,7 @@ cando_log_level_set (enum cando_log_level_type level);
  */
 CANDO_API
 void
-cando_log_write_fd_set (int fd);
+cando_log_set_write_fd (int fd);
 
 
 /*

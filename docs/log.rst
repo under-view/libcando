@@ -34,8 +34,8 @@ Structs
 Functions
 =========
 
-1. :c:func:`cando_log_level_set`
-#. :c:func:`cando_log_write_fd_set`
+1. :c:func:`cando_log_set_level`
+#. :c:func:`cando_log_set_write_fd`
 #. :c:func:`cando_log_time`
 #. :c:func:`cando_log_notime`
 
@@ -58,7 +58,7 @@ cando_log_level_type
 		CANDO_LOG_ALL
 
 	Log level options used by
-		:c:func:`cando_log_level_set`
+		:c:func:`cando_log_set_level`
 		:c:macro:`cando_log`
 		:c:macro:`cando_log_err`
 		:c:macro:`cando_log_print`
@@ -94,10 +94,10 @@ cando_log_level_type
 =========================================================================================================================================
 
 ===================
-cando_log_level_set
+cando_log_set_level
 ===================
 
-.. c:function:: void cando_log_level_set(enum cando_log_level_type level);
+.. c:function:: void cando_log_set_level(enum cando_log_level_type level);
 
 	Sets which type of messages that are allowed to be printed to an open file.
 
@@ -109,10 +109,10 @@ cando_log_level_set
 =========================================================================================================================================
 
 ======================
-cando_log_write_fd_set
+cando_log_set_write_fd
 ======================
 
-.. c:function:: void cando_log_write_fd_set(int fd);
+.. c:function:: void cando_log_set_write_fd(int fd);
 
 	Sets the internal global write file descriptor
 	to caller define file descriptor.
@@ -170,7 +170,7 @@ cando_log
 	Default prints to ``stdout`` using ansi color codes to color text.
 
 	Caller may change the open file in which logs are printed to via
-	a call to :c:func:`cando_log_write_fd_set`
+	a call to :c:func:`cando_log_set_write_fd`
 
 	.. code-block::
 
@@ -190,7 +190,7 @@ cando_log_err
 	Prints to ``stderr`` with ansi color codes the color **RED**.
 
 	Caller may change the open file in which logs are printed to via
-	a call to :c:func:`cando_log_write_fd_set`
+	a call to :c:func:`cando_log_set_write_fd`
 
 	.. code-block::
 
@@ -210,7 +210,7 @@ cando_log_print
 	Default prints to ``stdout`` using ansi color codes to color text.
 
 	Caller may change the open file in which logs are printed to via
-	a call to :c:func:`cando_log_write_fd_set`
+	a call to :c:func:`cando_log_set_write_fd`
 
 	.. code-block::
 
