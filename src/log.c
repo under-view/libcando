@@ -48,10 +48,16 @@ cando_log_set_write_fd (int fd)
 
 void
 cando_log_set_global_error (int code,
-                            const char *buffer)
+                            const char *fmt,
+                            ...)
 {
+	va_list args;
+
+	va_start(args, fmt);
+	vsnprintf(globalError.buffer, CANDO_PAGE_SIZE, fmt, args);
+	va_end(args);
+
 	globalError.code = code;
-	strncpy(globalError.buffer, buffer, CANDO_PAGE_SIZE-1);
 }
 
 

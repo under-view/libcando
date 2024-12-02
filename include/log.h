@@ -79,13 +79,16 @@ struct cando_log_error_struct
  *        Instead opt to set the string yourself then make a call to
  *        cando_log_get_error(3) or cando_log_get_error_code(3)
  *
- * @param code   - Error code or errno
- * @param buffer - String that'll be returned to caller
+ * @param code - Error code or errno
+ * @param fmt  - Format of string to be returned to caller
+ * @param ...  - Variable list arguments containing contents of
+ *               the error string that'll be returned to caller.
  */
 CANDO_API
 void
 cando_log_set_global_error (int code,
-                            const char *buffer);
+                            const char *fmt,
+			    ...);
 
 
 /*

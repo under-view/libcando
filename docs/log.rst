@@ -162,7 +162,7 @@ cando_log_error_struct
 cando_log_set_global_error
 ==========================
 
-.. c:function:: void cando_log_set_global_error(int code, const char *buffer);
+.. c:function:: void cando_log_set_global_error(int code, const char *fmt, ...);
 
 	Sets internal ``struct`` :c:struct:`cando_log_error_struct` global
 	variable values. Functions should only be utilized
@@ -179,8 +179,11 @@ cando_log_set_global_error
 	          - Decription
 		* - code
 		  - | Error code or errno
-		* - buffer
-		  - | String that'll be returned to caller
+		* - fmt
+		  - | Format of string to be returned to caller
+		* - ...
+		  - | Variable list arguments containing contents of
+		    | the error string that'll be returned to caller.
 
 ===================
 cando_log_get_error
@@ -241,11 +244,6 @@ cando_log_time
 	Provides applications/library way to write to an open file
 	with a time stamp and ansi color codes to colorize
 	different message.
-
-	Parameters:
-		| **type:** The type of color to use with log
-		| **fmt:** Format of the log passed to va_args
-		| **... :** Variable list arguments
 
 	.. list-table::
 		:header-rows: 1
