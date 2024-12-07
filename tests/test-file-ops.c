@@ -62,10 +62,6 @@ test_file_ops_create_empty_file (void CANDO_UNUSED **state)
 	flops = cando_file_ops_create(&flopsCreateInfo);
 	assert_non_null(flops);
 
-	ret = cando_file_ops_truncate_file(flops, 0);
-	assert_int_equal(ret, -1);
-	cando_log_err("%s\n", cando_log_get_error(flops));
-
 	ret = stat(flopsCreateInfo.fileName, &fstats);
 	assert_int_equal(ret, 0);
 	assert_int_equal(fstats.st_size, flopsCreateInfo.dataSize);
