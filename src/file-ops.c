@@ -18,6 +18,9 @@
 /*
  * @brief struct defining cando_file_ops instance
  *
+ * @member err      - Stores information about the error that occured
+ *                    for the given instance and may later be retrieved
+ *                    by caller.
  * @member fd       - File descriptor to open file.
  * @member pipefds  - File descriptors associated with an open pipe.
  *                    pipefds[0] - Read end of the pipe
@@ -30,12 +33,13 @@
  */
 struct cando_file_ops
 {
-	int    fd;
-	int    pipefds[2];
-	char   fname[FILE_NAME_LEN_MAX];
-	size_t dataSize;
-	void   *data;
-	void   *retData;
+	struct cando_log_error_struct err;
+	int                           fd;
+	int                           pipefds[2];
+	char                          fname[FILE_NAME_LEN_MAX];
+	size_t                        dataSize;
+	void                          *data;
+	void                          *retData;
 };
 
 
@@ -55,6 +59,7 @@ cando_file_ops_create (const void *_fileCreateInfo)
 	const struct cando_file_ops_create_info *fileCreateInfo = _fileCreateInfo;
 
 	if (!fileCreateInfo) {
+		cando_log_err("Incorrect data passed\n");
 		return NULL;
 	}
 
@@ -64,6 +69,7 @@ cando_file_ops_create (const void *_fileCreateInfo)
 		     MAP_PRIVATE|MAP_ANONYMOUS,
 		     -1, 0);
 	if (flops == (void*)-1) {
+		cando_log_err("mmap: %s\n", strerror(errno));
 		return NULL;
 	}
 
@@ -75,6 +81,7 @@ cando_file_ops_create (const void *_fileCreateInfo)
 
 		flops->fd = open(flops->fname, O_CREAT|O_RDWR, 0644);
 		if (flops->fd == -1) {
+			cando_log_err("open: %s\n", strerror(errno));
 			cando_file_ops_destroy(flops);
 			return NULL;
 		}
@@ -92,12 +99,14 @@ cando_file_ops_create (const void *_fileCreateInfo)
 	if (fileCreateInfo->createPipe) {
 		ret = pipe(flops->pipefds);
 		if (ret == -1) {
+			cando_log_err("pipe: %s\n", strerror(errno));
 			cando_file_ops_destroy(flops);
 			return NULL;
 		}
 	} else {
 		ret = cando_file_ops_truncate_file(flops, flops->dataSize);
 		if (ret < 0 && flops->dataSize) {
+			cando_log_err("%s\n", cando_log_get_error(flops));
 			cando_file_ops_destroy(flops);
 			return NULL;
 		}
@@ -109,6 +118,7 @@ cando_file_ops_create (const void *_fileCreateInfo)
 				   flops->fd,
 				   fileCreateInfo->offset);
 		if (flops->data == (void*)-1 && flops->dataSize) {
+			cando_log_err("mmap: %s\n", strerror(errno));
 			cando_file_ops_destroy(flops);
 			return NULL;
 		}
@@ -119,6 +129,7 @@ cando_file_ops_create (const void *_fileCreateInfo)
 				      MAP_PRIVATE|MAP_ANONYMOUS,
 				      -1, 0);
 		if (flops->retData == (void*)-1 && flops->dataSize) {
+			cando_log_err("mmap: %s\n", strerror(errno));
 			cando_file_ops_destroy(flops);
 			return NULL;
 		}
@@ -126,6 +137,7 @@ cando_file_ops_create (const void *_fileCreateInfo)
 
 	ret = mprotect(flops, sizeof(struct cando_file_ops), PROT_READ);
 	if (ret == -1) {
+		cando_log_err("mprotect: %s\n", strerror(errno));
 		cando_file_ops_destroy(flops);
 		return NULL;
 	}
@@ -148,11 +160,21 @@ cando_file_ops_truncate_file (struct cando_file_ops *flops,
 {
 	int ret = -1;
 
-	if (!flops || dataSize == 0)
+	if (!flops)
 		return -1;
+
+	if (dataSize == 0)
+	{
+		flops->err.code = CANDO_LOG_ERR_INCORRECT_DATA;
+		return -1;
+	}
 
 	ret = ftruncate64(flops->fd, dataSize);
 	if (ret == -1) {
+		flops->err.code = errno;
+		snprintf(flops->err.buffer,
+			 sizeof(flops->err.buffer), "%s:%d:ftruncate64: %s",
+			 __FILE_NAME__, __LINE__, strerror(errno));
 		return -errno;
 	}
 
@@ -182,6 +204,7 @@ cando_file_ops_zero_copy (struct cando_file_ops *flops,
 	    !zeroCopyInfo ||
 	    zeroCopyInfo->dataSize == 0)
 	{
+		flops->err.code = CANDO_LOG_ERR_INCORRECT_DATA;
 		return -1;
 	}
 
@@ -194,6 +217,10 @@ cando_file_ops_zero_copy (struct cando_file_ops *flops,
 		if (ret == 0) {
 			return 0;
 		} else if (ret == -1) {
+			flops->err.code = errno;
+			snprintf(flops->err.buffer,
+				 sizeof(flops->err.buffer), "%s:%d:splice: %s",
+				 __FILE_NAME__, __LINE__, strerror(errno));
 			return -1;
 		}
 
@@ -203,6 +230,10 @@ cando_file_ops_zero_copy (struct cando_file_ops *flops,
 			     PIPE_MAX_BUFF_SIZE,
 			     SPLICE_F_MOVE|SPLICE_F_MORE);
 		if (ret == -1) {
+			flops->err.code = errno;
+			snprintf(flops->err.buffer,
+				 sizeof(flops->err.buffer), "%s:%d:splice: %s",
+				 __FILE_NAME__, __LINE__, strerror(errno));
 			return -1;
 		}
 
@@ -229,6 +260,7 @@ cando_file_ops_get_data (struct cando_file_ops *flops,
 	    !(flops->data) ||
 	    offset >= flops->dataSize)
 	{
+		flops->err.code = CANDO_LOG_ERR_INCORRECT_DATA;
 		return NULL;
 	}
 
@@ -249,6 +281,7 @@ cando_file_ops_get_line (struct cando_file_ops *flops,
             !(flops->retData) || \
 	    !lineNum)
 	{
+		flops->err.code = CANDO_LOG_ERR_INCORRECT_DATA;
 		return NULL;
 	}
 
@@ -266,6 +299,9 @@ cando_file_ops_get_line (struct cando_file_ops *flops,
 
 	ret = mprotect(flops->retData, flops->dataSize, PROT_WRITE);
 	if (ret == -1) {
+		snprintf(flops->err.buffer,
+		         sizeof(flops->err.buffer), "%s:%d:mprotect: %s",
+		         __FILE_NAME__, __LINE__, strerror(errno));
 		return NULL;
 	}
 
@@ -276,6 +312,9 @@ cando_file_ops_get_line (struct cando_file_ops *flops,
 
 	ret = mprotect(flops->retData, flops->dataSize, PROT_READ);
 	if (ret == -1) {
+		snprintf(flops->err.buffer,
+		         sizeof(flops->err.buffer), "%s:%d:mprotect: %s",
+		         __FILE_NAME__, __LINE__, strerror(errno));
 		return NULL;
 	}
 
@@ -291,6 +330,7 @@ cando_file_ops_get_line_count (struct cando_file_ops *flops)
 	if (!flops || \
             !(flops->data))
 	{
+		flops->err.code = CANDO_LOG_ERR_INCORRECT_DATA;
 		return -1;
 	}
 
@@ -305,8 +345,10 @@ cando_file_ops_get_line_count (struct cando_file_ops *flops)
 int
 cando_file_ops_get_fd (struct cando_file_ops *flops)
 {
-	if (!flops)
+	if (!flops) {
+		flops->err.code = CANDO_LOG_ERR_INCORRECT_DATA;
 		return -1;
+	}
 
 	return flops->fd;
 }
@@ -315,8 +357,10 @@ cando_file_ops_get_fd (struct cando_file_ops *flops)
 size_t
 cando_file_ops_get_data_size (struct cando_file_ops *flops)
 {
-	if (!flops)
+	if (!flops) {
+		flops->err.code = CANDO_LOG_ERR_INCORRECT_DATA;
 		return -1;
+	}
 
 	return flops->dataSize;
 }
@@ -325,8 +369,10 @@ cando_file_ops_get_data_size (struct cando_file_ops *flops)
 const char *
 cando_file_ops_get_filename (struct cando_file_ops *flops)
 {
-	if (!flops)
+	if (!flops) {
+		flops->err.code = CANDO_LOG_ERR_INCORRECT_DATA;
 		return NULL;
+	}
 
 	return flops->fname;
 }
@@ -353,11 +399,15 @@ cando_file_ops_set_data (struct cando_file_ops *flops,
 	    !fileInfo || \
 	    !(fileInfo->data))
 	{
+		flops->err.code = CANDO_LOG_ERR_INCORRECT_DATA;
 		return -1;
 	}
 
 	ret = mprotect(flops->data, fileInfo->dataSize, PROT_WRITE);
 	if (ret == -1) {
+		snprintf(flops->err.buffer,
+		         sizeof(flops->err.buffer), "%s:%d:mprotect: %s",
+		         __FILE_NAME__, __LINE__, strerror(errno));
 		return -1;
 	}
 
@@ -365,6 +415,9 @@ cando_file_ops_set_data (struct cando_file_ops *flops,
 
 	ret = mprotect(flops->data, fileInfo->dataSize, PROT_READ);
 	if (ret == -1) {
+		snprintf(flops->err.buffer,
+		         sizeof(flops->err.buffer), "%s:%d:mprotect: %s",
+		         __FILE_NAME__, __LINE__, strerror(errno));
 		return -1;
 	}
 

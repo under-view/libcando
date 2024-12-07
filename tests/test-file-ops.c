@@ -55,10 +55,16 @@ test_file_ops_create_empty_file (void CANDO_UNUSED **state)
 	memset(&fstats, 0, sizeof(fstats));
 	memset(&flopsCreateInfo, 0, sizeof(flopsCreateInfo));
 
+	cando_log_set_level(CANDO_LOG_DANGER);
+
 	flopsCreateInfo.dataSize = (1<<12);
 	flopsCreateInfo.fileName = "/tmp/some-file.txt";
 	flops = cando_file_ops_create(&flopsCreateInfo);
 	assert_non_null(flops);
+
+	ret = cando_file_ops_truncate_file(flops, 0);
+	assert_int_equal(ret, -1);
+	cando_log_err("%s\n", cando_log_get_error(flops));
 
 	ret = stat(flopsCreateInfo.fileName, &fstats);
 	assert_int_equal(ret, 0);
