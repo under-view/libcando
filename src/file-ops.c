@@ -165,16 +165,13 @@ cando_file_ops_truncate_file (struct cando_file_ops *flops,
 
 	if (dataSize == 0)
 	{
-		flops->err.code = CANDO_LOG_ERR_INCORRECT_DATA;
+		cando_log_set_err(flops, CANDO_LOG_ERR_INCORRECT_DATA, "");
 		return -1;
 	}
 
 	ret = ftruncate64(flops->fd, dataSize);
 	if (ret == -1) {
-		flops->err.code = errno;
-		snprintf(flops->err.buffer,
-			 sizeof(flops->err.buffer), "%s:%d:ftruncate64: %s",
-			 __FILE_NAME__, __LINE__, strerror(errno));
+		cando_log_set_err(flops, errno, "ftruncate64: %s", strerror(errno));
 		return -errno;
 	}
 
@@ -200,11 +197,13 @@ cando_file_ops_zero_copy (struct cando_file_ops *flops,
 
 	const struct cando_file_ops_zero_copy_info *zeroCopyInfo = fileInfo;
 
-	if (!flops || \
-	    !zeroCopyInfo ||
+	if (!flops)
+		return -1;
+
+	if (!zeroCopyInfo || \
 	    zeroCopyInfo->dataSize == 0)
 	{
-		flops->err.code = CANDO_LOG_ERR_INCORRECT_DATA;
+		cando_log_set_err(flops, CANDO_LOG_ERR_INCORRECT_DATA, "");
 		return -1;
 	}
 
@@ -217,10 +216,7 @@ cando_file_ops_zero_copy (struct cando_file_ops *flops,
 		if (ret == 0) {
 			return 0;
 		} else if (ret == -1) {
-			flops->err.code = errno;
-			snprintf(flops->err.buffer,
-				 sizeof(flops->err.buffer), "%s:%d:splice: %s",
-				 __FILE_NAME__, __LINE__, strerror(errno));
+			cando_log_set_err(flops, errno, "splice: %s", strerror(errno));
 			return -1;
 		}
 
@@ -230,10 +226,7 @@ cando_file_ops_zero_copy (struct cando_file_ops *flops,
 			     PIPE_MAX_BUFF_SIZE,
 			     SPLICE_F_MOVE|SPLICE_F_MORE);
 		if (ret == -1) {
-			flops->err.code = errno;
-			snprintf(flops->err.buffer,
-				 sizeof(flops->err.buffer), "%s:%d:splice: %s",
-				 __FILE_NAME__, __LINE__, strerror(errno));
+			cando_log_set_err(flops, errno, "splice: %s", strerror(errno));
 			return -1;
 		}
 
@@ -256,11 +249,13 @@ const void *
 cando_file_ops_get_data (struct cando_file_ops *flops,
                          const unsigned long int offset)
 {
-	if (!flops || \
-	    !(flops->data) ||
+	if (!flops)
+		return NULL;
+
+	if (!(flops->data) || \
 	    offset >= flops->dataSize)
 	{
-		flops->err.code = CANDO_LOG_ERR_INCORRECT_DATA;
+		cando_log_set_err(flops, CANDO_LOG_ERR_INCORRECT_DATA, "");
 		return NULL;
 	}
 
@@ -276,12 +271,14 @@ cando_file_ops_get_line (struct cando_file_ops *flops,
 
 	unsigned long int offset, c, line = 0;
 
-	if (!flops || \
-            !(flops->data) || \
+	if (!flops)
+		return NULL;
+
+	if (!(flops->data) || \
             !(flops->retData) || \
 	    !lineNum)
 	{
-		flops->err.code = CANDO_LOG_ERR_INCORRECT_DATA;
+		cando_log_set_err(flops, CANDO_LOG_ERR_INCORRECT_DATA, "");
 		return NULL;
 	}
 
@@ -297,11 +294,9 @@ cando_file_ops_get_line (struct cando_file_ops *flops,
 		}
 	}
 
-	ret = mprotect(flops->retData, flops->dataSize, PROT_WRITE);
+	ret = CANDO_SET_PAGE_WRITE(flops->retData, offset);
 	if (ret == -1) {
-		snprintf(flops->err.buffer,
-		         sizeof(flops->err.buffer), "%s:%d:mprotect: %s",
-		         __FILE_NAME__, __LINE__, strerror(errno));
+		cando_log_set_err(flops, errno, "mprotect: %s", strerror(errno));
 		return NULL;
 	}
 
@@ -310,11 +305,9 @@ cando_file_ops_get_line (struct cando_file_ops *flops,
 	memcpy(flops->retData, ((char*)flops->data)+(offset-c), c);
 	*((char*)(flops->retData+c)) = '\0';
 
-	ret = mprotect(flops->retData, flops->dataSize, PROT_READ);
+	ret = CANDO_SET_PAGE_READ(flops->retData, offset);
 	if (ret == -1) {
-		snprintf(flops->err.buffer,
-		         sizeof(flops->err.buffer), "%s:%d:mprotect: %s",
-		         __FILE_NAME__, __LINE__, strerror(errno));
+		cando_log_set_err(flops, errno, "mprotect: %s", strerror(errno));
 		return NULL;
 	}
 
@@ -327,10 +320,12 @@ cando_file_ops_get_line_count (struct cando_file_ops *flops)
 {
 	long int offset, line = 0;
 
-	if (!flops || \
-            !(flops->data))
+	if (!flops)
+		return -1;
+
+	if (!(flops->data))
 	{
-		flops->err.code = CANDO_LOG_ERR_INCORRECT_DATA;
+		cando_log_set_err(flops, CANDO_LOG_ERR_INCORRECT_DATA, "");
 		return -1;
 	}
 
@@ -345,10 +340,8 @@ cando_file_ops_get_line_count (struct cando_file_ops *flops)
 int
 cando_file_ops_get_fd (struct cando_file_ops *flops)
 {
-	if (!flops) {
-		flops->err.code = CANDO_LOG_ERR_INCORRECT_DATA;
+	if (!flops)
 		return -1;
-	}
 
 	return flops->fd;
 }
@@ -357,10 +350,8 @@ cando_file_ops_get_fd (struct cando_file_ops *flops)
 size_t
 cando_file_ops_get_data_size (struct cando_file_ops *flops)
 {
-	if (!flops) {
-		flops->err.code = CANDO_LOG_ERR_INCORRECT_DATA;
+	if (!flops)
 		return -1;
-	}
 
 	return flops->dataSize;
 }
@@ -369,10 +360,8 @@ cando_file_ops_get_data_size (struct cando_file_ops *flops)
 const char *
 cando_file_ops_get_filename (struct cando_file_ops *flops)
 {
-	if (!flops) {
-		flops->err.code = CANDO_LOG_ERR_INCORRECT_DATA;
+	if (!flops)
 		return NULL;
-	}
 
 	return flops->fname;
 }
@@ -392,32 +381,35 @@ cando_file_ops_set_data (struct cando_file_ops *flops,
 {
 	int ret = -1;
 
+	void *data = NULL;
+
 	const struct cando_file_ops_set_data_info *fileInfo = _fileInfo;
 
-	if (!flops || \
-            !(flops->data) || \
-	    !fileInfo || \
-	    !(fileInfo->data))
+	if (!flops)
+		return -1;
+
+	if (!fileInfo || \
+	    !(flops->data) || \
+	    !(fileInfo->data) || \
+	    (fileInfo->dataSize+fileInfo->offset) >= flops->dataSize)
 	{
-		flops->err.code = CANDO_LOG_ERR_INCORRECT_DATA;
+		cando_log_set_err(flops, CANDO_LOG_ERR_INCORRECT_DATA, "");
 		return -1;
 	}
 
-	ret = mprotect(flops->data, fileInfo->dataSize, PROT_WRITE);
+	data = (void*)(((char*)flops->data)+fileInfo->offset);
+
+	ret = CANDO_SET_PAGE_WRITE(data, fileInfo->dataSize);
 	if (ret == -1) {
-		snprintf(flops->err.buffer,
-		         sizeof(flops->err.buffer), "%s:%d:mprotect: %s",
-		         __FILE_NAME__, __LINE__, strerror(errno));
+		cando_log_set_err(flops, errno, "mprotect: %s", strerror(errno));
 		return -1;
 	}
 
-	memcpy(((char*)flops->data)+fileInfo->offset, fileInfo->data, fileInfo->dataSize);
+	memcpy(data, fileInfo->data, fileInfo->dataSize);
 
-	ret = mprotect(flops->data, fileInfo->dataSize, PROT_READ);
+	ret = CANDO_SET_PAGE_READ(data, fileInfo->dataSize);
 	if (ret == -1) {
-		snprintf(flops->err.buffer,
-		         sizeof(flops->err.buffer), "%s:%d:mprotect: %s",
-		         __FILE_NAME__, __LINE__, strerror(errno));
+		cando_log_set_err(flops, errno, "mprotect: %s", strerror(errno));
 		return -1;
 	}
 
