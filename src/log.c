@@ -87,6 +87,41 @@ cando_log_get_error_code (void *context)
 
 
 void
+cando_log_set_error_struct (const void *context,
+                            const unsigned int code,
+                            const char *fmt,
+                            ...)
+{
+	va_list args;
+
+	int offset = 0;
+
+	const char *string = NULL;
+
+	struct cando_log_error_struct *error = (void *) context;
+
+	if (!error)
+		return;
+
+	CANDO_SET_PAGE_WRITE(error, sizeof(struct cando_log_error_struct));
+
+	error->code = code;
+
+	va_start(args, fmt);
+	vsnprintf(error->buffer, sizeof(error->buffer), fmt, args);
+	va_end(args);
+
+	string = _get_error(error->code);
+	if (string) {
+		offset = strnlen(error->buffer, sizeof(error->buffer));
+		strncpy(error->buffer+offset, string, sizeof(error->buffer)-offset);
+	}
+
+	CANDO_SET_PAGE_READ(error, sizeof(struct cando_log_error_struct));
+}
+
+
+void
 cando_log_time (enum cando_log_level_type type,
 		const char *fmt,
 		...)

@@ -15,6 +15,7 @@ Macros
 1. :c:macro:`cando_log`
 #. :c:macro:`cando_log_err`
 #. :c:macro:`cando_log_print`
+#. :c:macro:`cando_log_set_err`
 
 =====
 Enums
@@ -41,6 +42,7 @@ Functions
 #. :c:func:`cando_log_set_write_fd`
 #. :c:func:`cando_log_get_error`
 #. :c:func:`cando_log_get_error_code`
+#. :c:func:`cando_log_set_error_struct`
 #. :c:func:`cando_log_time`
 #. :c:func:`cando_log_notime`
 
@@ -206,7 +208,6 @@ cando_log_get_error
 		* - context
 		  - | Pointer to an arbitrary context.
 		    | Start of context must be a ``struct`` :c:struct:`cando_log_error_struct`.
-		    | If ``NULL`` passed the internal global will be utilized.
 
 	Returns:
 		| **on success:** Passed context error string
@@ -230,11 +231,34 @@ cando_log_get_error_code
 		* - context
 		  - | Pointer to an arbitrary context.
 		    | Start of context must be a ``struct`` :c:struct:`cando_log_error_struct`.
-		    | If ``NULL`` passed the internal global will be utilized.
 
 	Returns:
 		| **on success:** Passed context error code or errno
 		| **on failure:** ``UINT32_MAX``
+
+==========================
+cando_log_set_error_struct
+==========================
+
+.. c:function:: void cando_log_set_error_struct(const void *context, const unsigned int code, const char *fmt, ...);
+
+	| Sets struct cando_log_error_struct members value.
+
+	.. list-table::
+		:header-rows: 1
+
+		* - Param
+	          - Decription
+		* - context
+		  - | Pointer to an arbitrary context.
+		    | Start of context must be a ``struct`` :c:struct:`cando_log_error_struct`.
+		* - code
+		  - | Error code to set for a ``context``
+		    | May be ``errno`` or ``enum`` :c:enum:`cando_log_error_type`.
+		* - fmt
+		  - | Format of the log passed to va_args
+		* - ...
+		  - | Variable list arguments
 
 =========================================================================================================================================
 
@@ -343,3 +367,21 @@ cando_log_print
 
 		#define cando_log_print(logType, fmt, ...) \
 			cando_log_notime(logType, fmt, ##__VA_ARGS__)
+
+=================
+cando_log_set_err
+=================
+
+.. c:macro:: cando_log_set_err(ptr, code, fmt, ...)
+
+	| Log format
+
+	| [file:line] message
+
+	| Sets ``struct`` :c:struct:`cando_log_error_struct` to later be called by
+	| :c:func:`cando_log_get_error` and :c:func:`cando_log_get_error_code`.
+
+	.. code-block::
+
+		#define cando_log_set_err(ptr, code, fmt, ...) \
+			cando_log_set_error_struct(ptr, code, "[%s:%d] " fmt, __FILE_NAME__, __LINE__, ##__VA_ARGS__)

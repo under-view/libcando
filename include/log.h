@@ -96,7 +96,6 @@ struct cando_log_error_struct
  *
  * @param context - Pointer to an arbitrary context.
  *                  Start of context must be a struct cando_log_error_struct.
- *                  If NULL passed the internal global will be utilized.
  *
  * @returns
  * 	on success: Passed context error string
@@ -114,7 +113,6 @@ cando_log_get_error (void *context);
  *
  * @param context - Pointer to an arbitrary context.
  *                  Start of context must be a struct cando_log_error_struct.
- *                  If NULL passed the internal global will be utilized.
  *
  * @returns
  * 	on success: Passed context error code or errno
@@ -123,6 +121,24 @@ cando_log_get_error (void *context);
 CANDO_API
 unsigned int
 cando_log_get_error_code (void *context);
+
+
+/*
+ * @brief Sets struct cando_log_error_struct members value
+ *
+ * @param context - Pointer to an arbitrary context.
+ *                  Start of context must be a struct cando_log_error_struct.
+ * @param code    - Error code to set for a @context.
+ *                  May be errno or enum cando_log_error_type
+ * @param fmt     - Format of the log passed to va_args.
+ * @param ...     - Variable list arguments
+ */
+CANDO_API
+void
+cando_log_set_error_struct (const void *context,
+                            const unsigned int code,
+                            const char *fmt,
+                            ...);
 
 
 /*
@@ -169,5 +185,8 @@ cando_log_notime (enum cando_log_level_type type,
 
 #define cando_log_print(logType, fmt, ...) \
 	cando_log_notime(logType, fmt, ##__VA_ARGS__)
+
+#define cando_log_set_err(ptr, code, fmt, ...) \
+	cando_log_set_error_struct(ptr, code, "[%s:%d] " fmt, __FILE_NAME__, __LINE__, ##__VA_ARGS__)
 
 #endif /* CANDO_LOG_H */
