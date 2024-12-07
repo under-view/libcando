@@ -30,6 +30,20 @@ static const char *tcolors[] =
 };
 
 
+static const char *
+_get_error (unsigned int code)
+{
+	switch (code) {
+		case CANDO_LOG_ERR_INCORRECT_DATA:
+			return "Incorrect data passed";
+		default:
+			return NULL;
+	}
+
+	return NULL;
+}
+
+
 void
 cando_log_set_level (enum cando_log_level_type level)
 {
@@ -47,10 +61,18 @@ cando_log_set_write_fd (int fd)
 const char *
 cando_log_get_error (void *context)
 {
-	if (!context)
+	const char *error = NULL;
+
+	struct cando_log_error_struct *err = context;
+
+	if (!err)
 		return NULL;
 
-	return ((struct cando_log_error_struct*)context)->buffer;
+	error = _get_error(err->code);
+	if (error)
+		strncpy(err->buffer, error, sizeof(err->buffer));
+
+	return err->buffer;
 }
 
 

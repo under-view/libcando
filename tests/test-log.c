@@ -120,12 +120,21 @@ test_log_error (void CANDO_UNUSED **state)
 	assert_int_equal(errCode, UINT32_MAX);
 	assert_null(error);
 
-	/* Test context passed */
-	context.err.code = 871;
-	strncpy(context.err.buffer, "BUFFFER 2 Copy", CANDO_PAGE_SIZE-1);
+	/* Test common error passed */
+	context.err.code = CANDO_LOG_ERR_INCORRECT_DATA;
 	errCode = cando_log_get_error_code(&context);
 	error = cando_log_get_error(&context);
-	assert_int_equal(errCode, 871);
+	assert_int_equal(errCode, CANDO_LOG_ERR_INCORRECT_DATA);
+	assert_string_equal(error, "Incorrect data passed");
+
+	/* Test context passed */
+	memset(&context, 0, sizeof(context));
+
+	context.err.code = CANDO_LOG_ERR_UNCOMMON;
+	strncpy(context.err.buffer, "BUFFFER 2 Copy", sizeof(context.err.buffer)-1);
+	errCode = cando_log_get_error_code(&context);
+	error = cando_log_get_error(&context);
+	assert_int_equal(errCode, CANDO_LOG_ERR_UNCOMMON);
 	assert_string_equal(error, "BUFFFER 2 Copy");
 }
 

@@ -21,6 +21,7 @@ Enums
 =====
 
 1. :c:enum:`cando_log_level_type`
+#. :c:enum:`cando_log_error_type`
 
 ======
 Unions
@@ -136,6 +137,34 @@ cando_log_set_write_fd
 		  - | File descriptor to an open file.
 
 =========================================================================================================================================
+
+====================
+cando_log_error_type
+====================
+
+.. c:enum:: cando_log_error_type
+
+	.. c:macro::
+		CANDO_LOG_ERR_UNCOMMON
+		CANDO_LOG_ERR_INCORRECT_DATA
+
+	| Enum with macros defining and error type
+	| Add on userspace error codes should be well out
+	| of range of any known common error code.
+
+	| Log error types used by
+		| :c:func:`cando_log_get_error`
+		| :c:func:`cando_log_get_error_code`
+
+	:c:macro:`CANDO_LOG_ERR_UNCOMMON`
+		| Value set to ``0x1000``
+		| Errors that can't be given a common
+		| error string are given this error code.
+		| Caller would then need to set buffer themselves.
+
+	:c:macro:`CANDO_LOG_ERR_INCORRECT_DATA`
+		| Value set to ``0x1001``
+		| Code for incorrect data passed in function arguments
 
 ======================
 cando_log_error_struct

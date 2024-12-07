@@ -56,6 +56,25 @@ cando_log_set_write_fd (int fd);
 
 
 /*
+ * @brief enum cando_log_error_type
+ *
+ *        Enum with macros defining and error type
+ *        Add on userspace error codes should be well out
+ *        of range of any known common error code.
+ *
+ * @macro CANDO_LOG_ERR_UNCOMMON       - Errors that can't be given a common
+ *                                       error string are given this error code.
+ *                                       Caller would then need to set buffer themselves.
+ * @macro CANDO_LOG_ERR_INCORRECT_DATA - Code for incorrect data passed in function arguments
+ */
+enum cando_log_error_type
+{
+	CANDO_LOG_ERR_UNCOMMON       = 0x1000,
+	CANDO_LOG_ERR_INCORRECT_DATA = 0x1001,
+};
+
+
+/*
  * @brief Structure used to store and acquire
  *        error string and code for multiple
  *        struct context's.
@@ -66,7 +85,7 @@ cando_log_set_write_fd (int fd);
 struct cando_log_error_struct
 {
 	unsigned int code;
-	char         buffer[CANDO_PAGE_SIZE];
+	char         buffer[(1<<9)];
 };
 
 
