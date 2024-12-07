@@ -16,7 +16,7 @@
 #include "log.h"
 
 static int writefd = STDOUT_FILENO;
-static enum cando_log_level_type logLevel = CANDO_LOG_ALL;
+static enum cando_log_level_type logLevel = CANDO_LOG_NONE;
 
 /* ANSI Escape Codes, terminal colors */
 static const char *tcolors[] =
