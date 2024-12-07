@@ -15,6 +15,9 @@
 
 #include "log.h"
 
+static int writefd = STDOUT_FILENO;
+static enum cando_log_level_type logLevel = CANDO_LOG_ALL;
+
 /* ANSI Escape Codes, terminal colors */
 static const char *tcolors[] =
 {
@@ -25,11 +28,6 @@ static const char *tcolors[] =
 	[CANDO_LOG_WARNING] = "\e[33;1m",
 	[CANDO_LOG_RESET]   = "\x1b[0m"
 };
-
-
-static int writefd = STDOUT_FILENO;
-static struct cando_log_error_struct globalError;
-static enum cando_log_level_type logLevel = CANDO_LOG_ALL;
 
 
 void
@@ -46,32 +44,23 @@ cando_log_set_write_fd (int fd)
 }
 
 
-void
-cando_log_set_global_error (int code,
-                            const char *fmt,
-                            ...)
-{
-	va_list args;
-
-	va_start(args, fmt);
-	vsnprintf(globalError.buffer, CANDO_PAGE_SIZE, fmt, args);
-	va_end(args);
-
-	globalError.code = code;
-}
-
-
 const char *
 cando_log_get_error (void *context)
 {
-	return (context) ? ((struct cando_log_error_struct*)context)->buffer : globalError.buffer;
+	if (!context)
+		return NULL;
+
+	return ((struct cando_log_error_struct*)context)->buffer;
 }
 
 
 unsigned int
 cando_log_get_error_code (void *context)
 {
-	return (context) ? ((struct cando_log_error_struct*)context)->code : globalError.code;
+	if (!context)
+		return UINT32_MAX;
+
+	return ((struct cando_log_error_struct*)context)->code;
 }
 
 

@@ -115,11 +115,10 @@ test_log_error (void CANDO_UNUSED **state)
 	} context;
 
 	/* Test NULL passed */
-	cando_log_set_global_error(55, "some arbitrary buffer");
 	errCode = cando_log_get_error_code(NULL);
 	error = cando_log_get_error(NULL);
-	assert_int_equal(errCode, 55);
-	assert_string_equal(error, "some arbitrary buffer");
+	assert_int_equal(errCode, UINT32_MAX);
+	assert_null(error);
 
 	/* Test context passed */
 	context.err.code = 871;

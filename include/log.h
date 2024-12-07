@@ -71,27 +71,6 @@ struct cando_log_error_struct
 
 
 /*
- * @brief Sets internal struct cando_log_error_struct global
- *        variable values. Functions should only be utilized
- *        in underview API's *_create*() functions.
- *
- *        NOTE: Do not utilize anything other than *_create*() functions.
- *        Instead opt to set the string yourself then make a call to
- *        cando_log_get_error(3) or cando_log_get_error_code(3)
- *
- * @param code - Error code or errno
- * @param fmt  - Format of string to be returned to caller
- * @param ...  - Variable list arguments containing contents of
- *               the error string that'll be returned to caller.
- */
-CANDO_API
-void
-cando_log_set_global_error (int code,
-                            const char *fmt,
-			    ...);
-
-
-/*
  * @brief Returns a string with the error defined given
  *        caller provided a context with first members
  *        of the context being a struct cando_log_error_struct.
@@ -102,7 +81,7 @@ cando_log_set_global_error (int code,
  *
  * @returns
  * 	on success: Passed context error string
- * 	on failure: Internal global error string
+ * 	on failure: NULL
  */
 CANDO_API
 const char *
@@ -120,7 +99,7 @@ cando_log_get_error (void *context);
  *
  * @returns
  * 	on success: Passed context error code or errno
- * 	on failure: Internal global error code or errno
+ * 	on failure: UINT32_MAX
  */
 CANDO_API
 unsigned int

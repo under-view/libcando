@@ -38,7 +38,6 @@ Functions
 
 1. :c:func:`cando_log_set_level`
 #. :c:func:`cando_log_set_write_fd`
-#. :c:func:`cando_log_set_global_error`
 #. :c:func:`cando_log_get_error`
 #. :c:func:`cando_log_get_error_code`
 #. :c:func:`cando_log_time`
@@ -158,33 +157,6 @@ cando_log_error_struct
 	:c:member:`buffer`
 		| Buffer to store error string
 
-==========================
-cando_log_set_global_error
-==========================
-
-.. c:function:: void cando_log_set_global_error(int code, const char *fmt, ...);
-
-	Sets internal ``struct`` :c:struct:`cando_log_error_struct` global
-	variable values. Functions should only be utilized
-	in underview API's ``_*create*()`` functions.
-
-	**NOTE:** Do not utilize anything other than ``_*create*()`` functions.
-	Instead opt to set the string yourself then make a call to
-	:c:func:`cando_log_get_error` or :c:func:`cando_log_get_error_code`
-
-	.. list-table::
-		:header-rows: 1
-
-		* - Param
-	          - Decription
-		* - code
-		  - | Error code or errno
-		* - fmt
-		  - | Format of string to be returned to caller
-		* - ...
-		  - | Variable list arguments containing contents of
-		    | the error string that'll be returned to caller.
-
 ===================
 cando_log_get_error
 ===================
@@ -207,7 +179,7 @@ cando_log_get_error
 
 	Returns:
 		| **on success:** Passed context error string
-		| **on failure:** Internal global error string
+		| **on failure:** ``NULL``
 
 ========================
 cando_log_get_error_code
@@ -231,7 +203,7 @@ cando_log_get_error_code
 
 	Returns:
 		| **on success:** Passed context error code or errno
-		| **on failure:** Internal global error code or errno
+		| **on failure:** ``UINT32_MAX``
 
 =========================================================================================================================================
 
