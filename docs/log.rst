@@ -53,6 +53,12 @@ cando_log_level_type
 
 .. c:enum:: cando_log_level_type
 
+	#. Log level options used by
+		* :c:func:`cando_log_set_level`
+		* :c:macro:`cando_log`
+		* :c:macro:`cando_log_err`
+		* :c:macro:`cando_log_print`
+
 	.. c:macro::
 		CANDO_LOG_NONE
 		CANDO_LOG_SUCCESS
@@ -61,12 +67,6 @@ cando_log_level_type
 		CANDO_LOG_WARNING
 		CANDO_LOG_RESET
 		CANDO_LOG_ALL
-
-	Log level options used by
-		:c:func:`cando_log_set_level`
-		:c:macro:`cando_log`
-		:c:macro:`cando_log_err`
-		:c:macro:`cando_log_print`
 
 	:c:macro:`CANDO_LOG_NONE`
 		| Value set to ``0x00000000``
@@ -106,6 +106,8 @@ cando_log_set_level
 
 	Sets which type of messages that are allowed to be printed to an open file.
 
+	Default is set to ``CANDO_LOG_NONE``.
+
 	.. list-table::
 		:header-rows: 1
 
@@ -144,17 +146,17 @@ cando_log_error_type
 
 .. c:enum:: cando_log_error_type
 
-	.. c:macro::
-		CANDO_LOG_ERR_UNCOMMON
-		CANDO_LOG_ERR_INCORRECT_DATA
-
 	| Enum with macros defining and error type
 	| Add on userspace error codes should be well out
 	| of range of any known common error code.
 
-	| Log error types used by
-		| :c:func:`cando_log_get_error`
-		| :c:func:`cando_log_get_error_code`
+	#. Log error types used by
+		* :c:func:`cando_log_get_error`
+		* :c:func:`cando_log_get_error_code`
+
+	.. c:macro::
+		CANDO_LOG_ERR_UNCOMMON
+		CANDO_LOG_ERR_INCORRECT_DATA
 
 	:c:macro:`CANDO_LOG_ERR_UNCOMMON`
 		| Value set to ``0x1000``
@@ -172,9 +174,9 @@ cando_log_error_struct
 
 .. c:struct:: cando_log_error_struct
 
-	Structure used to store and acquire
-	error string and code for multiple
-	struct context's.
+	| Structure used to store and acquire
+	| error string and code for multiple
+	| struct context's.
 
 	.. c:member::
 		unsigned int code;
@@ -192,9 +194,9 @@ cando_log_get_error
 
 .. c:function:: const char *cando_log_get_error(void *context);
 
-	Returns a string with the error defined given
-	caller provided a context with first members
-	of the context being a ``struct`` :c:struct:`cando_log_error_struct`.
+	| Returns a string with the error defined given
+	| caller provided a context with first members
+	| of the context being a ``struct`` :c:struct:`cando_log_error_struct`.
 
 	.. list-table::
 		:header-rows: 1
@@ -216,9 +218,9 @@ cando_log_get_error_code
 
 .. c:function:: unsigned int cando_log_get_error_code(void *context);
 
-	Returns unsigned integer with the error code
-	given caller provided a context with first members
-	of the context being a ``struct`` :c:struct:`cando_log_error_struct`.
+	| Returns unsigned integer with the error code
+	| given caller provided a context with first members
+	| of the context being a ``struct`` :c:struct:`cando_log_error_struct`.
 
 	.. list-table::
 		:header-rows: 1
@@ -242,9 +244,9 @@ cando_log_time
 
 .. c:function:: void cando_log_time(enum cando_log_level_type type, const char *fmt, ...);
 
-	Provides applications/library way to write to an open file
-	with a time stamp and ansi color codes to colorize
-	different message.
+	| Provides applications/library way to write to an open file
+	| with a time stamp and ansi color codes to colorize
+	| different message.
 
 	.. list-table::
 		:header-rows: 1
@@ -264,9 +266,9 @@ cando_log_notime
 
 .. c:function:: void cando_log_notime(enum cando_log_level_type type, const char *fmt, ...);
 
-	Provides applications/library way to write to an open file
-	without time stamp with ansi color codes to colorize
-	different message.
+	| Provides applications/library way to write to an open file
+	| without time stamp with ansi color codes to colorize
+	| different message.
 
 	.. list-table::
 		:header-rows: 1
