@@ -31,4 +31,10 @@
 #define CANDO_INLINE inline __attribute__((always_inline))
 #define CANDO_STATIC_INLINE static inline __attribute__((always_inline))
 
+/*
+ * Retrieves the starting address of the page @ptr resides in.
+ */
+#define CANDO_GET_PAGE(ptr) \
+	((void*)(((uintptr_t)ptr/CANDO_PAGE_SIZE)*CANDO_PAGE_SIZE))
+
 #endif /* CANDO_MACROS_H */
