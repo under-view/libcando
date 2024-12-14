@@ -38,7 +38,7 @@
  * Retrieves the starting address of the page @ptr resides in.
  */
 #define CANDO_GET_PAGE(ptr) \
-	((void*)(((uintptr_t)ptr/CANDO_PAGE_SIZE)*CANDO_PAGE_SIZE))
+	((void*)((uintptr_t)ptr & ~(CANDO_PAGE_SIZE-1)))
 
 
 /*
