@@ -135,7 +135,7 @@ cando_file_ops_create (const void *_fileCreateInfo)
 		}
 	}
 
-	ret = mprotect(flops, sizeof(struct cando_file_ops), PROT_READ);
+	ret = CANDO_PAGE_SET_READ(flops, sizeof(struct cando_file_ops));
 	if (ret == -1) {
 		cando_log_err("mprotect: %s\n", strerror(errno));
 		cando_file_ops_destroy(flops);
@@ -294,7 +294,7 @@ cando_file_ops_get_line (struct cando_file_ops *flops,
 		}
 	}
 
-	ret = CANDO_SET_PAGE_WRITE(flops->retData, offset);
+	ret = CANDO_PAGE_SET_WRITE(flops->retData, offset);
 	if (ret == -1) {
 		cando_log_set_err(flops, errno, "mprotect: %s", strerror(errno));
 		return NULL;
@@ -305,7 +305,7 @@ cando_file_ops_get_line (struct cando_file_ops *flops,
 	memcpy(flops->retData, ((char*)flops->data)+(offset-c), c);
 	*((char*)(flops->retData+c)) = '\0';
 
-	ret = CANDO_SET_PAGE_READ(flops->retData, offset);
+	ret = CANDO_PAGE_SET_READ(flops->retData, offset);
 	if (ret == -1) {
 		cando_log_set_err(flops, errno, "mprotect: %s", strerror(errno));
 		return NULL;
@@ -399,7 +399,7 @@ cando_file_ops_set_data (struct cando_file_ops *flops,
 
 	data = (void*)(((char*)flops->data)+fileInfo->offset);
 
-	ret = CANDO_SET_PAGE_WRITE(data, fileInfo->dataSize);
+	ret = CANDO_PAGE_SET_WRITE(data, fileInfo->dataSize);
 	if (ret == -1) {
 		cando_log_set_err(flops, errno, "mprotect: %s", strerror(errno));
 		return -1;
@@ -407,7 +407,7 @@ cando_file_ops_set_data (struct cando_file_ops *flops,
 
 	memcpy(data, fileInfo->data, fileInfo->dataSize);
 
-	ret = CANDO_SET_PAGE_READ(data, fileInfo->dataSize);
+	ret = CANDO_PAGE_SET_READ(data, fileInfo->dataSize);
 	if (ret == -1) {
 		cando_log_set_err(flops, errno, "mprotect: %s", strerror(errno));
 		return -1;

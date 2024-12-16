@@ -12,12 +12,6 @@
 #endif
 
 /*
- * Define typical page size without including
- * limits.h header.
- */
-#define CANDO_PAGE_SIZE (1<<12)
-
-/*
  * Informs the compiler that you expect a variable
  * to be unused and instructs compiler to not issue
  * a warning on the variable.
@@ -35,9 +29,16 @@
 #define CANDO_STATIC_INLINE static inline __attribute__((always_inline))
 
 /*
+ * Define typical page size without including
+ * limits.h header.
+ */
+#define CANDO_PAGE_SIZE (1<<12)
+
+
+/*
  * Retrieves the starting address of the page @ptr resides in.
  */
-#define CANDO_GET_PAGE(ptr) \
+#define CANDO_PAGE_GET(ptr) \
 	((void*)((uintptr_t)ptr & ~(CANDO_PAGE_SIZE-1)))
 
 
@@ -47,11 +48,11 @@
  * @param ptr  - Pointer to data caller wants write-only
  * @param size - Size of data that needs to be set write-only
  */
-#define CANDO_SET_PAGE_WRITE(ptr, size) \
+#define CANDO_PAGE_SET_WRITE(ptr, size) \
 	__extension__ \
 	({ \
 		int err = -1; \
-		void *page = CANDO_GET_PAGE(ptr); \
+		void *page = CANDO_PAGE_GET(ptr); \
 		err = mprotect(page, size, PROT_WRITE); \
 		err; \
 	})
@@ -63,11 +64,11 @@
  * @param ptr  - Pointer to data caller wants write-only
  * @param size - Size of data that needs to be set write-only
  */
-#define CANDO_SET_PAGE_READ(ptr, size) \
+#define CANDO_PAGE_SET_READ(ptr, size) \
 	__extension__ \
 	({ \
 		int err = -1; \
-		void *page = CANDO_GET_PAGE(ptr); \
+		void *page = CANDO_PAGE_GET(ptr); \
 		err = mprotect(page, size, PROT_READ); \
 		err; \
 	})

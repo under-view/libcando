@@ -103,7 +103,7 @@ cando_log_set_error_struct (const void *context,
 	if (!error)
 		return;
 
-	CANDO_SET_PAGE_WRITE(error, sizeof(struct cando_log_error_struct));
+	CANDO_PAGE_SET_WRITE(error, sizeof(struct cando_log_error_struct));
 
 	error->code = code;
 
@@ -117,7 +117,7 @@ cando_log_set_error_struct (const void *context,
 		strncpy(error->buffer+offset, string, sizeof(error->buffer)-offset);
 	}
 
-	CANDO_SET_PAGE_READ(error, sizeof(struct cando_log_error_struct));
+	CANDO_PAGE_SET_READ(error, sizeof(struct cando_log_error_struct));
 }
 
 
