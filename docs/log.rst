@@ -125,7 +125,7 @@ cando_log_set_level
 cando_log_set_write_fd
 ======================
 
-.. c:function:: void cando_log_set_write_fd(int fd);
+.. c:function:: void cando_log_set_write_fd(const int fd);
 
 	Sets the internal global write file descriptor
 	to caller define file descriptor.
@@ -194,7 +194,7 @@ cando_log_error_struct
 cando_log_get_error
 ===================
 
-.. c:function:: const char *cando_log_get_error(void *context);
+.. c:function:: const char *cando_log_get_error(const void *context);
 
 	| Returns a string with the error defined given
 	| caller provided a context with first members
@@ -217,7 +217,7 @@ cando_log_get_error
 cando_log_get_error_code
 ========================
 
-.. c:function:: unsigned int cando_log_get_error_code(void *context);
+.. c:function:: unsigned int cando_log_get_error_code(const void *context);
 
 	| Returns unsigned integer with the error code
 	| given caller provided a context with first members
@@ -240,7 +240,7 @@ cando_log_get_error_code
 cando_log_set_error_struct
 ==========================
 
-.. c:function:: void cando_log_set_error_struct(const void *context, const unsigned int code, const char *fmt, ...);
+.. c:function:: void cando_log_set_error_struct(void *context, const unsigned int code, const char *fmt, ...);
 
 	| Sets struct cando_log_error_struct members value.
 

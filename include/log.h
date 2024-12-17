@@ -52,7 +52,7 @@ cando_log_set_level (enum cando_log_level_type level);
  */
 CANDO_API
 void
-cando_log_set_write_fd (int fd);
+cando_log_set_write_fd (const int fd);
 
 
 /*
@@ -103,7 +103,7 @@ struct cando_log_error_struct
  */
 CANDO_API
 const char *
-cando_log_get_error (void *context);
+cando_log_get_error (const void *context);
 
 
 /*
@@ -120,7 +120,7 @@ cando_log_get_error (void *context);
  */
 CANDO_API
 unsigned int
-cando_log_get_error_code (void *context);
+cando_log_get_error_code (const void *context);
 
 
 /*
@@ -135,7 +135,7 @@ cando_log_get_error_code (void *context);
  */
 CANDO_API
 void
-cando_log_set_error_struct (const void *context,
+cando_log_set_error_struct (void *context,
                             const unsigned int code,
                             const char *fmt,
                             ...);

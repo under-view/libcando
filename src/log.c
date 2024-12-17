@@ -31,7 +31,7 @@ static const char *tcolors[] =
 
 
 static const char *
-_get_error (unsigned int code)
+_get_error (const unsigned int code)
 {
 	switch (code) {
 		case CANDO_LOG_ERR_INCORRECT_DATA:
@@ -52,14 +52,14 @@ cando_log_set_level (enum cando_log_level_type level)
 
 
 void
-cando_log_set_write_fd (int fd)
+cando_log_set_write_fd (const int fd)
 {
 	writefd = fd;
 }
 
 
 const char *
-cando_log_get_error (void *context)
+cando_log_get_error (const void *context)
 {
 	if (!context)
 		return NULL;
@@ -69,7 +69,7 @@ cando_log_get_error (void *context)
 
 
 unsigned int
-cando_log_get_error_code (void *context)
+cando_log_get_error_code (const void *context)
 {
 	if (!context)
 		return UINT32_MAX;
@@ -79,7 +79,7 @@ cando_log_get_error_code (void *context)
 
 
 void
-cando_log_set_error_struct (const void *context,
+cando_log_set_error_struct (void *context,
                             const unsigned int code,
                             const char *fmt,
                             ...)
@@ -90,7 +90,7 @@ cando_log_set_error_struct (const void *context,
 
 	const char *string = NULL;
 
-	struct cando_log_error_struct *error = (void *) context;
+	struct cando_log_error_struct *error = context;
 
 	if (!error)
 		return;
