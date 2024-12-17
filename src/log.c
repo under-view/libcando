@@ -61,18 +61,10 @@ cando_log_set_write_fd (int fd)
 const char *
 cando_log_get_error (void *context)
 {
-	const char *error = NULL;
-
-	struct cando_log_error_struct *err = context;
-
-	if (!err)
+	if (!context)
 		return NULL;
 
-	error = _get_error(err->code);
-	if (error)
-		strncpy(err->buffer, error, sizeof(err->buffer));
-
-	return err->buffer;
+	return ((struct cando_log_error_struct*)context)->buffer;
 }
 
 
