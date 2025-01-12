@@ -13,9 +13,9 @@ Macros
 ======
 
 1. :c:macro:`cando_log`
-#. :c:macro:`cando_log_err`
+#. :c:macro:`cando_log_error`
 #. :c:macro:`cando_log_print`
-#. :c:macro:`cando_log_set_err`
+#. :c:macro:`cando_log_set_error`
 
 =====
 Enums
@@ -58,7 +58,7 @@ cando_log_level_type
 	#. Log level options used by
 		* :c:func:`cando_log_set_level`
 		* :c:macro:`cando_log`
-		* :c:macro:`cando_log_err`
+		* :c:macro:`cando_log_error`
 		* :c:macro:`cando_log_print`
 
 	.. c:macro::
@@ -328,11 +328,11 @@ cando_log
 		#define cando_log(logType, fmt, ...) \
 			cando_log_time(logType, "[%s:%d] " fmt, __FILE_NAME__, __LINE__, ##__VA_ARGS__)
 
-=============
-cando_log_err
-=============
+===============
+cando_log_error
+===============
 
-.. c:macro:: cando_log_err(fmt, ...)
+.. c:macro:: cando_log_error(fmt, ...)
 
 	Log format
 
@@ -345,7 +345,7 @@ cando_log_err
 
 	.. code-block::
 
-		#define cando_log_err(fmt, ...) \
+		#define cando_log_error(fmt, ...) \
 			cando_log_time(CANDO_LOG_DANGER, "[%s:%d] " fmt, __FILE_NAME__, __LINE__, ##__VA_ARGS__)
 
 ===============
@@ -368,11 +368,11 @@ cando_log_print
 		#define cando_log_print(logType, fmt, ...) \
 			cando_log_notime(logType, fmt, ##__VA_ARGS__)
 
-=================
-cando_log_set_err
-=================
+===================
+cando_log_set_error
+===================
 
-.. c:macro:: cando_log_set_err(ptr, code, fmt, ...)
+.. c:macro:: cando_log_set_error(ptr, code, fmt, ...)
 
 	| Log format
 
@@ -383,5 +383,5 @@ cando_log_set_err
 
 	.. code-block::
 
-		#define cando_log_set_err(ptr, code, fmt, ...) \
+		#define cando_log_set_error(ptr, code, fmt, ...) \
 			cando_log_set_error_struct(ptr, code, "[%s:%d] " fmt, __FILE_NAME__, __LINE__, ##__VA_ARGS__)

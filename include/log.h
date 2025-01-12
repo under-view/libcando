@@ -180,13 +180,13 @@ cando_log_notime (enum cando_log_level_type type,
 #define cando_log(logType, fmt, ...) \
 	cando_log_time(logType, "[%s:%d] " fmt, __FILE_NAME__,  __LINE__, ##__VA_ARGS__)
 
-#define cando_log_err(fmt, ...) \
+#define cando_log_error(fmt, ...) \
 	cando_log_time(CANDO_LOG_DANGER, "[%s:%d] " fmt, __FILE_NAME__, __LINE__, ##__VA_ARGS__)
 
 #define cando_log_print(logType, fmt, ...) \
 	cando_log_notime(logType, fmt, ##__VA_ARGS__)
 
-#define cando_log_set_err(ptr, code, fmt, ...) \
+#define cando_log_set_error(ptr, code, fmt, ...) \
 	cando_log_set_error_struct(ptr, code, "[%s:%d] " fmt, __FILE_NAME__, __LINE__, ##__VA_ARGS__)
 
 #endif /* CANDO_LOG_H */

@@ -59,7 +59,7 @@ cando_file_ops_create (const void *_fileCreateInfo)
 	const struct cando_file_ops_create_info *fileCreateInfo = _fileCreateInfo;
 
 	if (!fileCreateInfo) {
-		cando_log_err("Incorrect data passed\n");
+		cando_log_error("Incorrect data passed\n");
 		return NULL;
 	}
 
@@ -69,7 +69,7 @@ cando_file_ops_create (const void *_fileCreateInfo)
 		     MAP_PRIVATE|MAP_ANONYMOUS,
 		     -1, 0);
 	if (flops == (void*)-1) {
-		cando_log_err("mmap: %s\n", strerror(errno));
+		cando_log_error("mmap: %s\n", strerror(errno));
 		return NULL;
 	}
 
@@ -81,7 +81,7 @@ cando_file_ops_create (const void *_fileCreateInfo)
 
 		flops->fd = open(flops->fname, O_CREAT|O_RDWR, 0644);
 		if (flops->fd == -1) {
-			cando_log_err("open: %s\n", strerror(errno));
+			cando_log_error("open: %s\n", strerror(errno));
 			cando_file_ops_destroy(flops);
 			return NULL;
 		}
@@ -99,14 +99,14 @@ cando_file_ops_create (const void *_fileCreateInfo)
 	if (fileCreateInfo->createPipe) {
 		ret = pipe(flops->pipefds);
 		if (ret == -1) {
-			cando_log_err("pipe: %s\n", strerror(errno));
+			cando_log_error("pipe: %s\n", strerror(errno));
 			cando_file_ops_destroy(flops);
 			return NULL;
 		}
 	} else {
 		ret = cando_file_ops_truncate_file(flops, flops->dataSize);
 		if (ret < 0 && flops->dataSize) {
-			cando_log_err("%s\n", cando_log_get_error(flops));
+			cando_log_error("%s\n", cando_log_get_error(flops));
 			cando_file_ops_destroy(flops);
 			return NULL;
 		}
@@ -118,7 +118,7 @@ cando_file_ops_create (const void *_fileCreateInfo)
 				   flops->fd,
 				   fileCreateInfo->offset);
 		if (flops->data == (void*)-1 && flops->dataSize) {
-			cando_log_err("mmap: %s\n", strerror(errno));
+			cando_log_error("mmap: %s\n", strerror(errno));
 			cando_file_ops_destroy(flops);
 			return NULL;
 		}
@@ -129,7 +129,7 @@ cando_file_ops_create (const void *_fileCreateInfo)
 				      MAP_PRIVATE|MAP_ANONYMOUS,
 				      -1, 0);
 		if (flops->retData == (void*)-1 && flops->dataSize) {
-			cando_log_err("mmap: %s\n", strerror(errno));
+			cando_log_error("mmap: %s\n", strerror(errno));
 			cando_file_ops_destroy(flops);
 			return NULL;
 		}
@@ -137,7 +137,7 @@ cando_file_ops_create (const void *_fileCreateInfo)
 
 	ret = CANDO_PAGE_SET_READ(flops, sizeof(struct cando_file_ops));
 	if (ret == -1) {
-		cando_log_err("mprotect: %s\n", strerror(errno));
+		cando_log_error("mprotect: %s\n", strerror(errno));
 		cando_file_ops_destroy(flops);
 		return NULL;
 	}
@@ -165,13 +165,13 @@ cando_file_ops_truncate_file (struct cando_file_ops *flops,
 
 	if (dataSize == 0)
 	{
-		cando_log_set_err(flops, CANDO_LOG_ERR_INCORRECT_DATA, "");
+		cando_log_set_error(flops, CANDO_LOG_ERR_INCORRECT_DATA, "");
 		return -1;
 	}
 
 	ret = ftruncate64(flops->fd, dataSize);
 	if (ret == -1) {
-		cando_log_set_err(flops, errno, "ftruncate64: %s", strerror(errno));
+		cando_log_set_error(flops, errno, "ftruncate64: %s", strerror(errno));
 		return -errno;
 	}
 
@@ -203,7 +203,7 @@ cando_file_ops_zero_copy (struct cando_file_ops *flops,
 	if (!zeroCopyInfo || \
 	    zeroCopyInfo->dataSize == 0)
 	{
-		cando_log_set_err(flops, CANDO_LOG_ERR_INCORRECT_DATA, "");
+		cando_log_set_error(flops, CANDO_LOG_ERR_INCORRECT_DATA, "");
 		return -1;
 	}
 
@@ -216,7 +216,7 @@ cando_file_ops_zero_copy (struct cando_file_ops *flops,
 		if (ret == 0) {
 			return 0;
 		} else if (ret == -1) {
-			cando_log_set_err(flops, errno, "splice: %s", strerror(errno));
+			cando_log_set_error(flops, errno, "splice: %s", strerror(errno));
 			return -1;
 		}
 
@@ -226,7 +226,7 @@ cando_file_ops_zero_copy (struct cando_file_ops *flops,
 			     PIPE_MAX_BUFF_SIZE,
 			     SPLICE_F_MOVE|SPLICE_F_MORE);
 		if (ret == -1) {
-			cando_log_set_err(flops, errno, "splice: %s", strerror(errno));
+			cando_log_set_error(flops, errno, "splice: %s", strerror(errno));
 			return -1;
 		}
 
@@ -255,7 +255,7 @@ cando_file_ops_get_data (struct cando_file_ops *flops,
 	if (!(flops->data) || \
 	    offset >= flops->dataSize)
 	{
-		cando_log_set_err(flops, CANDO_LOG_ERR_INCORRECT_DATA, "");
+		cando_log_set_error(flops, CANDO_LOG_ERR_INCORRECT_DATA, "");
 		return NULL;
 	}
 
@@ -278,7 +278,7 @@ cando_file_ops_get_line (struct cando_file_ops *flops,
             !(flops->retData) || \
 	    !lineNum)
 	{
-		cando_log_set_err(flops, CANDO_LOG_ERR_INCORRECT_DATA, "");
+		cando_log_set_error(flops, CANDO_LOG_ERR_INCORRECT_DATA, "");
 		return NULL;
 	}
 
@@ -296,7 +296,7 @@ cando_file_ops_get_line (struct cando_file_ops *flops,
 
 	ret = CANDO_PAGE_SET_WRITE(flops->retData, offset);
 	if (ret == -1) {
-		cando_log_set_err(flops, errno, "mprotect: %s", strerror(errno));
+		cando_log_set_error(flops, errno, "mprotect: %s", strerror(errno));
 		return NULL;
 	}
 
@@ -307,7 +307,7 @@ cando_file_ops_get_line (struct cando_file_ops *flops,
 
 	ret = CANDO_PAGE_SET_READ(flops->retData, offset);
 	if (ret == -1) {
-		cando_log_set_err(flops, errno, "mprotect: %s", strerror(errno));
+		cando_log_set_error(flops, errno, "mprotect: %s", strerror(errno));
 		return NULL;
 	}
 
@@ -325,7 +325,7 @@ cando_file_ops_get_line_count (struct cando_file_ops *flops)
 
 	if (!(flops->data))
 	{
-		cando_log_set_err(flops, CANDO_LOG_ERR_INCORRECT_DATA, "");
+		cando_log_set_error(flops, CANDO_LOG_ERR_INCORRECT_DATA, "");
 		return -1;
 	}
 
@@ -393,7 +393,7 @@ cando_file_ops_set_data (struct cando_file_ops *flops,
 	    !(fileInfo->data) || \
 	    (fileInfo->dataSize+fileInfo->offset) >= flops->dataSize)
 	{
-		cando_log_set_err(flops, CANDO_LOG_ERR_INCORRECT_DATA, "");
+		cando_log_set_error(flops, CANDO_LOG_ERR_INCORRECT_DATA, "");
 		return -1;
 	}
 
@@ -401,7 +401,7 @@ cando_file_ops_set_data (struct cando_file_ops *flops,
 
 	ret = CANDO_PAGE_SET_WRITE(data, fileInfo->dataSize);
 	if (ret == -1) {
-		cando_log_set_err(flops, errno, "mprotect: %s", strerror(errno));
+		cando_log_set_error(flops, errno, "mprotect: %s", strerror(errno));
 		return -1;
 	}
 
@@ -409,7 +409,7 @@ cando_file_ops_set_data (struct cando_file_ops *flops,
 
 	ret = CANDO_PAGE_SET_READ(data, fileInfo->dataSize);
 	if (ret == -1) {
-		cando_log_set_err(flops, errno, "mprotect: %s", strerror(errno));
+		cando_log_set_error(flops, errno, "mprotect: %s", strerror(errno));
 		return -1;
 	}
 
