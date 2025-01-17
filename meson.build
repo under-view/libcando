@@ -19,9 +19,6 @@ src_root_dir = meson.current_source_dir()
 build_root_dir = meson.current_build_dir()
 
 file_ops = get_option('file-ops')
-if file_ops.enabled()
-  pargs += ['-D_CANDO_FILE_OPS_INTERFACE_']
-endif
 
 inc = include_directories('include')
 
