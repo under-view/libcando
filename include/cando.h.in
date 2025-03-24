@@ -3,6 +3,7 @@
 
 #include "macros.h"
 #include "log.h"
+#include "mm.h"
 @FILE_OPS_INTERFACE@
 
 #endif /* CANDO_H */

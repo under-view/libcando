@@ -1,5 +1,6 @@
 fs = [
-  'src/log.c'
+  'src/log.c',
+  'src/mm.c'
 ]
 
 if file_ops.enabled()

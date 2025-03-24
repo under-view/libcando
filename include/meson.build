@@ -2,7 +2,8 @@ main_headers_dict = {}
 
 main_headers = [
   'log.h',
-  'macros.h'
+  'macros.h',
+  'mm.h'
 ]
 
 if file_ops.enabled()
