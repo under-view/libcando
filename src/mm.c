@@ -37,7 +37,12 @@ new_virtual_memory_mapping (struct cando_mm *_mm, const size_t size)
 
 	offset = sizeof(struct cando_log_error_struct) + sizeof(size_t);
 
-	newDataSize = offset + size;
+	if (mm && mm->saddr) {
+		newDataSize = mm->bufferSize + size;
+	} else {
+		newDataSize = offset + size;
+	}
+
 	data = mmap(NULL, newDataSize,
 		    PROT_READ|PROT_WRITE,
 		    MAP_PRIVATE|MAP_ANONYMOUS,
@@ -46,6 +51,17 @@ new_virtual_memory_mapping (struct cando_mm *_mm, const size_t size)
 		cando_log_error("mremap: %s\n", strerror(errno));
 		return NULL;
 	} else {
+		/*
+		 * This is okay because the goal would be
+		 * to allocate as much memory as possible
+		 * early on. So, that remapping can be
+		 * avoided.
+		 */
+		if (mm && mm->saddr) {
+			memcpy(data, mm, mm->bufferSize);
+			munmap(mm, mm->bufferSize);
+		}
+
 		mm = data;
 		mm->saddr = (void*)((char*)data)+offset;
 	}
