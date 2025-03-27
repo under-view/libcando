@@ -81,15 +81,15 @@ new_virtual_memory_mapping (struct cando_mm *_mm, const size_t size)
 
 
 void *
-cando_mm_alloc (void *_mm, const size_t size)
+cando_mm_alloc (const size_t size)
 {
-	struct cando_mm *ret = NULL, *mm = _mm;
+	struct cando_mm *ret = NULL, *mm = NULL;
 
 	mm = CANDO_PAGE_GET(saddr);
 
-	if (!_mm) {
+	if (!mm) {
 		ret = new_virtual_memory_mapping(mm, size);
-	} else if (_mm && (mm->dataSize <= size)) {
+	} else if (mm && (mm->dataSize <= size)) {
 		ret = new_virtual_memory_mapping(mm, size);
 	}
 

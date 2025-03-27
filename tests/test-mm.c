@@ -29,14 +29,14 @@ test_mm_alloc (void CANDO_UNUSED **state)
 
 	cando_log_set_level(CANDO_LOG_ALL);
 
-	mem = cando_mm_alloc(NULL, CANDO_PAGE_SIZE);
+	mem = cando_mm_alloc(CANDO_PAGE_SIZE);
 	assert_non_null(mem);
 
 	memset(buffer, 'G', CANDO_PAGE_SIZE);
 	memcpy(mem, buffer, CANDO_PAGE_SIZE);
 
 	/* Test remapping */
-	mem = cando_mm_alloc(mem, CANDO_PAGE_SIZE);
+	mem = cando_mm_alloc(CANDO_PAGE_SIZE*2);
 	assert_non_null(mem);
 	assert_memory_equal(buffer, mem, CANDO_PAGE_SIZE);
 
