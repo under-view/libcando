@@ -7,6 +7,6 @@ void *
 cando_mm_alloc (void *mm, const size_t size);
 
 void
-cando_mm_destroy (const void *mm);
+cando_mm_destroy (void);
 
 #endif /* CANDO_MM_H */

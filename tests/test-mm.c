@@ -40,7 +40,7 @@ test_mm_alloc (void CANDO_UNUSED **state)
 	assert_non_null(mem);
 	assert_memory_equal(buffer, mem, CANDO_PAGE_SIZE);
 
-	cando_mm_destroy(mem);
+	cando_mm_destroy();
 }
 
 /**********************************

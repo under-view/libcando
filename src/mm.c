@@ -7,6 +7,12 @@
 #include "macros.h"
 #include "mm.h"
 
+/*
+ * Global used to keep track of starting address
+ * of other addresses returned to caller.
+ */
+static const void *saddr = NULL;
+
 struct cando_mm_link
 {
 	size_t               dataSize;
@@ -64,7 +70,7 @@ new_virtual_memory_mapping (struct cando_mm *_mm, const size_t size)
 		}
 
 		mm = data;
-		mm->data = (void*)((char*)data)+offset;
+		saddr = mm->data = (void*)((char*)data)+offset;
 	}
 
 	mm->dataSize = newSize;
@@ -79,11 +85,11 @@ cando_mm_alloc (void *_mm, const size_t size)
 {
 	struct cando_mm *ret = NULL, *mm = _mm;
 
-	mm = CANDO_PAGE_GET(mm);
+	mm = CANDO_PAGE_GET(saddr);
 
-	if (!mm) {
+	if (!_mm) {
 		ret = new_virtual_memory_mapping(mm, size);
-	} else if (mm && (mm->dataSize <= size)) {
+	} else if (_mm && (mm->dataSize <= size)) {
 		ret = new_virtual_memory_mapping(mm, size);
 	}
 
@@ -92,13 +98,8 @@ cando_mm_alloc (void *_mm, const size_t size)
 
 
 void
-cando_mm_destroy (const void *_mm)
+cando_mm_destroy (void)
 {
-	struct cando_mm *mm = (struct cando_mm *) _mm;
-
-	if (!mm)
-		return;
-
-	mm = CANDO_PAGE_GET(mm);
+	struct cando_mm *mm = CANDO_PAGE_GET(saddr);
 	munmap((void*)mm, mm->bufferSize);
 }
