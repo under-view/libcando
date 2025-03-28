@@ -301,7 +301,7 @@ cando_file_ops_get_line (struct cando_file_ops *flops,
 	}
 
 	c -= (lineNum == 1) ? 0 : 1;
-	memset(flops->retData, 0, c);
+	memset(flops->retData, 0, offset);
 	memcpy(flops->retData, ((char*)flops->data)+(offset-c), c);
 	*((char*)(flops->retData+c)) = '\0';
 
