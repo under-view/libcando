@@ -70,6 +70,9 @@ test_mm_sub_alloc (void CANDO_UNUSED **state)
 	mm = cando_mm_alloc(mm, CANDO_PAGE_SIZE*3);
 	assert_non_null(mm);
 
+	mem = cando_mm_sub_alloc(mm, CANDO_PAGE_SIZE);
+	assert_non_null(mem);
+
 	assert_memory_equal(buffer, mem, CANDO_PAGE_SIZE);
 
 	cando_mm_destroy(mm);
@@ -84,6 +87,7 @@ main (void)
 {
 	const struct CMUnitTest tests[] = {
 		cmocka_unit_test(test_mm_alloc),
+		cmocka_unit_test(test_mm_sub_alloc),
 	};
 
 	return cmocka_run_group_tests(tests, NULL, NULL);
