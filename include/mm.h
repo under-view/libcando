@@ -1,12 +1,19 @@
 #ifndef CANDO_MM_H
 #define CANDO_MM_H
 
+/*
+ * This interface was built to force caller to
+ * be more consciously concern about virtual
+ * heap memory management.
+ */
+
 #include "macros.h"
 
 /*
- * This interface was built to force caller to be
- * more consciously concern about heap memory management.
+ * Stores information about the cando_mm instance.
  */
+struct cando_mm;
+
 
 /*
  * @brief Returns pointer to an allocated heap memory.
@@ -14,16 +21,34 @@
  *        is to allocate a large block of memory once.
  *        Then sub-allocate from that larger block.
  *
+ * @param mm   - Pointer to a struct cando_mm
  * @param size - Size of data caller may allocate. If the
  *               size is greater than the larger block
  *               remapping of memory will occur.
  *
  * @return
- *	on success: Pointer to allocated heap memory
+ *	on success: Pointer to struct cando_mm
+ *	on failure: NULL
+ */
+struct cando_mm *
+cando_mm_alloc (struct cando_mm *mm, const size_t size);
+
+
+/*
+ * @brief Returns pointer to an allocated heap memory.
+ *        The goal of this function similar to malloc(3).
+ *        From an allocated large block of memory.
+ *        Sub-allocate from that larger block.
+ *
+ * @param mm   - Pointer to a struct cando_mm
+ * @param size - Size of smaller buffer
+ *
+ * @return
+ * 	on success: Po
  *	on failure: NULL
  */
 void *
-cando_mm_alloc (const size_t size);
+cando_mm_sub_alloc (struct cando_mm *mm, const size_t size);
 
 
 /*
@@ -31,6 +56,6 @@ cando_mm_alloc (const size_t size);
  *        cando_mm_alloc(3) call.
  */
 void
-cando_mm_destroy (void);
+cando_mm_destroy (struct cando_mm *mm);
 
 #endif /* CANDO_MM_H */

@@ -7,18 +7,12 @@
 #include "macros.h"
 #include "mm.h"
 
-/*
- * Global used to keep track of starting address
- * of other addresses returned to caller.
- */
-static const void *saddr = NULL;
-
 struct cando_mm_link
 {
 	size_t               dataSize;
-	void                 *data;
 	struct cando_mm_link *prev;
 	struct cando_mm_link *next;
+	void                 *data;
 };
 
 
@@ -27,7 +21,7 @@ struct cando_mm
 	struct cando_log_error_struct err;
 	size_t                        bufferSize;
 	size_t                        dataSize;
-	void                          *data;
+	struct cando_mm_link          slink;
 };
 
 
@@ -38,15 +32,13 @@ new_virtual_memory_mapping (struct cando_mm *_mm, const size_t size)
 
 	struct cando_mm *mm = _mm;
 
-	size_t offset = 0, newDataSize = 0, newSize = 0;
+	size_t offset = 0, newDataSize = 0;
 
 	offset = sizeof(struct cando_mm);
 
-	if (mm && mm->data) {
-		newSize = mm->dataSize + size;
+	if (mm && mm->slink.data) {
 		newDataSize = mm->bufferSize + size;
 	} else {
-		newSize = size;
 		newDataSize = offset + size;
 	}
 
@@ -64,28 +56,26 @@ new_virtual_memory_mapping (struct cando_mm *_mm, const size_t size)
 		 * early on. So, that remapping can be
 		 * avoided.
 		 */
-		if (mm && mm->data) {
+		if (mm && mm->slink.data) {
 			memcpy(data, mm, mm->bufferSize);
 			munmap(mm, mm->bufferSize);
 		}
 
 		mm = data;
-		saddr = mm->data = (void*)((char*)data)+offset;
+		mm->bufferSize = newDataSize;
+		mm->dataSize = newDataSize - offset;
+		mm->slink.dataSize = size;
+		mm->slink.data = (void*)((char*)data)+offset;
 	}
 
-	mm->dataSize = newSize;
-	mm->bufferSize = newDataSize;
-
-	return mm->data;
+	return mm;
 }
 
 
-void *
-cando_mm_alloc (const size_t size)
+struct cando_mm *
+cando_mm_alloc (struct cando_mm *mm, const size_t size)
 {
-	struct cando_mm *ret = NULL, *mm = NULL;
-
-	mm = CANDO_PAGE_GET(saddr);
+	struct cando_mm *ret = NULL;
 
 	if (!mm) {
 		ret = new_virtual_memory_mapping(mm, size);
@@ -97,9 +87,30 @@ cando_mm_alloc (const size_t size)
 }
 
 
-void
-cando_mm_destroy (void)
+void *
+cando_mm_sub_alloc (struct cando_mm *mm, const size_t size CANDO_UNUSED)
 {
-	struct cando_mm *mm = CANDO_PAGE_GET(saddr);
-	munmap((void*)mm, mm->bufferSize);
+	void *data = NULL;
+
+	if (!mm) {
+		cando_log_error("Incorrect data passed\n");
+		return NULL;
+	}
+
+	// For now
+	data = mm->slink.data;
+
+	return data;
+}
+
+
+void
+cando_mm_destroy (struct cando_mm *_mm)
+{
+	struct cando_mm *mm = _mm;
+
+	if (!mm)
+		return;
+
+	munmap(mm, mm->bufferSize);
 }
