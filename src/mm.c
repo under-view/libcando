@@ -7,7 +7,19 @@
 #include "macros.h"
 #include "mm.h"
 
-
+/*
+ * @brief Structure defining cando_mm (Cando Memory Mapped) instance
+ *
+ * @member err        - Stores information about the error that occured
+ *                      for the given instance and may later be retrieved
+ * @member bufferSize - Full size of the struct cando_mm instance.
+ *                      Not all bytes in the buffer are writable.
+ * @member dataSize   - Full size of the caller writable data.
+ * @member abSize     - The amount of available bytes the caller
+ *                      can still write to.
+ * @member offset     - Buffer offset used when allocating new blocks
+ *                      in constant time.
+ */
 struct cando_mm
 {
 	struct cando_log_error_struct err;

@@ -17,9 +17,12 @@ struct cando_mm;
 
 /*
  * @brief Returns pointer to an allocated heap memory.
- *        The goal of this function similar to malloc(3).
- *        is to allocate a large block of memory once.
- *        Then sub-allocate from that larger block.
+ *        The goal of this is to allocate a large block
+ *        of memory once.
+ *
+ *        Addresses returned from function should not
+ *        be used to write to. Writable addresses
+ *        are return from a call to cando_mm_sub_alloc(3).
  *
  * @param mm   - Pointer to a struct cando_mm
  * @param size - Size of data caller may allocate. If the
@@ -40,11 +43,14 @@ cando_mm_alloc (struct cando_mm *mm, const size_t size);
  *        From an allocated large block of memory.
  *        Sub-allocate from that larger block.
  *
+ *        Addresses returned from function can be
+ *        used for writing.
+ *
  * @param mm   - Pointer to a struct cando_mm
  * @param size - Size of smaller buffer
  *
  * @return
- * 	on success: Po
+ * 	on success: Pointer to writable memory
  *	on failure: NULL
  */
 void *
