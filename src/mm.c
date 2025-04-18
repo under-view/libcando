@@ -10,7 +10,6 @@
 struct cando_mm_link
 {
 	size_t               dataSize;
-	struct cando_mm_link *prev;
 	struct cando_mm_link *next;
 	void                 *data;
 };
@@ -21,6 +20,7 @@ struct cando_mm
 	struct cando_log_error_struct err;
 	size_t                        bufferSize;
 	size_t                        dataSize;
+	size_t                        abSize;
 	struct cando_mm_link          slink;
 };
 
@@ -36,11 +36,7 @@ new_virtual_memory_mapping (struct cando_mm *_mm, const size_t size)
 
 	offset = sizeof(struct cando_mm);
 
-	if (mm && mm->slink.data) {
-		newDataSize = mm->bufferSize + size;
-	} else {
-		newDataSize = offset + size;
-	}
+	newDataSize = (mm) ? mm->bufferSize + size : offset + size;
 
 	data = mmap(NULL, newDataSize,
 		    PROT_READ|PROT_WRITE,
@@ -50,22 +46,22 @@ new_virtual_memory_mapping (struct cando_mm *_mm, const size_t size)
 		cando_log_error("mmap: %s\n", strerror(errno));
 		return NULL;
 	} else {
+		memset(data, 0, newDataSize);
+
 		/*
 		 * This is okay because the goal would be
 		 * to allocate as much memory as possible
 		 * early on. So, that remapping can be
 		 * avoided.
 		 */
-		if (mm && mm->slink.data) {
+		if (mm) {
 			memcpy(data, mm, mm->bufferSize);
 			munmap(mm, mm->bufferSize);
 		}
 
 		mm = data;
 		mm->bufferSize = newDataSize;
-		mm->dataSize = newDataSize - offset;
-		mm->slink.dataSize = size;
-		mm->slink.data = (void*)((char*)data)+offset;
+		mm->dataSize = mm->abSize = newDataSize - offset;
 	}
 
 	return mm;
@@ -88,19 +84,31 @@ cando_mm_alloc (struct cando_mm *mm, const size_t size)
 
 
 void *
-cando_mm_sub_alloc (struct cando_mm *mm, const size_t size CANDO_UNUSED)
+cando_mm_sub_alloc (struct cando_mm *mm, const size_t size)
 {
-	void *data = NULL;
+	size_t bufferSize = 0;
+
+	struct cando_mm_link *link = NULL;
 
 	if (!mm) {
 		cando_log_error("Incorrect data passed\n");
 		return NULL;
 	}
 
-	// For now
-	data = mm->slink.data;
+	link = &(mm->slink);
 
-	return data;
+	while (link && link->next)
+		link = link->next;
+
+	bufferSize = sizeof(struct cando_mm_link) + size;
+
+	link->dataSize = size;
+	link->data = (void*)((char*)link + sizeof(struct cando_mm_link));
+	link->next = (struct cando_mm_link*)(((char*)link) + bufferSize);
+
+	mm->abSize -= bufferSize;
+
+	return link->data;
 }
 
 

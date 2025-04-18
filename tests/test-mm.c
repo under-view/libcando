@@ -31,7 +31,7 @@ test_mm_alloc (void CANDO_UNUSED **state)
 	assert_non_null(mm);
 
 	/* Test remapping */
-	mm = cando_mm_alloc(mm, CANDO_PAGE_SIZE*3);
+	mm = cando_mm_alloc(mm, CANDO_PAGE_SIZE*5);
 	assert_non_null(mm);
 
 	cando_mm_destroy(mm);
@@ -49,31 +49,26 @@ test_mm_alloc (void CANDO_UNUSED **state)
 static void CANDO_UNUSED
 test_mm_sub_alloc (void CANDO_UNUSED **state)
 {
-	char *mem = NULL;
-
 	struct cando_mm *mm = NULL;
 
-	char buffer[CANDO_PAGE_SIZE];
+	char *red = NULL, *blue = NULL;
 
 	cando_log_set_level(CANDO_LOG_ALL);
 
-	mm = cando_mm_alloc(NULL, CANDO_PAGE_SIZE*2);
+	mm = cando_mm_alloc(NULL, CANDO_PAGE_SIZE*5);
 	assert_non_null(mm);
 
-	mem = cando_mm_sub_alloc(mm, CANDO_PAGE_SIZE);
-	assert_non_null(mem);
+	red = cando_mm_sub_alloc(mm, CANDO_PAGE_SIZE);
+	assert_non_null(red);
 
-	memset(buffer, 'G', CANDO_PAGE_SIZE);
-	memcpy(mem, buffer, CANDO_PAGE_SIZE);
+	memset(red, 'G', CANDO_PAGE_SIZE);
 
-	/* Test remapping */
-	mm = cando_mm_alloc(mm, CANDO_PAGE_SIZE*3);
-	assert_non_null(mm);
+	blue = cando_mm_sub_alloc(mm, CANDO_PAGE_SIZE);
+	assert_non_null(blue);
 
-	mem = cando_mm_sub_alloc(mm, CANDO_PAGE_SIZE);
-	assert_non_null(mem);
+	memset(blue, 'G', CANDO_PAGE_SIZE);
 
-	assert_memory_equal(buffer, mem, CANDO_PAGE_SIZE);
+	assert_memory_equal(red, blue, CANDO_PAGE_SIZE);
 
 	cando_mm_destroy(mm);
 }
