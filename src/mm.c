@@ -7,13 +7,6 @@
 #include "macros.h"
 #include "mm.h"
 
-struct cando_mm_link
-{
-	size_t               dataSize;
-	struct cando_mm_link *next;
-	void                 *data;
-};
-
 
 struct cando_mm
 {
@@ -21,16 +14,14 @@ struct cando_mm
 	size_t                        bufferSize;
 	size_t                        dataSize;
 	size_t                        abSize;
-	struct cando_mm_link          slink;
+	size_t                        offset;
 };
 
 
 static void *
-new_virtual_memory_mapping (struct cando_mm *_mm, const size_t size)
+new_virtual_memory_mapping (struct cando_mm *mm, const size_t size)
 {
 	void *data = NULL;
-
-	struct cando_mm *mm = _mm;
 
 	size_t offset = 0, newDataSize = 0;
 
@@ -60,6 +51,7 @@ new_virtual_memory_mapping (struct cando_mm *_mm, const size_t size)
 		}
 
 		mm = data;
+		mm->offset = offset;
 		mm->bufferSize = newDataSize;
 		mm->dataSize = mm->abSize = newDataSize - offset;
 	}
@@ -71,7 +63,7 @@ new_virtual_memory_mapping (struct cando_mm *_mm, const size_t size)
 struct cando_mm *
 cando_mm_alloc (struct cando_mm *mm, const size_t size)
 {
-	struct cando_mm *ret = NULL;
+	struct cando_mm *ret = mm;
 
 	if (!mm) {
 		ret = new_virtual_memory_mapping(mm, size);
@@ -86,9 +78,7 @@ cando_mm_alloc (struct cando_mm *mm, const size_t size)
 void *
 cando_mm_sub_alloc (struct cando_mm *mm, const size_t size)
 {
-	size_t bufferSize = 0;
-
-	struct cando_mm_link *link = NULL;
+	void *data = NULL;
 
 	if (!mm) {
 		cando_log_error("Incorrect data passed\n");
@@ -102,20 +92,12 @@ cando_mm_sub_alloc (struct cando_mm *mm, const size_t size)
 		return NULL;
 	}
 
-	link = &(mm->slink);
+	data = (void*)((char*)mm + mm->offset);
 
-	while (link && link->next)
-		link = link->next;
+	mm->offset += size;
+	mm->abSize -= size;
 
-	bufferSize = sizeof(struct cando_mm_link) + size;
-
-	link->dataSize = size;
-	link->data = (void*)((char*)link + sizeof(struct cando_mm_link));
-	link->next = (struct cando_mm_link*)(((char*)link) + bufferSize);
-
-	mm->abSize -= bufferSize;
-
-	return link->data;
+	return data;
 }
 
 

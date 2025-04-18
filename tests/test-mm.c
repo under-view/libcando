@@ -67,8 +67,10 @@ test_mm_sub_alloc (void CANDO_UNUSED **state)
 	assert_non_null(blue);
 
 	memset(blue, 'G', CANDO_PAGE_SIZE);
-
 	assert_memory_equal(red, blue, CANDO_PAGE_SIZE);
+
+	memset(blue, 'R', CANDO_PAGE_SIZE);
+	assert_memory_not_equal(red, blue, CANDO_PAGE_SIZE);
 
 	/* Test over allocation */
 	blue = cando_mm_sub_alloc(mm, CANDO_PAGE_SIZE*10);
