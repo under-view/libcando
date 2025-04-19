@@ -13,7 +13,7 @@
 #include "file-ops.h"
 
 #define FILE_NAME_LEN_MAX (1<<12)
-#define PIPE_MAX_BUFF_SIZE (1<<16)
+#define PIPE_MAX_BUFF_SIZE (size_t)(1<<16)
 
 /*
  * @brief struct defining cando_file_ops instance
@@ -194,7 +194,7 @@ cando_file_ops_zero_copy (struct cando_file_ops *flops,
 	ret = splice(finfo->in_fd,
 		     finfo->in_off,
 		     flops->pipe_fds[1], 0,
-		     PIPE_MAX_BUFF_SIZE,
+		     CANDO_MIN(finfo->size, PIPE_MAX_BUFF_SIZE),
 		     SPLICE_F_MOVE|SPLICE_F_MORE);
 	if (ret == 0) {
 		return 0;
@@ -206,7 +206,7 @@ cando_file_ops_zero_copy (struct cando_file_ops *flops,
 	ret = splice(flops->pipe_fds[0], 0,
 		     finfo->out_fd,
 		     finfo->out_off,
-		     PIPE_MAX_BUFF_SIZE,
+		     CANDO_MIN(finfo->size, PIPE_MAX_BUFF_SIZE),
 		     SPLICE_F_MOVE|SPLICE_F_MORE);
 	if (ret == -1) {
 		cando_log_set_error(flops, errno, "splice: %s", strerror(errno));
