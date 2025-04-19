@@ -85,12 +85,53 @@ test_mm_sub_alloc (void CANDO_UNUSED **state)
  * End of test_mm_sub_alloc functions *
  **************************************/
 
+
+/***********************************
+ * Start of test_mm_free functions *
+ ***********************************/
+
+static void CANDO_UNUSED
+test_mm_free (void CANDO_UNUSED **state)
+{
+	struct cando_mm *mm = NULL;
+
+	char *red = NULL, *blue = NULL, *green = NULL;
+
+	cando_log_set_level(CANDO_LOG_ALL);
+
+	mm = cando_mm_alloc(NULL, CANDO_PAGE_SIZE*8);
+	assert_non_null(mm);
+
+	red = cando_mm_sub_alloc(mm, CANDO_PAGE_SIZE);
+	assert_non_null(red);
+
+	blue = cando_mm_sub_alloc(mm, CANDO_PAGE_SIZE);
+	assert_non_null(blue);
+
+	green = cando_mm_sub_alloc(mm, CANDO_PAGE_SIZE);
+	assert_non_null(green);
+
+	memset(red, 'G', CANDO_PAGE_SIZE);
+	memset(blue, 'B', CANDO_PAGE_SIZE);
+	memset(green, 'G', CANDO_PAGE_SIZE);
+
+	cando_mm_free(mm, blue, CANDO_PAGE_SIZE);
+	assert_memory_equal(red, blue, CANDO_PAGE_SIZE);
+
+	cando_mm_destroy(mm);
+}
+
+/*********************************
+ * End of test_mm_free functions *
+ *********************************/
+
 int
 main (void)
 {
 	const struct CMUnitTest tests[] = {
 		cmocka_unit_test(test_mm_alloc),
 		cmocka_unit_test(test_mm_sub_alloc),
+		cmocka_unit_test(test_mm_free),
 	};
 
 	return cmocka_run_group_tests(tests, NULL, NULL);

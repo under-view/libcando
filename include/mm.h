@@ -58,6 +58,30 @@ cando_mm_sub_alloc (struct cando_mm *mm, const size_t size);
 
 
 /*
+ * @brief Wipes the bytes at a given subregion of memory.
+ *        Shifts the memory after the subregion up to a
+ *        tracked buffer offset over to the subregion
+ *        up to the new buffer offset.
+ *
+ *        NOTE: This function should be used sparingly
+ *        as the caller would have to keep track of the
+ *        new pointer address for every object allocated.
+ *        It's better to only allocate memory if you know
+ *        the address it resides in won't change. Usages
+ *        of bounded buffer for strings is encouraged.
+ *
+ * @param mm   - Pointer to a struct cando_mm.
+ * @param data - Address to the data caller wants
+ *               to zero out.
+ * @param size - Size of data to zero out
+ */
+void
+cando_mm_free (struct cando_mm *mm,
+               void *data,
+               const size_t size);
+
+
+/*
  * @brief Free's the large block of allocated memory created after
  *        cando_mm_alloc(3) call.
  */

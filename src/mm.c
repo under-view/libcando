@@ -114,6 +114,32 @@ cando_mm_sub_alloc (struct cando_mm *mm, const size_t size)
 
 
 void
+cando_mm_free (struct cando_mm *mm,
+               void *data,
+               const size_t size)
+{
+	size_t copy_sz = 0;
+
+	void *mv_data = NULL;
+
+	if (!mm || !data || !size) {
+		cando_log_error("Incorrect data passed\n");
+		return;
+	}
+
+	memset(data, 0, size);
+
+	mv_data = (void*)((char*)data+size);
+	copy_sz = ((uintptr_t)(((char*)mm)+mm->offset))-((uintptr_t)data);
+
+	memcpy(data, mv_data, copy_sz);
+
+	mm->ab_sz += size;
+	mm->offset -= size;
+}
+
+
+void
 cando_mm_destroy (struct cando_mm *mm)
 {
 	if (!mm)
