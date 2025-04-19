@@ -29,6 +29,19 @@
 #define CANDO_STATIC_INLINE static inline __attribute__((always_inline))
 
 /*
+ * Min & Max macro definitions with type safety.
+ */
+#define CANDO_MAX(a,b) \
+	({ typeof (a) _a = (a); \
+	   typeof (b) _b = (b); \
+	   _a > _b ? _a : _b; })
+
+#define CANDO_MIN(a,b) \
+	({ typeof (a) _a = (a); \
+	   typeof (b) _b = (b); \
+	   _a < _b ? _a : _b; })
+
+/*
  * Define typical page size without including
  * limits.h header.
  */
