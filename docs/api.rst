@@ -8,3 +8,4 @@
 	log
 	file-ops
 	mm
+	vsock-tcp

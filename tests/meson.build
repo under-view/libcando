@@ -6,6 +6,10 @@ if file_ops.enabled()
   progs += ['test-file-ops.c']
 endif
 
+if vsock_tcp.enabled()
+  progs += ['test-vsock-tcp.c']
+endif
+
 original_args = pargs
 foreach p : progs
   exec_name = p.substring(0,-2) # remove .c extension from name

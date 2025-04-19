@@ -6,3 +6,7 @@ fs = [
 if file_ops.enabled()
   fs += ['src/file-ops.c']
 endif
+
+if vsock_tcp.enabled()
+  fs += ['src/vsock-tcp.c']
+endif

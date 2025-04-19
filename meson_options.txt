@@ -9,3 +9,7 @@ option('docs',
 option('file-ops',
        type: 'feature', value: 'disabled',
        description: 'Build with file-operations support')
+
+option('vsock-tcp',
+       type: 'feature', value: 'disabled',
+       description: 'Build with vm socket-tcp support')
