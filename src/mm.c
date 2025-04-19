@@ -11,7 +11,7 @@
  * @brief Structure defining cando_mm (Cando Memory Mapped) instance
  *
  * @member err     - Stores information about the error that occured
- *                   for the given instance and may later be retrieved
+ *                   for the given instance and may later be retrieved.
  * @member buff_sz - Full size of the struct cando_mm instance.
  *                   Not all bytes in the buffer are writable.
  * @member data_sz - Full size of the caller writable data.
