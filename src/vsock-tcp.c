@@ -19,6 +19,9 @@
 /*
  * @brief Structure defining Cando VM Socket TCP interface implementation.
  *
+ * @member err       - Stores information about the error that occured
+ *                     for the given instance and may later be retrieved
+ *                     by caller.
  * @member free_sock - If structure allocated with calloc(3) member will be
  *                     set to true so that, we know to call free(3) when
  *                     destroying the instance.
@@ -30,11 +33,12 @@
  */
 struct cando_vsock_tcp
 {
-	bool               free_sock;
-	int                fd;
-	unsigned int       vcid;
-	int                port;
-	struct sockaddr_vm addr;
+	struct cando_log_error_struct err;
+	bool                          free_sock;
+	int                           fd;
+	unsigned int                  vcid;
+	int                           port;
+	struct sockaddr_vm            addr;
 };
 
 
