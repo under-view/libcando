@@ -82,14 +82,14 @@ cando_mm_alloc
 
 .. c:function:: struct cando_mm *cando_mm_alloc(struct cando_mm *mm, const size_t size);
 
-	| Returns pointer to an allocated heap memory.
-	| The goal of this is to allocate a large block
-	| of memory once. If re-allocation required pass
-	| the previous large block to clone all data.
-	|
-	| Addresses returned from function should not
-	| be used to write to. Writable addresses
-	| are return from a call to :c:func:`cando_mm_sub_alloc`.
+| Returns pointer to an allocated heap memory.
+| The goal of this is to allocate a large block
+| of memory once. If re-allocation required pass
+| the previous large block to clone all data.
+|
+| Addresses returned from function should not
+| be used to write to. Writable addresses
+| are return from a call to :c:func:`cando_mm_sub_alloc`.
 
 	.. list-table::
 		:header-rows: 1
@@ -116,12 +116,12 @@ cando_mm_sub_alloc
 
 .. c:function:: void *cando_mm_sub_alloc(struct cando_mm *mm, const size_t size);
 
-	| Returns pointer to an allocated heap memory
-	| segment. From an allocated large block of
-        | memory sub-allocate from that larger block.
-	|
-	| Addresses returned from function can be
-	| used for writing.
+| Returns pointer to an allocated heap memory
+| segment. From an allocated large block of
+| memory sub-allocate from that larger block.
+|
+| Addresses returned from function can be
+| used for writing.
 
 	.. list-table::
 		:header-rows: 1
@@ -145,17 +145,17 @@ cando_mm_free
 
 .. c:function:: void cando_mm_free(struct cando_mm *mm, void *data, const size_t size);
 
-	| Wipes the bytes at a given subregion of memory.
-	| Shifts the memory after the subregion up to a
-	| tracked buffer offset over to the subregion
-	| up to the new buffer offset.
-	|
-	| **NOTE:** This function should be used sparingly
-	| as the caller would have to keep track of the
-	| new pointer address for every object allocated.
-	| It's better to only allocate memory if you know
-	| the address it resides in won't change. Usages
-	| of bounded buffer for strings is encouraged.
+| Wipes the bytes at a given subregion of memory.
+| Shifts the memory after the subregion up to a
+| tracked buffer offset over to the subregion
+| up to the new buffer offset.
+|
+| **NOTE:** This function should be used sparingly
+| as the caller would have to keep track of the
+| new pointer address for every object allocated.
+| It's better to only allocate memory if you know
+| the address it resides in won't change. Usages
+| of bounded buffer for strings is encouraged.
 
 	.. list-table::
 		:header-rows: 1
@@ -177,8 +177,8 @@ cando_mm_destroy
 
 .. c:function:: void cando_mm_destroy(struct cando_mm *mm);
 
-	| Free's the large block of allocated memory created after
-	| :c:func:`cando_mm_alloc` call.
+| Free's the large block of allocated memory created after
+| :c:func:`cando_mm_alloc` call.
 
 	.. list-table::
 		:header-rows: 1

@@ -106,9 +106,9 @@ cando_log_set_level
 
 .. c:function:: void cando_log_set_level(enum cando_log_level_type level);
 
-	Sets which type of messages that are allowed to be printed to an open file.
-
-	Default is set to ``CANDO_LOG_NONE``.
+| Sets which type of messages that are allowed to be printed to an open file.
+|
+| Default is set to ``CANDO_LOG_NONE``.
 
 	.. list-table::
 		:header-rows: 1
@@ -127,10 +127,10 @@ cando_log_set_write_fd
 
 .. c:function:: void cando_log_set_write_fd(const int fd);
 
-	Sets the internal global write file descriptor
-	to caller define file descriptor.
-
-	Default is set to ``STDOUT_FILENO``.
+| Sets the internal global write file descriptor
+| to caller define file descriptor.
+|
+| Default is set to ``STDOUT_FILENO``.
 
 	.. list-table::
 		:header-rows: 1
@@ -148,9 +148,9 @@ cando_log_error_type
 
 .. c:enum:: cando_log_error_type
 
-	| Enum with macros defining and error type
-	| Add on userspace error codes should be well out
-	| of range of any known common error code.
+| Enum with macros defining and error type
+| Add on userspace error codes should be well out
+| of range of any known common error code.
 
 	#. Log error types used by
 		* :c:func:`cando_log_get_error`
@@ -176,9 +176,9 @@ cando_log_error_struct
 
 .. c:struct:: cando_log_error_struct
 
-	| Structure used to store and acquire
-	| error string and code for multiple
-	| struct context's.
+| Structure used to store and acquire
+| error string and code for multiple
+| struct context's.
 
 	.. c:member::
 		unsigned int code;
@@ -196,9 +196,9 @@ cando_log_get_error
 
 .. c:function:: const char *cando_log_get_error(const void *context);
 
-	| Returns a string with the error defined given
-	| caller provided a context with first members
-	| of the context being a ``struct`` :c:struct:`cando_log_error_struct`.
+| Returns a string with the error defined given
+| caller provided a context with first members
+| of the context being a ``struct`` :c:struct:`cando_log_error_struct`.
 
 	.. list-table::
 		:header-rows: 1
@@ -219,9 +219,9 @@ cando_log_get_error_code
 
 .. c:function:: unsigned int cando_log_get_error_code(const void *context);
 
-	| Returns unsigned integer with the error code
-	| given caller provided a context with first members
-	| of the context being a ``struct`` :c:struct:`cando_log_error_struct`.
+| Returns unsigned integer with the error code
+| given caller provided a context with first members
+| of the context being a ``struct`` :c:struct:`cando_log_error_struct`.
 
 	.. list-table::
 		:header-rows: 1
@@ -242,7 +242,7 @@ cando_log_set_error_struct
 
 .. c:function:: void cando_log_set_error_struct(void *context, const unsigned int code, const char *fmt, ...);
 
-	| Sets struct cando_log_error_struct members value.
+| Sets struct cando_log_error_struct members value.
 
 	.. list-table::
 		:header-rows: 1
@@ -268,9 +268,9 @@ cando_log_time
 
 .. c:function:: void cando_log_time(enum cando_log_level_type type, const char *fmt, ...);
 
-	| Provides applications/library way to write to an open file
-	| with a time stamp and ansi color codes to colorize
-	| different message.
+| Provides applications/library way to write to an open file
+| with a time stamp and ansi color codes to colorize
+| different message.
 
 	.. list-table::
 		:header-rows: 1
@@ -290,9 +290,9 @@ cando_log_notime
 
 .. c:function:: void cando_log_notime(enum cando_log_level_type type, const char *fmt, ...);
 
-	| Provides applications/library way to write to an open file
-	| without time stamp with ansi color codes to colorize
-	| different message.
+| Provides applications/library way to write to an open file
+| without time stamp with ansi color codes to colorize
+| different message.
 
 	.. list-table::
 		:header-rows: 1
@@ -314,14 +314,14 @@ cando_log
 
 .. c:macro:: cando_log(logType, fmt, ...)
 
-	Log format
-
-	timestamp - [file:line] message
-
-	Default prints to ``stdout`` using ansi color codes to color text.
-
-	Caller may change the open file in which logs are printed to via
-	a call to :c:func:`cando_log_set_write_fd`
+| Log format
+|
+| timestamp - [file:line] message
+|
+| Default prints to ``stdout`` using ansi color codes to color text.
+|
+| Caller may change the open file in which logs are printed to via
+| a call to :c:func:`cando_log_set_write_fd`
 
 	.. code-block::
 
@@ -334,14 +334,14 @@ cando_log_error
 
 .. c:macro:: cando_log_error(fmt, ...)
 
-	Log format
-
-	timestamp - [file:line] message
-
-	Prints to ``stderr`` with ansi color codes the color **RED**.
-
-	Caller may change the open file in which logs are printed to via
-	a call to :c:func:`cando_log_set_write_fd`
+| Log format
+|
+| timestamp - [file:line] message
+|
+| Prints to ``stderr`` with ansi color codes the color **RED**.
+|
+| Caller may change the open file in which logs are printed to via
+| a call to :c:func:`cando_log_set_write_fd`
 
 	.. code-block::
 
@@ -354,14 +354,14 @@ cando_log_print
 
 .. c:macro:: cando_log_print(logType, fmt, ...)
 
-	Log format
-
-	NONE
-
-	Default prints to ``stdout`` using ansi color codes to color text.
-
-	Caller may change the open file in which logs are printed to via
-	a call to :c:func:`cando_log_set_write_fd`
+| Log format
+|
+| NONE
+|
+| Default prints to ``stdout`` using ansi color codes to color text.
+|
+| Caller may change the open file in which logs are printed to via
+| a call to :c:func:`cando_log_set_write_fd`
 
 	.. code-block::
 
@@ -374,12 +374,12 @@ cando_log_set_error
 
 .. c:macro:: cando_log_set_error(ptr, code, fmt, ...)
 
-	| Log format
-
-	| [file:line] message
-
-	| Sets ``struct`` :c:struct:`cando_log_error_struct` to later be called by
-	| :c:func:`cando_log_get_error` and :c:func:`cando_log_get_error_code`.
+| Log format
+|
+| [file:line] message
+|
+| Sets ``struct`` :c:struct:`cando_log_error_struct` to later be called by
+| :c:func:`cando_log_get_error` and :c:func:`cando_log_get_error_code`.
 
 	.. code-block::
 
