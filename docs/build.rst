@@ -40,13 +40,15 @@ Options
 All options/features are disabled by default.
 
 .. code-block::
-        :linenos:
+	:linenos:
 
-        c_std=c11
-        buildtype=release
-        default_library=shared
-        tests=true        # Default [false]
-        docs=true         # Default [false]
+	c_std=c11
+	buildtype=release
+	default_library=shared
+	tests=true           # Default [false]
+	docs=true            # Default [false]
+	file-ops=enabled     # Default [disabled]
+	vsocket-tcp=enabled  # Default [disabled]
 
 ======================
 Build/Install (Normal)
@@ -54,7 +56,7 @@ Build/Install (Normal)
 
 .. code-block::
 
-        $ meson setup [options] build
+	$ meson setup [options] build
 	$ ninja install -C build
 
 .. code-block::
@@ -62,6 +64,7 @@ Build/Install (Normal)
 	$ meson setup -Dtests="true" \
 	              -Ddocs="false" \
 		      -Dfile-ops="enabled" \
+	              -Dvsock-tcp="enabled" \
 	              build
 
 ===================
@@ -84,6 +87,7 @@ Build/Install (SDK)
 		      -Dtests="true" \
 		      -Ddocs="false" \
 		      -Dfile-ops="enabled" \
+	              -Dvsock-tcp="enabled" \
 		      build
 
 =======
@@ -91,17 +95,17 @@ Include
 =======
 
 .. code-block::
-        :linenos:
+	:linenos:
 
-        # Clone libcando or create a cando.wrap under <source_root>/subprojects
-        project('name', 'c')
+	# Clone libcando or create a cando.wrap under <source_root>/subprojects
+	project('name', 'c')
 
-        cando_dep = dependency('cando', fallback : 'cando', 'cando_dep')
+	cando_dep = dependency('cando', required : true)
 
-        executable('exe', 'src/main.c', dependencies : cando_dep)
+	executable('exe', 'src/main.c', dependencies : cando_dep)
 
 .. code-block::
-        :linenos:
+	:linenos:
 
 	#include <cando/cando.h>
 
@@ -124,15 +128,15 @@ Build Docs
 
 .. code-block::
 
-        $ git clone https://github.com/under-view/libcando.git
-        $ cd libcando
-        $ sudo pip3 install -r docs/requirements.txt
+	$ git clone https://github.com/under-view/libcando.git
+	$ cd libcando
+	$ sudo pip3 install -r docs/requirements.txt
 
-        # If no build directory exists
-        $ meson setup -Ddocs=true build
+	# If no build directory exists
+	$ meson setup -Ddocs=true build
 
-        # If build directory exists
-        $ meson configure -Ddocs=true build
+	# If build directory exists
+	$ meson configure -Ddocs=true build
 
 	$ ninja docs -C build
 
