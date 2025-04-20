@@ -13,6 +13,9 @@ Macros
 ======
 
 1. :c:macro:`cando_log`
+#. :c:macro:`cando_log_success`
+#. :c:macro:`cando_log_info`
+#. :c:macro:`cando_log_warning`
 #. :c:macro:`cando_log_error`
 #. :c:macro:`cando_log_print`
 #. :c:macro:`cando_log_set_error`
@@ -328,6 +331,66 @@ cando_log
 		#define cando_log(logType, fmt, ...) \
 			cando_log_time(logType, "[%s:%d] " fmt, __FILE_NAME__, __LINE__, ##__VA_ARGS__)
 
+=================
+cando_log_success
+=================
+
+.. c:macro:: cando_log_success(fmt, ...)
+
+| Log format
+|
+| timestamp - [file:line] message
+|
+| Prints to ``stdout`` with ansi color codes the color **GREEN**.
+|
+| Caller may change the open file in which logs are printed to via
+| a call to :c:func:`cando_log_set_write_fd`
+
+	.. code-block::
+
+		#define cando_log_success(fmt, ...) \
+			cando_log_time(CANDO_LOG_SUCCESS, "[%s:%d] " fmt, __FILE_NAME__, __LINE__, ##__VA_ARGS__)
+
+==============
+cando_log_info
+==============
+
+.. c:macro:: cando_log_info(fmt, ...)
+
+| Log format
+|
+| timestamp - [file:line] message
+|
+| Prints to ``stdout`` with ansi color codes the color **BLUE**.
+|
+| Caller may change the open file in which logs are printed to via
+| a call to :c:func:`cando_log_set_write_fd`
+
+	.. code-block::
+
+		#define cando_log_info(fmt, ...) \
+			cando_log_time(CANDO_LOG_INFO, "[%s:%d] " fmt, __FILE_NAME__, __LINE__, ##__VA_ARGS__)
+
+=================
+cando_log_warning
+=================
+
+.. c:macro:: cando_log_warning(fmt, ...)
+
+| Log format
+|
+| timestamp - [file:line] message
+|
+| Prints to ``stdout`` with ansi color codes the color **YELLOW**.
+|
+| Caller may change the open file in which logs are printed to via
+| a call to :c:func:`cando_log_set_write_fd`
+
+	.. code-block::
+
+		#define cando_log_warning(fmt, ...) \
+			cando_log_time(CANDO_LOG_WARNING, "[%s:%d] " fmt, __FILE_NAME__, __LINE__, ##__VA_ARGS__)
+
 ===============
 cando_log_error
 ===============
@@ -346,7 +409,7 @@ cando_log_error
 	.. code-block::
 
 		#define cando_log_error(fmt, ...) \
-			cando_log_time(CANDO_LOG_DANGER, "[%s:%d] " fmt, __FILE_NAME__, __LINE__, ##__VA_ARGS__)
+			cando_log_time(CANDO_LOG_ERROR, "[%s:%d] " fmt, __FILE_NAME__, __LINE__, ##__VA_ARGS__)
 
 ===============
 cando_log_print

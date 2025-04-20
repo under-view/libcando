@@ -12,7 +12,7 @@
  *
  * @macro CANDO_LOG_NONE    - Term color
  * @macro CANDO_LOG_SUCCESS - Green
- * @macro CANDO_LOG_DANGER  - Red
+ * @macro CANDO_LOG_ERROR   - Red
  * @macro CANDO_LOG_INFO    - Light purple
  * @macro CANDO_LOG_WARNING - Yellow
  * @macro CANDO_LOG_RESET   - Term color
@@ -22,7 +22,7 @@ enum cando_log_level_type
 {
 	CANDO_LOG_NONE    = 0x00000000,
 	CANDO_LOG_SUCCESS = 0x00000001,
-	CANDO_LOG_DANGER  = 0x00000002,
+	CANDO_LOG_ERROR   = 0x00000002,
 	CANDO_LOG_INFO    = 0x00000004,
 	CANDO_LOG_WARNING = 0x00000008,
 	CANDO_LOG_RESET   = 0x00000010,
@@ -180,8 +180,17 @@ cando_log_notime (enum cando_log_level_type type,
 #define cando_log(logType, fmt, ...) \
 	cando_log_time(logType, "[%s:%d] " fmt, __FILE_NAME__,  __LINE__, ##__VA_ARGS__)
 
+#define cando_log_success(fmt, ...) \
+	cando_log_time(CANDO_LOG_SUCCESS, "[%s:%d] " fmt, __FILE_NAME__, __LINE__, ##__VA_ARGS__)
+
+#define cando_log_info(fmt, ...) \
+	cando_log_time(CANDO_LOG_INFO, "[%s:%d] " fmt, __FILE_NAME__, __LINE__, ##__VA_ARGS__)
+
+#define cando_log_warning(fmt, ...) \
+	cando_log_time(CANDO_LOG_WARNING, "[%s:%d] " fmt, __FILE_NAME__, __LINE__, ##__VA_ARGS__)
+
 #define cando_log_error(fmt, ...) \
-	cando_log_time(CANDO_LOG_DANGER, "[%s:%d] " fmt, __FILE_NAME__, __LINE__, ##__VA_ARGS__)
+	cando_log_time(CANDO_LOG_ERROR, "[%s:%d] " fmt, __FILE_NAME__, __LINE__, ##__VA_ARGS__)
 
 #define cando_log_print(logType, fmt, ...) \
 	cando_log_notime(logType, fmt, ##__VA_ARGS__)

@@ -57,7 +57,7 @@ test_file_ops_create_empty_file (void CANDO_UNUSED **state)
 	memset(&fstats, 0, sizeof(fstats));
 	memset(&finfo, 0, sizeof(finfo));
 
-	cando_log_set_level(CANDO_LOG_DANGER);
+	cando_log_set_level(CANDO_LOG_ERROR);
 
 	finfo.size = (1<<12);
 	finfo.fname = "/tmp/some-file.txt";

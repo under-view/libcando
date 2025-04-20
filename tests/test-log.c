@@ -23,13 +23,13 @@ static void CANDO_UNUSED
 test_log (void CANDO_UNUSED **state)
 {
 	cando_log(CANDO_LOG_SUCCESS, "SUCCESS\n");
-	cando_log(CANDO_LOG_DANGER, "DANGER\n");
+	cando_log(CANDO_LOG_ERROR, "DANGER\n");
 	cando_log(CANDO_LOG_INFO, "INFO\n");
 	cando_log(CANDO_LOG_WARNING, "WARNING\n");
 
-	cando_log_set_level(CANDO_LOG_DANGER|CANDO_LOG_INFO);
+	cando_log_set_level(CANDO_LOG_ERROR|CANDO_LOG_INFO);
 	cando_log(CANDO_LOG_SUCCESS, "SUCCESS: After log level set\n");
-	cando_log(CANDO_LOG_DANGER, "DANGER: After log level set\n");
+	cando_log(CANDO_LOG_ERROR, "DANGER: After log level set\n");
 	cando_log(CANDO_LOG_INFO, "INFO: After log level set\n");
 	cando_log(CANDO_LOG_WARNING, "WARNING: After log level set\n");
 }
@@ -47,13 +47,13 @@ static void CANDO_UNUSED
 test_log_print (void CANDO_UNUSED **state)
 {
 	cando_log_print(CANDO_LOG_SUCCESS, "SUCCESS\n");
-	cando_log_print(CANDO_LOG_DANGER, "DANGER\n");
+	cando_log_print(CANDO_LOG_ERROR, "DANGER\n");
 	cando_log_print(CANDO_LOG_INFO, "INFO\n");
 	cando_log_print(CANDO_LOG_WARNING, "WARNING\n");
 
 	cando_log_set_level(CANDO_LOG_SUCCESS|CANDO_LOG_WARNING);
 	cando_log_print(CANDO_LOG_SUCCESS, "SUCCESS: After log level set\n");
-	cando_log_print(CANDO_LOG_DANGER, "DANGER: After log level set\n");
+	cando_log_print(CANDO_LOG_ERROR, "DANGER: After log level set\n");
 	cando_log_print(CANDO_LOG_INFO, "INFO: After log level set\n");
 	cando_log_print(CANDO_LOG_WARNING, "WARNING: After log level set\n");
 }
@@ -79,13 +79,13 @@ test_log_set_write_fd (void CANDO_UNUSED **state)
 	cando_log_set_write_fd(fd);
 
 	cando_log_print(CANDO_LOG_SUCCESS, "SUCCESS\n");
-	cando_log_print(CANDO_LOG_DANGER, "DANGER\n");
+	cando_log_print(CANDO_LOG_ERROR, "DANGER\n");
 	cando_log_print(CANDO_LOG_INFO, "INFO\n");
 	cando_log_print(CANDO_LOG_WARNING, "WARNING\n");
 
 	cando_log_set_level(CANDO_LOG_SUCCESS|CANDO_LOG_WARNING);
 	cando_log_print(CANDO_LOG_SUCCESS, "SUCCESS: After log level set\n");
-	cando_log_print(CANDO_LOG_DANGER, "DANGER: After log level set\n");
+	cando_log_print(CANDO_LOG_ERROR, "DANGER: After log level set\n");
 	cando_log_print(CANDO_LOG_INFO, "INFO: After log level set\n");
 	cando_log_print(CANDO_LOG_WARNING, "WARNING: After log level set\n");
 

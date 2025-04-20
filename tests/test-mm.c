@@ -73,7 +73,7 @@ test_mm_sub_alloc (void CANDO_UNUSED **state)
 	blue = cando_mm_sub_alloc(mm, CANDO_PAGE_SIZE*10);
 	assert_null(blue);
 
-	cando_log_print(CANDO_LOG_DANGER, "%s\n", cando_log_get_error(mm));
+	cando_log_print(CANDO_LOG_ERROR, "%s\n", cando_log_get_error(mm));
 
 	cando_mm_destroy(mm);
 }

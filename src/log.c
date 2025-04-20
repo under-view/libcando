@@ -23,7 +23,7 @@ static const char *tcolors[] =
 {
 	[CANDO_LOG_NONE]    = "",
 	[CANDO_LOG_SUCCESS] = "\e[32;1m",
-	[CANDO_LOG_DANGER]  = "\e[31;1m",
+	[CANDO_LOG_ERROR]   = "\e[31;1m",
 	[CANDO_LOG_INFO]    = "\e[35;1m",
 	[CANDO_LOG_WARNING] = "\e[33;1m",
 	[CANDO_LOG_RESET]   = "\x1b[0m"
