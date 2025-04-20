@@ -44,6 +44,7 @@ Functions
 #. :c:func:`cando_file_ops_get_filename`
 #. :c:func:`cando_file_ops_set_data`
 #. :c:func:`cando_file_ops_destroy`
+#. :c:func:`cando_file_ops_get_sizeof`
 
 API Documentation
 ~~~~~~~~~~~~~~~~~
