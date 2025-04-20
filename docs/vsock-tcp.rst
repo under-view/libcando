@@ -452,7 +452,6 @@ cando_vsock_tcp_send_data
 =========================================================================================================================================
 
 .. _calloc(3): https://www.man7.org/linux/man-pages/man3/malloc.3.html
-.. _calloc(3): https://www.man7.org/linux/man-pages/man3/malloc.3.html
 .. _free(3): https://www.man7.org/linux/man-pages/man3/free.3.html
 .. _accept(2): https://www.man7.org/linux/man-pages/man2/accept.2.html
 .. _connect(2): https://www.man7.org/linux/man-pages/man2/connect.2.html

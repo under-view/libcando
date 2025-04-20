@@ -74,23 +74,25 @@ p_vsock_get_local_vcid (void)
 
 static struct cando_vsock_tcp *
 p_create_vsock (struct cando_vsock_tcp *p_vsock,
-		const void *p_sock_info,
+                const void *p_sock_info,
                 const bool server)
 {
-	struct cando_vsock_tcp *vsock = NULL;
+	struct cando_vsock_tcp *vsock = p_vsock;
 
 	const struct cando_vsock_tcp_create_info {  
 		unsigned int vcid;
 		int          port;
 	} *sock_info = p_sock_info;
 
-	vsock = (p_vsock) ? p_vsock : calloc(1, sizeof(struct cando_vsock_tcp));
 	if (!vsock) {
-		cando_log_error("calloc: %s\n", strerror(errno));
-		return NULL;
-	}
+		vsock = calloc(1, sizeof(struct cando_vsock_tcp));
+		if (!vsock) {
+			cando_log_error("calloc: %s\n", strerror(errno));
+			return NULL;
+		}
 
-	vsock->free = (p_vsock) ? false : true;
+		vsock->free = true;
+	}
 
 	vsock->fd = socket(AF_VSOCK, SOCK_STREAM, 0);
 	if (vsock->fd == -1) {
