@@ -19,22 +19,22 @@
 /*
  * @brief Structure defining Cando VM Socket TCP interface implementation.
  *
- * @member err       - Stores information about the error that occured
- *                     for the given instance and may later be retrieved
- *                     by caller.
- * @member free_sock - If structure allocated with calloc(3) member will be
- *                     set to true so that, we know to call free(3) when
- *                     destroying the instance.
- * @member fd        - File descriptor to the open VM socket.
- * @member vcid      - VM Context Identifier.
- * @member port      - TCP port number to connect(2) to or accept(2) from.
- * @member addr      - Stores network byte information about the VM socket context.
- *                     Is used for client connect(2) and server accept(2).
+ * @member err  - Stores information about the error that occured
+ *                for the given instance and may later be retrieved
+ *                by caller.
+ * @member free - If structure allocated with calloc(3) member will be
+ *                set to true so that, we know to call free(3) when
+ *                destroying the instance.
+ * @member fd   - File descriptor to the open VM socket.
+ * @member vcid - VM Context Identifier.
+ * @member port - TCP port number to connect(2) to or accept(2) from.
+ * @member addr - Stores network byte information about the VM socket context.
+ *                Is used for client connect(2) and server accept(2).
  */
 struct cando_vsock_tcp
 {
 	struct cando_log_error_struct err;
-	bool                          free_sock;
+	bool                          free;
 	int                           fd;
 	unsigned int                  vcid;
 	int                           port;
@@ -90,7 +90,7 @@ p_create_vsock (struct cando_vsock_tcp *p_vsock,
 		return NULL;
 	}
 
-	vsock->free_sock = (p_vsock) ? false : true;
+	vsock->free = (p_vsock) ? false : true;
 
 	vsock->fd = socket(AF_VSOCK, SOCK_STREAM, 0);
 	if (vsock->fd == -1) {
@@ -320,7 +320,7 @@ cando_vsock_tcp_destroy (struct cando_vsock_tcp *vsock)
 	close(vsock->fd);
 	vsock->fd = -1;
 
-	if (vsock->free_sock)
+	if (vsock->free)
 		free(vsock);
 }
 

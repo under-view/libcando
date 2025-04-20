@@ -59,18 +59,18 @@ cando_vsock_tcp (private)
 
 	.. c:member::
 		struct cando_log_error_struct err;
-		bool                          free_sock;
+		bool                          free;
 		int                           fd;
 		unsigned int                  vcid;
 		int                           port;
 		struct sockaddr_vm            addr;
 
-	:c:member:``
+	:c:member:`err`
 		| Stores information about the error that occured
 		| for the given instance and may later be retrieved
 		| by caller.
 
-	:c:member:`free_sock`
+	:c:member:`free`
 		| If structure allocated with `calloc(3)`_ member will be
 		| set to true so that, we know to call `free(3)`_ when
 		| destroying the instance.
