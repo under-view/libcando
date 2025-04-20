@@ -30,7 +30,8 @@ static const char *tcolors[] =
 };
 
 
-static const char *
+CANDO_STATIC_INLINE
+const char *
 _get_error (const unsigned int code)
 {
 	switch (code) {
@@ -55,6 +56,26 @@ void
 cando_log_set_write_fd (const int fd)
 {
 	writefd = fd;
+}
+
+
+void
+cando_log_remove_colors (void)
+{
+	tcolors[CANDO_LOG_SUCCESS] = "[SUCCESS] ";
+	tcolors[CANDO_LOG_ERROR]   = "[ERROR] ";
+	tcolors[CANDO_LOG_INFO]    = "[INFO] ";
+	tcolors[CANDO_LOG_WARNING] = "[WARN] ";
+}
+
+
+void
+cando_log_reset_colors (void)
+{
+	tcolors[CANDO_LOG_SUCCESS] = "\e[32;1m";
+	tcolors[CANDO_LOG_ERROR]   = "\e[31;1m";
+	tcolors[CANDO_LOG_INFO]    = "\e[35;1m";
+	tcolors[CANDO_LOG_WARNING] = "\e[33;1m";
 }
 
 
@@ -95,8 +116,6 @@ cando_log_set_error_struct (void *context,
 	if (!error)
 		return;
 
-	CANDO_PAGE_SET_WRITE(error, sizeof(struct cando_log_error_struct));
-
 	error->code = code;
 
 	va_start(args, fmt);
@@ -108,8 +127,6 @@ cando_log_set_error_struct (void *context,
 		offset = strnlen(error->buffer, sizeof(error->buffer));
 		strncpy(error->buffer+offset, string, sizeof(error->buffer)-offset);
 	}
-
-	CANDO_PAGE_SET_READ(error, sizeof(struct cando_log_error_struct));
 }
 
 
@@ -120,6 +137,7 @@ cando_log_time (enum cando_log_level_type type,
 {
 	va_list args;
 	time_t rawtime;
+
 	char buffer[26];
 
 	if (!(type & logLevel))
@@ -131,9 +149,6 @@ cando_log_time (enum cando_log_level_type type,
 	/* generate time */
 	strftime(buffer, sizeof(buffer), "%F %T - ", localtime_r(&rawtime, &(struct tm){}));
 	dprintf(writefd, "%s", buffer);
-
-	/* Set terminal color */
-	dprintf(writefd, "%s", tcolors[type]);
 
 	va_start(args, fmt);
 	vdprintf(writefd, fmt, args);
@@ -165,4 +180,11 @@ cando_log_notime (enum cando_log_level_type type,
 	/* Reset terminal colors */
 	dprintf(writefd, "%s", tcolors[CANDO_LOG_RESET]);
 	fsync(writefd);
+}
+
+
+const char *
+cando_log_get_tcolor (enum cando_log_level_type type)
+{
+	return tcolors[type];
 }

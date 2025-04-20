@@ -56,6 +56,25 @@ cando_log_set_write_fd (const int fd);
 
 
 /*
+ * @brief Sets the internal global ansi color
+ *        storage array to remove the ansi colors
+ *        and replace with "[LOG_TYPE] ".
+ */
+CANDO_API
+void
+cando_log_remove_colors (void);
+
+
+/*
+ * @brief Sets the internal global ansi color
+ *        storage array to it's original values.
+ */
+CANDO_API
+void
+cando_log_reset_colors (void);
+
+
+/*
  * @brief enum cando_log_error_type
  *
  *        Enum with macros defining and error type
@@ -174,28 +193,50 @@ cando_log_notime (enum cando_log_level_type type,
 
 
 /*
+ * Should only be used by bellow macros
+ */
+const char *
+cando_log_get_tcolor (enum cando_log_level_type type);
+
+/*
  * Macros defined to structure the message
  * timestamp - [file:line] message
  */
 #define cando_log(logType, fmt, ...) \
-	cando_log_time(logType, "[%s:%d] " fmt, __FILE_NAME__,  __LINE__, ##__VA_ARGS__)
+	cando_log_time(logType, "[%s:%d] %s" fmt, \
+	               __FILE_NAME__,  __LINE__, \
+	               cando_log_get_tcolor(logType), \
+	               ##__VA_ARGS__)
 
 #define cando_log_success(fmt, ...) \
-	cando_log_time(CANDO_LOG_SUCCESS, "[%s:%d] " fmt, __FILE_NAME__, __LINE__, ##__VA_ARGS__)
+	cando_log_time(CANDO_LOG_SUCCESS, "[%s:%d] %s" fmt, \
+	               __FILE_NAME__, __LINE__, \
+	               cando_log_get_tcolor(CANDO_LOG_SUCCESS), \
+	               ##__VA_ARGS__)
 
 #define cando_log_info(fmt, ...) \
-	cando_log_time(CANDO_LOG_INFO, "[%s:%d] " fmt, __FILE_NAME__, __LINE__, ##__VA_ARGS__)
+	cando_log_time(CANDO_LOG_INFO, "[%s:%d] %s" fmt, \
+	               __FILE_NAME__, __LINE__, \
+	               cando_log_get_tcolor(CANDO_LOG_INFO), \
+	               ##__VA_ARGS__)
 
 #define cando_log_warning(fmt, ...) \
-	cando_log_time(CANDO_LOG_WARNING, "[%s:%d] " fmt, __FILE_NAME__, __LINE__, ##__VA_ARGS__)
+	cando_log_time(CANDO_LOG_WARNING, "[%s:%d] %s" fmt, \
+	               __FILE_NAME__, __LINE__, \
+	               cando_log_get_tcolor(CANDO_LOG_WARNING), \
+	               ##__VA_ARGS__)
 
 #define cando_log_error(fmt, ...) \
-	cando_log_time(CANDO_LOG_ERROR, "[%s:%d] " fmt, __FILE_NAME__, __LINE__, ##__VA_ARGS__)
+	cando_log_time(CANDO_LOG_ERROR, "[%s:%d] %s" fmt, \
+	               __FILE_NAME__, __LINE__, \
+	               cando_log_get_tcolor(CANDO_LOG_ERROR), \
+	               ##__VA_ARGS__)
 
 #define cando_log_print(logType, fmt, ...) \
 	cando_log_notime(logType, fmt, ##__VA_ARGS__)
 
 #define cando_log_set_error(ptr, code, fmt, ...) \
-	cando_log_set_error_struct(ptr, code, "[%s:%d] " fmt, __FILE_NAME__, __LINE__, ##__VA_ARGS__)
+	cando_log_set_error_struct(ptr, code, "[%s:%d] " fmt, \
+	                           __FILE_NAME__, __LINE__, ##__VA_ARGS__)
 
 #endif /* CANDO_LOG_H */

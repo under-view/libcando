@@ -14,7 +14,6 @@
 
 #include "log.h"
 
-
 /*******************************
  * Start of test_log functions *
  *******************************/
@@ -37,6 +36,35 @@ test_log (void CANDO_UNUSED **state)
 /*****************************
  * End of test_log functions *
  *****************************/
+
+
+/*********************************************
+ * Start of test_log_remove_colors functions *
+ *********************************************/
+
+static void CANDO_UNUSED
+test_log_remove_reset_colors (void CANDO_UNUSED **state)
+{
+	cando_log_set_level(CANDO_LOG_ALL);
+
+	cando_log_remove_colors();
+
+	cando_log(CANDO_LOG_SUCCESS, "SUCCESS\n");
+	cando_log(CANDO_LOG_ERROR, "DANGER\n");
+	cando_log(CANDO_LOG_INFO, "INFO\n");
+	cando_log(CANDO_LOG_WARNING, "WARNING\n");
+
+	cando_log_reset_colors();
+
+	cando_log(CANDO_LOG_SUCCESS, "SUCCESS: After reset\n");
+	cando_log(CANDO_LOG_ERROR, "DANGER: After reset\n");
+	cando_log(CANDO_LOG_INFO, "INFO: After reset\n");
+	cando_log(CANDO_LOG_WARNING, "WARNING: After reset\n");
+}
+
+/*******************************************
+ * End of test_log_remove_colors functions *
+ *******************************************/
 
 
 /*************************************
@@ -72,8 +100,8 @@ test_log_set_write_fd (void CANDO_UNUSED **state)
 {
 	int fd = -1;
 
-	const char *testFile = "/tmp/test-file.txt";
-	fd = open(testFile, O_CREAT|O_RDWR, 0644);
+	const char *test_file = "/tmp/test-file.txt";
+	fd = open(test_file, O_CREAT|O_RDWR, 0644);
 	assert_int_not_equal(fd, -1);
 
 	cando_log_set_write_fd(fd);
@@ -90,7 +118,7 @@ test_log_set_write_fd (void CANDO_UNUSED **state)
 	cando_log_print(CANDO_LOG_WARNING, "WARNING: After log level set\n");
 
 	close(fd);
-	remove(testFile);
+	remove(test_file);
 }
 
 /******************************************
@@ -105,8 +133,8 @@ test_log_set_write_fd (void CANDO_UNUSED **state)
 static void CANDO_UNUSED
 test_log_error (void CANDO_UNUSED **state)
 {
-	unsigned int errCode = 0;
 	const char *error = NULL;
+	unsigned int err_code = 0;
 
 	struct some_context
 	{
@@ -115,26 +143,26 @@ test_log_error (void CANDO_UNUSED **state)
 	} context;
 
 	/* Test NULL passed */
-	errCode = cando_log_get_error_code(NULL);
+	err_code = cando_log_get_error_code(NULL);
 	error = cando_log_get_error(NULL);
-	assert_int_equal(errCode, UINT32_MAX);
+	assert_int_equal(err_code, UINT32_MAX);
 	assert_null(error);
 
 	/* Test common error passed */
-	context.err.code = CANDO_LOG_ERR_INCORRECT_DATA;
-	errCode = cando_log_get_error_code(&context);
+	cando_log_set_error(&context, CANDO_LOG_ERR_INCORRECT_DATA, "");
+	err_code = cando_log_get_error_code(&context);
 	error = cando_log_get_error(&context);
-	assert_int_equal(errCode, CANDO_LOG_ERR_INCORRECT_DATA);
-	assert_string_equal(error, "Incorrect data passed");
+	assert_int_equal(err_code, CANDO_LOG_ERR_INCORRECT_DATA);
+	assert_string_equal(error, "[test-log.c:152] Incorrect data passed");
 
 	/* Test context passed */
 	memset(&context, 0, sizeof(context));
 
 	context.err.code = CANDO_LOG_ERR_UNCOMMON;
 	strncpy(context.err.buffer, "BUFFFER 2 Copy", sizeof(context.err.buffer)-1);
-	errCode = cando_log_get_error_code(&context);
+	err_code = cando_log_get_error_code(&context);
 	error = cando_log_get_error(&context);
-	assert_int_equal(errCode, CANDO_LOG_ERR_UNCOMMON);
+	assert_int_equal(err_code, CANDO_LOG_ERR_UNCOMMON);
 	assert_string_equal(error, "BUFFFER 2 Copy");
 }
 
@@ -148,6 +176,7 @@ main (void)
 {
 	const struct CMUnitTest tests[] = {
 		cmocka_unit_test(test_log),
+		cmocka_unit_test(test_log_remove_reset_colors),
 		cmocka_unit_test(test_log_print),
 		cmocka_unit_test(test_log_set_write_fd),
 		cmocka_unit_test(test_log_error),

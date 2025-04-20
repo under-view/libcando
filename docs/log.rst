@@ -43,6 +43,8 @@ Functions
 
 1. :c:func:`cando_log_set_level`
 #. :c:func:`cando_log_set_write_fd`
+#. :c:func:`cando_log_remove_colors`
+#. :c:func:`cando_log_reset_colors`
 #. :c:func:`cando_log_get_error`
 #. :c:func:`cando_log_get_error_code`
 #. :c:func:`cando_log_set_error_struct`
@@ -142,6 +144,29 @@ cando_log_set_write_fd
 	          - Decription
 		* - fd
 		  - | File descriptor to an open file.
+
+=========================================================================================================================================
+
+=======================
+cando_log_remove_colors
+=======================
+
+.. c:function:: void cando_log_remove_colors(void);
+
+| Sets the internal global ansi color
+| storage array to remove the ansi colors
+| and replace with "[LOG_TYPE] ".
+
+=========================================================================================================================================
+
+======================
+cando_log_reset_colors
+======================
+
+.. c:function:: void cando_log_reset_colors(void);
+
+| Sets the internal global ansi color
+| storage array to it's original values.
 
 =========================================================================================================================================
 
