@@ -61,11 +61,13 @@ Build/Install (Normal)
 
 .. code-block::
 
-	$ meson setup -Dtests="true" \
-	              -Ddocs="false" \
-		      -Dfile-ops="enabled" \
-	              -Dvsock-tcp="enabled" \
-	              build
+	$ meson setup \
+		-Dtests="true" \
+		-Ddocs="false" \
+		-Dfile-ops="enabled" \
+		-Dvsock-tcp="enabled" \
+		build
+	$ ninja install -C build
 
 ===================
 Build/Install (SDK)
@@ -74,21 +76,24 @@ Build/Install (SDK)
 .. code-block::
 
 	# Yocto Project SDK Builds
-	$ meson setup --prefix="${SDKTARGETSYSROOT}/usr" \
-	              --libdir="${SDKTARGETSYSROOT}/usr/lib64" \
-		      [options] \
-	              build
+	$ meson setup \
+		--prefix="${SDKTARGETSYSROOT}/usr" \
+		--libdir="${SDKTARGETSYSROOT}/usr/lib64" \
+		[options] \
+		build
 	$ ninja install -C build
 
 .. code-block::
 
-	$ meson setup --prefix="${SDKTARGETSYSROOT}/usr" \
-	              --libdir="${SDKTARGETSYSROOT}/usr/lib64" \
-		      -Dtests="true" \
-		      -Ddocs="false" \
-		      -Dfile-ops="enabled" \
-	              -Dvsock-tcp="enabled" \
-		      build
+	$ meson setup \
+		--prefix="${SDKTARGETSYSROOT}/usr" \
+		--libdir="${SDKTARGETSYSROOT}/usr/lib64" \
+		-Dtests="true" \
+		-Ddocs="false" \
+		-Dfile-ops="enabled" \
+		-Dvsock-tcp="enabled" \
+		build
+	$ ninja install -C build
 
 =======
 Include

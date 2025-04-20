@@ -5,16 +5,16 @@ libcando Documentation
 ======================
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Getting Started
+	:maxdepth: 2
+	:caption: Getting Started
 
-   build
+	build
 
 .. toctree::
-   :maxdepth: 3
-   :caption: API
+	:maxdepth: 3
+	:caption: API
 
-   api
+	api
 
 Indices and Tables
 ==================
