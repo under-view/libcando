@@ -16,8 +16,8 @@ struct cando_vsock_tcp;
  * @brief Structure passed to cando_vsock_tcp_server_create(3)
  *        used to define how to create the server.
  *
- * @member vcid        - VM Context Identifier to accept(2)/recv(2).
- * @member port        - TCP port to accept(2)/recv(2) with.
+ * @member vcid        - VM Context Identifier to accept(2) with.
+ * @member port        - TCP port to accept(2) with.
  * @member connections - Amount of connections that may be queued
  *                       at a given moment.
  */
@@ -109,7 +109,7 @@ cando_vsock_tcp_client_create (struct cando_vsock_tcp *vsock,
 
 /*
  * @brief Connects client socket to address provided via
- *        call to cando_vsock_tcp_client_create(3).
+ *        call to cando_vsock_tcp_client_create.
  *
  * @param vsock - Must pass a pointer to a struct cando_vsock_tcp.
  *
@@ -180,7 +180,7 @@ cando_vsock_tcp_get_vcid (struct cando_vsock_tcp *vsock);
  *
  * @return
  *	on success: TCP port connected to instance
- *	on failure: UINT32_MAX
+ *	on failure: -1
  */
 CANDO_API
 int
@@ -189,7 +189,7 @@ cando_vsock_tcp_get_port (struct cando_vsock_tcp *vsock);
 
 /*
  * @brief Frees any allocated memory and closes FD's (if open) created after
- *        cando_vsock_tcp_create() call.
+ *        cando_vsock_tcp_server_create() or cando_vsock_tcp_client_create() call.
  *
  * @param vsock - Pointer to a valid struct cando_vsock_tcp.
  */
@@ -236,7 +236,7 @@ cando_vsock_tcp_get_sizeof (void);
  *                 to set the flag argument of recv(2).
  *
  * @return
- *	on success: Amount of bytes sent
+ *	on success: Amount of bytes received
  *	on failure: # < 0
  */
 ssize_t

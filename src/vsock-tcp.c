@@ -25,7 +25,8 @@
  * @member fd        - File descriptor to the open VM socket.
  * @member vcid      - VM Context Identifier.
  * @member port      - TCP port number to connect(2) to or accept(2) from.
- * @member addr      - Stores network byte info about the VM socket context.
+ * @member addr      - Stores network byte information about the VM socket context.
+ *                     Is used for client connect(2) and server accept(2).
  */
 struct cando_vsock_tcp
 {
@@ -313,6 +314,7 @@ cando_vsock_tcp_destroy (struct cando_vsock_tcp *vsock)
 		return;
 
 	close(vsock->fd);
+	vsock->fd = -1;
 
 	if (vsock->free_sock)
 		free(vsock);
