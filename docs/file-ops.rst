@@ -55,11 +55,23 @@ cando_file_ops (private)
 .. c:struct:: cando_file_ops
 
 	.. c:member::
-		int    fd;
-		int    pipe_fds[2];
-		char   fname[FILE_NAME_LEN_MAX];
-		size_t data_sz;
-		void   *data;
+		struct cando_log_error_struct err;
+		bool                          free;
+		int                           fd;
+		int                           pipe_fds[2];
+		char                          fname[FILE_NAME_LEN_MAX];
+		size_t                        data_sz;
+		void                          *data;
+
+	:c:member:`err`
+		| Stores information about the error that occured
+		| for the given instance and may later be retrieved
+		| by caller.
+
+	:c:member:`free`
+		| If structure allocated with `calloc(3)`_ member will be
+		| set to true so that, we know to call `free(3)`_ when
+		| destroying the instance.
 
 	:c:member:`fd`
 		| File descriptor to open file.
@@ -108,7 +120,7 @@ cando_file_ops_create_info
 cando_file_ops_create
 =====================
 
-.. c:function:: struct cando_file_ops *cando_file_ops_create(const void *finfo);
+.. c:function:: struct cando_file_ops *cando_file_ops_create(struct cando_file_ops *flops, const void *finfo);
 
 | Creates or opens caller define file.
 
@@ -117,6 +129,12 @@ cando_file_ops_create
 
 		* - Param
 	          - Decription
+		* - flops
+		  - | May be ``NULL`` or a pointer to a ``struct`` :c:struct:`cando_file_ops`.
+		    | If ``NULL`` memory will be allocated and return to
+		    | caller. If not ``NULL`` address passed will be used
+		    | to store the newly created ``struct`` :c:struct:`cando_file_ops`
+		    | instance.
 		* - finfo
 		  - | Pointer to a ``struct`` :c:struct:`cando_file_ops_create_info`.
 		    | The use of pointer to a void is to limit amount
@@ -445,6 +463,25 @@ cando_file_ops_destroy
 
 =========================================================================================================================================
 
+=========================
+cando_file_ops_get_sizeof
+=========================
+
+.. c:function:: int cando_file_ops_get_sizeof(void);
+
+| Returns size of the internal structure. So,
+| if caller decides to allocate memory outside
+| of API interface they know the exact amount
+| of bytes.
+
+	Returns:
+		| **on success:** sizeof(struct cando_file_ops)
+		| **on failure:** sizeof(struct cando_file_ops)
+
+=========================================================================================================================================
+
+.. _calloc(3): https://www.man7.org/linux/man-pages/man3/malloc.3.html
+.. _free(3): https://www.man7.org/linux/man-pages/man3/free.3.html
 .. _mmap(2):  https://man7.org/linux/man-pages/man2/mmap.2.html
 .. _open(2):  https://man7.org/linux/man-pages/man2/open.2.html
 .. _creat(2):  https://man7.org/linux/man-pages/man2/open.2.html

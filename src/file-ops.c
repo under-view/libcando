@@ -1,6 +1,7 @@
 #define _GNU_SOURCE 1
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include <string.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -21,6 +22,9 @@
  * @member err      - Stores information about the error that occured
  *                    for the given instance and may later be retrieved
  *                    by caller.
+ * @member free     - If structure allocated with calloc(3) member will be
+ *                    set to true so that, we know to call free(3) when
+ *                    destroying the instance.
  * @member fd       - File descriptor to open file.
  * @member pipe_fds - File descriptors associated with an open pipe.
  *                    pipe_fds[0] - Read end of the pipe
@@ -32,6 +36,7 @@
 struct cando_file_ops
 {
 	struct cando_log_error_struct err;
+	bool                          free;
 	int                           fd;
 	int                           pipe_fds[2];
 	char                          fname[FILE_NAME_LEN_MAX];
@@ -45,13 +50,14 @@ struct cando_file_ops
  ********************************************/
 
 struct cando_file_ops *
-cando_file_ops_create (const void *p_finfo)
+cando_file_ops_create (struct cando_file_ops *p_flops,
+                       const void *p_finfo)
 {
 	int ret = -1;
 
 	struct stat fstats;
 
-	struct cando_file_ops *flops = NULL;
+	struct cando_file_ops *flops = p_flops;
 
 	const struct cando_file_ops_create_info *finfo = p_finfo;
 
@@ -60,14 +66,14 @@ cando_file_ops_create (const void *p_finfo)
 		return NULL;
 	}
 
-	flops = mmap(NULL,
-		     sizeof(struct cando_file_ops),
-		     PROT_READ|PROT_WRITE,
-		     MAP_PRIVATE|MAP_ANONYMOUS,
-		     -1, 0);
-	if (flops == (void*)-1) {
-		cando_log_error("mmap: %s\n", strerror(errno));
-		return NULL;
+	if (!flops) {
+		flops = calloc(1, sizeof(struct cando_file_ops));
+		if (!flops) {
+			cando_log_error("calloc: %s\n", strerror(errno));
+			return NULL;
+		}
+
+		flops->free = true;
 	}
 
 	if (finfo->fname) {
@@ -119,13 +125,6 @@ cando_file_ops_create (const void *p_finfo)
 			cando_file_ops_destroy(flops);
 			return NULL;
 		}
-	}
-
-	ret = CANDO_PAGE_SET_READ(flops, sizeof(struct cando_file_ops));
-	if (ret == -1) {
-		cando_log_error("mprotect: %s\n", strerror(errno));
-		cando_file_ops_destroy(flops);
-		return NULL;
 	}
 
 	return flops;
@@ -396,9 +395,26 @@ cando_file_ops_destroy (struct cando_file_ops *flops)
 	close(flops->pipe_fds[0]);
 	close(flops->pipe_fds[1]);
 	close(flops->fd);
-	munmap(flops, sizeof(struct cando_file_ops));
+
+	if (flops->free)
+		free(flops);
 }
 
 /*******************************************
  * End of cando_file_ops_destroy functions *
  *******************************************/
+
+
+/******************************************************
+ * Start of non struct cando_file_ops param functions *
+ ******************************************************/
+
+int
+cando_file_ops_get_sizeof (void)
+{
+	return sizeof(struct cando_file_ops);
+}
+
+/****************************************************
+ * End of non struct cando_file_ops param functions *
+ ****************************************************/

@@ -32,7 +32,7 @@ test_file_ops_create (void CANDO_UNUSED **state)
 	memset(&finfo, 0, sizeof(finfo));
 
 	finfo.fname = "/tmp/some-file.txt";
-	flops = cando_file_ops_create(&finfo);
+	flops = cando_file_ops_create(NULL, &finfo);
 	assert_non_null(flops);
 
 	ret = stat(finfo.fname, &fstats);
@@ -61,7 +61,7 @@ test_file_ops_create_empty_file (void CANDO_UNUSED **state)
 
 	finfo.size = (1<<12);
 	finfo.fname = "/tmp/some-file.txt";
-	flops = cando_file_ops_create(&finfo);
+	flops = cando_file_ops_create(NULL, &finfo);
 	assert_non_null(flops);
 
 	ret = stat(finfo.fname, &fstats);
@@ -100,13 +100,13 @@ test_file_ops_zero_copy (void CANDO_UNUSED **state)
 
 	finfo.create_pipe = 0x01;
 	finfo.fname = TESTER_FILE_ONE;
-	flops = cando_file_ops_create(&finfo);
+	flops = cando_file_ops_create(NULL, &finfo);
 	assert_non_null(flops);
 
 	finfo.create_pipe = 0x00;
 	finfo.fname = "/tmp/test-file.txt";
 	finfo.size = cando_file_ops_get_data_size(flops);
-	flops_two = cando_file_ops_create(&finfo);
+	flops_two = cando_file_ops_create(NULL, &finfo);
 	assert_non_null(flops_two);
 
 	zcopy_info.size = finfo.size;
@@ -123,7 +123,7 @@ test_file_ops_zero_copy (void CANDO_UNUSED **state)
 	/* Re-open newly created file */
 	finfo.fname = "/tmp/test-file.txt";
 	finfo.size = 0;
-	flops_two = cando_file_ops_create(&finfo);
+	flops_two = cando_file_ops_create(NULL, &finfo);
 	assert_non_null(flops_two);
 
 	memset(buffer, 0, sizeof(buffer));
@@ -164,7 +164,7 @@ test_file_ops_get_data (void CANDO_UNUSED **state)
 	memset(&finfo, 0, sizeof(finfo));
 
 	finfo.fname = TESTER_FILE_ONE;
-	flops = cando_file_ops_create(&finfo);
+	flops = cando_file_ops_create(NULL, &finfo);
 	assert_non_null(flops);
 
 	data = cando_file_ops_get_data(flops, 0);
@@ -191,7 +191,7 @@ test_file_ops_get_line (void CANDO_UNUSED **state)
 	memset(&finfo, 0, sizeof(finfo));
 
 	finfo.fname = TESTER_FILE_ONE;
-	flops = cando_file_ops_create(&finfo);
+	flops = cando_file_ops_create(NULL, &finfo);
 	assert_non_null(flops);
 
 	data = cando_file_ops_get_line(flops, 0);
@@ -228,7 +228,7 @@ test_file_ops_get_line_count (void CANDO_UNUSED **state)
 	memset(&finfo, 0, sizeof(finfo));
 
 	finfo.fname = TESTER_FILE_ONE;
-	flops = cando_file_ops_create(&finfo);
+	flops = cando_file_ops_create(NULL, &finfo);
 	assert_non_null(flops);
 
 	line_count = cando_file_ops_get_line_count(flops);
@@ -250,7 +250,7 @@ test_file_ops_get_fd (void CANDO_UNUSED **state)
 	memset(&finfo, 0, sizeof(finfo));
 
 	finfo.fname = TESTER_FILE_ONE;
-	flops = cando_file_ops_create(&finfo);
+	flops = cando_file_ops_create(NULL, &finfo);
 	assert_non_null(flops);
 
 	fd = cando_file_ops_get_fd(flops);
@@ -275,7 +275,7 @@ test_file_ops_get_filename (void CANDO_UNUSED **state)
 	memset(&finfo, 0, sizeof(finfo));
 
 	finfo.fname = TESTER_FILE_ONE;
-	flops = cando_file_ops_create(&finfo);
+	flops = cando_file_ops_create(NULL, &finfo);
 	assert_non_null(flops);
 
 	fname = cando_file_ops_get_filename(flops);
@@ -300,7 +300,7 @@ test_file_ops_get_data_size (void CANDO_UNUSED **state)
 	memset(&finfo, 0, sizeof(finfo));
 
 	finfo.fname = TESTER_FILE_ONE;
-	flops = cando_file_ops_create(&finfo);
+	flops = cando_file_ops_create(NULL, &finfo);
 	assert_non_null(flops);
 
 	size = cando_file_ops_get_data_size(flops);
@@ -338,7 +338,7 @@ test_file_ops_set_data (void CANDO_UNUSED **state)
 
 	finfo.fname = "/tmp/testing-one.txt";
 	finfo.size = 1 << 9;
-	flops = cando_file_ops_create(&finfo);
+	flops = cando_file_ops_create(NULL, &finfo);
 	assert_non_null(flops);
 
 	sd_info.offset = 0;
@@ -358,6 +358,22 @@ test_file_ops_set_data (void CANDO_UNUSED **state)
  **************************************/
 
 
+/***********************************************
+ * Start of test_file_ops_get_sizeof functions *
+ ***********************************************/
+
+static void CANDO_UNUSED
+test_file_ops_get_sizeof (void CANDO_UNUSED **state)
+{
+	int size = 0;
+	size = cando_file_ops_get_sizeof();
+	assert_int_not_equal(size, 0);
+}
+
+/*********************************************
+ * End of test_file_ops_get_sizeof functions *
+ *********************************************/
+
 int
 main (void)
 {
@@ -372,6 +388,7 @@ main (void)
 		cmocka_unit_test(test_file_ops_get_data_size),
 		cmocka_unit_test(test_file_ops_get_filename),
 		cmocka_unit_test(test_file_ops_set_data),
+		cmocka_unit_test(test_file_ops_get_sizeof),
 	};
 
 	return cmocka_run_group_tests(tests, NULL, NULL);

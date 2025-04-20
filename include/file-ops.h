@@ -31,6 +31,11 @@ struct cando_file_ops_create_info
 /*
  * @brief Creates or opens caller define file.
  *
+ * @param flops - May be NULL or a pointer to a struct cando_file_ops.
+ *                If NULL memory will be allocated and return to
+ *                caller. If not NULL address passed will be used
+ *                to store the newly created struct cando_file_ops
+ *                instance.
  * @param finfo - Pointer to a struct cando_file_ops_create_info.
  *                The use of pointer to a void is to limit amount
  *                of columns required to define a function.
@@ -41,7 +46,8 @@ struct cando_file_ops_create_info
  */
 CANDO_API
 struct cando_file_ops *
-cando_file_ops_create (const void *finfo);
+cando_file_ops_create (struct cando_file_ops *flops,
+                       const void *finfo);
 
 
 /*
@@ -264,5 +270,20 @@ cando_file_ops_set_data (struct cando_file_ops *flops,
 CANDO_API
 void
 cando_file_ops_destroy (struct cando_file_ops *flops);
+
+
+/*
+ * @brief Returns size of the internal structure. So,
+ *        if caller decides to allocate memory outside
+ *        of API interface they know the exact amount
+ *        of bytes.
+ *
+ * @return
+ *	on success: sizeof(struct cando_file_ops)
+ *	on failure: sizeof(struct cando_file_ops)
+ */
+CANDO_API
+int
+cando_file_ops_get_sizeof (void);
 
 #endif /* CANDO_FILE_OPS_H */
