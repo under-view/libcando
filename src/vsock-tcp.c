@@ -120,6 +120,8 @@ cando_vsock_tcp_server_create (struct cando_vsock_tcp *p_vsock,
 {
 	int err = -1;
 
+	const int enable = 1;
+
 	struct cando_vsock_tcp *vsock = p_vsock;
 
 	const struct cando_vsock_tcp_server_create_info *sock_info = p_sock_info;
@@ -127,6 +129,20 @@ cando_vsock_tcp_server_create (struct cando_vsock_tcp *p_vsock,
 	vsock = p_create_vsock(vsock, p_sock_info, 1);
 	if (!vsock)
 		return NULL;
+
+	err = setsockopt(vsock->fd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int));
+	if (err == -1) {
+		cando_vsock_tcp_destroy(vsock);
+		cando_log_error("setsockopt: %s\n", strerror(errno));
+		return NULL;
+	}
+
+	err = setsockopt(vsock->fd, SOL_SOCKET, SO_REUSEPORT, &enable, sizeof(int));
+	if (err == -1) {
+		cando_vsock_tcp_destroy(vsock);
+		cando_log_error("setsockopt: %s\n", strerror(errno));
+		return NULL;
+	}
 
 	err = bind(vsock->fd, (struct sockaddr*) &(vsock->addr),
 			sizeof(struct sockaddr_vm));
@@ -230,6 +246,19 @@ cando_vsock_tcp_client_connect (struct cando_vsock_tcp *vsock)
 	return 0;
 }
 
+
+ssize_t
+cando_vsock_tcp_client_send_data (struct cando_vsock_tcp *vsock,
+                                  const void *data,
+                                  const size_t size,
+                                  const void *opts)
+{
+	if (!vsock)
+		return -1;
+
+	return cando_vsock_tcp_send_data(vsock->fd, data, size, opts);
+}
+
 /*******************************************
  * End of cando_vsock_tcp_client functions *
  *******************************************/
@@ -309,6 +338,64 @@ int
 cando_vsock_tcp_get_sizeof (void)
 {
 	return sizeof(struct cando_vsock_tcp);
+}
+
+
+ssize_t
+cando_vsock_tcp_send_data (const int sockfd,
+                           const void *data,
+                           const size_t size,
+                           const void *opts)
+{
+	ssize_t ret = 0;
+
+	const int flags = (opts) ? *((const int*)opts) : 0;
+
+	if (sockfd < 0 || \
+	    !data || \
+	    !size)
+	{
+		return -1;
+	}
+
+	ret = send(sockfd, data, size, flags);
+	if (errno == EINTR || errno == EAGAIN) {
+		return -errno;
+	} else if (ret == -1) {
+		cando_log_error("recv: %s", strerror(errno));
+		return -1;
+	}
+
+	return ret;
+}
+
+
+ssize_t
+cando_vsock_tcp_recv_data (const int sockfd,
+                           void *data,
+                           const size_t size,
+                           const void *opts)
+{
+	ssize_t ret = 0;
+
+	const int flags = (opts) ? *((const int*)opts) : 0;
+
+	if (sockfd < 0 || \
+	    !data || \
+	    !size)
+	{
+		return -1;
+	}
+
+	ret = recv(sockfd, data, size, flags);
+	if (errno == EINTR || errno == EAGAIN) {
+		return -errno;
+	} else if (ret == -1) {
+		cando_log_error("recv: %s", strerror(errno));
+		return -1;
+	}
+
+	return ret;
 }
 
 /*************************************************

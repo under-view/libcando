@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
 
@@ -18,7 +19,7 @@
  * Start of test_vsock_tcp_server_create functions *
  ***************************************************/
 
-static void
+static void CANDO_UNUSED
 test_vsock_tcp_server_create (void CANDO_UNUSED **state)
 {
 	struct cando_vsock_tcp *server = NULL;
@@ -43,7 +44,7 @@ test_vsock_tcp_server_create (void CANDO_UNUSED **state)
  * Start of test_vsock_tcp_client_create functions *
  ***************************************************/
 
-static void
+static void CANDO_UNUSED
 test_vsock_tcp_client_create (void CANDO_UNUSED **state)
 {
 	struct cando_vsock_tcp *client = NULL;
@@ -90,7 +91,7 @@ p_test_vsock_tcp_accept_connect_client (void)
 }
 
 
-static void
+static void CANDO_UNUSED
 test_vsock_tcp_accept_connect (void CANDO_UNUSED **state)
 {
 	pid_t pid;
@@ -133,11 +134,95 @@ test_vsock_tcp_accept_connect (void CANDO_UNUSED **state)
  **************************************************/
 
 
+/***********************************************
+ * Start of test_vsock_tcp_send_recv functions *
+ ***********************************************/
+
+static void
+p_test_vsock_tcp_send_recv_client (void)
+{
+	int err = -1;
+
+	char buffer[512];
+
+	ssize_t size = 0;
+
+	struct cando_vsock_tcp *client = NULL;
+
+	struct cando_vsock_tcp_client_create_info client_info;
+
+	client_info.vcid = 1;
+	client_info.port = 7777;
+	client = cando_vsock_tcp_client_create(NULL, &client_info);
+	assert_non_null(client);
+
+	err = cando_vsock_tcp_client_connect(client);
+	assert_int_equal(err, 0);
+
+	memset(buffer, 'T', sizeof(buffer));
+	size = cando_vsock_tcp_client_send_data(client, buffer, sizeof(buffer), 0);
+	assert_int_equal(size, sizeof(buffer));
+
+	cando_vsock_tcp_destroy(client);
+
+	exit(0);
+}
+
+
+static void CANDO_UNUSED
+test_vsock_tcp_send_recv (void CANDO_UNUSED **state)
+{
+	pid_t pid;
+
+	int client_sock = -1;
+
+	char buffer[512], buffer_two[512];
+
+	struct cando_vsock_tcp *server = NULL;
+
+	struct cando_vsock_tcp_server_create_info server_info;
+
+	cando_log_set_level(CANDO_LOG_ALL);
+
+	server_info.vcid = 1;
+	server_info.port = 7777;
+	server_info.connections = 1;
+	server = cando_vsock_tcp_server_create(NULL, &server_info);
+	assert_non_null(server);
+
+	pid = fork();
+	if (pid == 0) {
+		p_test_vsock_tcp_send_recv_client();
+	}
+
+	client_sock = cando_vsock_tcp_server_accept(server, NULL);
+	assert_int_not_equal(client_sock, -1);
+
+	/*
+	 * Just so printing data doesn't extend past the test.
+	 */
+	usleep(2000);
+
+	memset(buffer, 'T', sizeof(buffer));
+	cando_vsock_tcp_recv_data(client_sock, buffer_two, sizeof(buffer_two), 0);
+	assert_memory_equal(buffer, buffer_two, sizeof(buffer));
+
+	waitpid(pid, NULL, -1);
+
+	close(client_sock);
+	cando_vsock_tcp_destroy(server);
+}
+
+/*********************************************
+ * End of test_vsock_tcp_send_recv functions *
+ *********************************************/
+
+
 /********************************************
  * Start of test_vsock_tcp_get_fd functions *
  ********************************************/
 
-static void
+static void CANDO_UNUSED
 test_vsock_tcp_get_fd (void CANDO_UNUSED **state)
 {
 	int sock_fd = -1;
@@ -169,7 +254,7 @@ test_vsock_tcp_get_fd (void CANDO_UNUSED **state)
  * Start of test_vsock_tcp_get_vcid functions *
  **********************************************/
 
-static void
+static void CANDO_UNUSED
 test_vsock_tcp_get_vcid (void CANDO_UNUSED **state)
 {
 	unsigned int vcid = -1;
@@ -202,7 +287,7 @@ test_vsock_tcp_get_vcid (void CANDO_UNUSED **state)
  * Start of test_vsock_tcp_get_port functions *
  **********************************************/
 
-static void
+static void CANDO_UNUSED
 test_vsock_tcp_get_port (void CANDO_UNUSED **state)
 {
 	int port = -1;
@@ -234,7 +319,7 @@ test_vsock_tcp_get_port (void CANDO_UNUSED **state)
  * Start of test_vsock_tcp_get_local_vcid functions *
  ****************************************************/
 
-static void
+static void CANDO_UNUSED
 test_vsock_tcp_get_local_vcid (void CANDO_UNUSED **state)
 {
 	unsigned int vcid = -1;
@@ -252,7 +337,7 @@ test_vsock_tcp_get_local_vcid (void CANDO_UNUSED **state)
  * Start of test_vsock_tcp_get_sizeof functions *
  ************************************************/
 
-static void
+static void CANDO_UNUSED
 test_vsock_tcp_get_sizeof (void CANDO_UNUSED **state)
 {
 	int size = -1;
@@ -271,6 +356,7 @@ main (void)
 		cmocka_unit_test(test_vsock_tcp_server_create),
 		cmocka_unit_test(test_vsock_tcp_client_create),
 		cmocka_unit_test(test_vsock_tcp_accept_connect),
+		cmocka_unit_test(test_vsock_tcp_send_recv),
 		cmocka_unit_test(test_vsock_tcp_get_fd),
 		cmocka_unit_test(test_vsock_tcp_get_vcid),
 		cmocka_unit_test(test_vsock_tcp_get_port),

@@ -123,6 +123,27 @@ cando_vsock_tcp_client_connect (struct cando_vsock_tcp *vsock);
 
 
 /*
+ * @brief Send data to client socket address provided via
+ *        call to cando_vsock_tcp_client_create(3).
+ *
+ * @param vsock - Must pass a pointer to a struct cando_vsock_tcp.
+ * @param data  - Pointer to data to send through socket.
+ * @param size  - Size of data to send through socket.
+ * @param opts  - Reserved for future usage. For now used
+ *                to set the flag argument of send(2).
+ *
+ * @return
+ *	on success: Amount of bytes sent
+ *	on failure: # < 0
+ */
+CANDO_API
+ssize_t
+cando_vsock_tcp_client_send_data (struct cando_vsock_tcp *vsock,
+                                  const void *data,
+                                  const size_t size,
+                                  const void *opts);
+
+/*
  * @brief Acquire VM socket file descriptor associated with
  *        struct cando_vsock_tcp instance.
  *
@@ -203,5 +224,45 @@ cando_vsock_tcp_get_local_vcid (void);
 CANDO_API
 int
 cando_vsock_tcp_get_sizeof (void);
+
+
+/*
+ * @brief Receive data from socket file descriptor.
+ *
+ * @param sockfd - Socket file descriptor to receive data from.
+ * @param data   - Pointer to data to store data received from a socket.
+ * @param size   - Size of data to receive from a socket.
+ * @param opts   - Reserved for future usage. For now used
+ *                 to set the flag argument of recv(2).
+ *
+ * @return
+ *	on success: Amount of bytes sent
+ *	on failure: # < 0
+ */
+ssize_t
+cando_vsock_tcp_recv_data (const int sockfd,
+                           void *data,
+                           const size_t size,
+                           const void *opts);
+
+
+/*
+ * @brief Send data to socket file descriptor.
+ *
+ * @param sockfd - Socket file descriptor to send data to.
+ * @param data   - Pointer to data to send through socket.
+ * @param size   - Size of data to send through socket.
+ * @param opts   - Reserved for future usage. For now used
+ *                 to set the flag argument of send(2).
+ *
+ * @return
+ *	on success: Amount of bytes sent
+ *	on failure: # < 0
+ */
+ssize_t
+cando_vsock_tcp_send_data (const int sockfd,
+                           const void *data,
+                           const size_t size,
+                           const void *opts);
 
 #endif /* CANDO_VSOCK_TCP_H */
