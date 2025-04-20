@@ -239,6 +239,7 @@ cando_vsock_tcp_get_sizeof (void);
  *	on success: Amount of bytes received
  *	on failure: # < 0
  */
+CANDO_API
 ssize_t
 cando_vsock_tcp_recv_data (const int sockfd,
                            void *data,
@@ -259,6 +260,7 @@ cando_vsock_tcp_recv_data (const int sockfd,
  *	on success: Amount of bytes sent
  *	on failure: # < 0
  */
+CANDO_API
 ssize_t
 cando_vsock_tcp_send_data (const int sockfd,
                            const void *data,

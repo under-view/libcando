@@ -340,7 +340,7 @@ test_vsock_tcp_get_local_vcid (void CANDO_UNUSED **state)
 static void CANDO_UNUSED
 test_vsock_tcp_get_sizeof (void CANDO_UNUSED **state)
 {
-	int size = -1;
+	int size = 0;
 	size = cando_vsock_tcp_get_sizeof();
 	assert_int_not_equal(size, 0);
 }
