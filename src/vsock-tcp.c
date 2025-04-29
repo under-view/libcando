@@ -74,7 +74,7 @@ p_vsock_get_local_vcid (void)
 
 static struct cando_vsock_tcp *
 p_create_vsock (struct cando_vsock_tcp *p_vsock,
-                const void *p_sock_info,
+                const void *p_vsock_info,
                 const bool server)
 {
 	struct cando_vsock_tcp *vsock = p_vsock;
@@ -82,7 +82,7 @@ p_create_vsock (struct cando_vsock_tcp *p_vsock,
 	const struct cando_vsock_tcp_create_info {  
 		unsigned int vcid;
 		int          port;
-	} *sock_info = p_sock_info;
+	} *vsock_info = p_vsock_info;
 
 	if (!vsock) {
 		vsock = calloc(1, sizeof(struct cando_vsock_tcp));
@@ -100,13 +100,13 @@ p_create_vsock (struct cando_vsock_tcp *p_vsock,
 		return NULL;
 	}
 
-	vsock->port = sock_info->port;
-	vsock->vcid = (server && sock_info->vcid != 1) ? \
-		p_vsock_get_local_vcid() : sock_info->vcid;
+	vsock->port = vsock_info->port;
+	vsock->vcid = (server && vsock_info->vcid != 1) ? \
+		p_vsock_get_local_vcid() : vsock_info->vcid;
 
 	vsock->addr.svm_family = AF_VSOCK;
 	vsock->addr.svm_reserved1 = 0;
-	vsock->addr.svm_port = sock_info->port;
+	vsock->addr.svm_port = vsock_info->port;
 	vsock->addr.svm_cid = vsock->vcid;
 
 	return vsock;
@@ -123,7 +123,7 @@ p_create_vsock (struct cando_vsock_tcp *p_vsock,
 
 struct cando_vsock_tcp *
 cando_vsock_tcp_server_create (struct cando_vsock_tcp *p_vsock,
-                               const void *p_sock_info)
+                               const void *p_vsock_info)
 {
 	int err = -1;
 
@@ -131,9 +131,9 @@ cando_vsock_tcp_server_create (struct cando_vsock_tcp *p_vsock,
 
 	struct cando_vsock_tcp *vsock = p_vsock;
 
-	const struct cando_vsock_tcp_server_create_info *sock_info = p_sock_info;
+	const struct cando_vsock_tcp_server_create_info *vsock_info = p_vsock_info;
 
-	vsock = p_create_vsock(vsock, p_sock_info, 1);
+	vsock = p_create_vsock(vsock, p_vsock_info, 1);
 	if (!vsock)
 		return NULL;
 
@@ -159,7 +159,7 @@ cando_vsock_tcp_server_create (struct cando_vsock_tcp *p_vsock,
 		return NULL;
 	}
 
-	err = listen(vsock->fd, sock_info->connections);
+	err = listen(vsock->fd, vsock_info->connections);
 	if (err == -1) {
 		cando_vsock_tcp_destroy(vsock);
 		cando_log_error("listen: %s\n", strerror(errno));
@@ -214,11 +214,11 @@ cando_vsock_tcp_server_accept (struct cando_vsock_tcp *vsock,
 
 struct cando_vsock_tcp *
 cando_vsock_tcp_client_create (struct cando_vsock_tcp *p_vsock,
-                               const void *sock_info)
+                               const void *vsock_info)
 {
 	struct cando_vsock_tcp *vsock = p_vsock;
 
-	vsock = p_create_vsock(vsock, sock_info, 0);
+	vsock = p_create_vsock(vsock, vsock_info, 0);
 	if (!vsock)
 		return NULL;
 
@@ -350,7 +350,7 @@ cando_vsock_tcp_get_sizeof (void)
 
 
 ssize_t
-cando_vsock_tcp_send_data (const int sockfd,
+cando_vsock_tcp_send_data (const int sock_fd,
                            const void *data,
                            const size_t size,
                            const void *opts)
@@ -359,14 +359,14 @@ cando_vsock_tcp_send_data (const int sockfd,
 
 	const int flags = (opts) ? *((const int*)opts) : 0;
 
-	if (sockfd < 0 || \
+	if (sock_fd < 0 || \
 	    !data || \
 	    !size)
 	{
 		return -1;
 	}
 
-	ret = send(sockfd, data, size, flags);
+	ret = send(sock_fd, data, size, flags);
 	if (errno == EINTR || errno == EAGAIN) {
 		return -errno;
 	} else if (ret == -1) {
@@ -379,7 +379,7 @@ cando_vsock_tcp_send_data (const int sockfd,
 
 
 ssize_t
-cando_vsock_tcp_recv_data (const int sockfd,
+cando_vsock_tcp_recv_data (const int sock_fd,
                            void *data,
                            const size_t size,
                            const void *opts)
@@ -388,14 +388,14 @@ cando_vsock_tcp_recv_data (const int sockfd,
 
 	const int flags = (opts) ? *((const int*)opts) : 0;
 
-	if (sockfd < 0 || \
+	if (sock_fd < 0 || \
 	    !data || \
 	    !size)
 	{
 		return -1;
 	}
 
-	ret = recv(sockfd, data, size, flags);
+	ret = recv(sock_fd, data, size, flags);
 	if (errno == EINTR || errno == EAGAIN) {
 		return -errno;
 	} else if (ret == -1) {

@@ -118,7 +118,7 @@ cando_vsock_tcp_server_create_info
 cando_vsock_tcp_server_create
 =============================
 
-.. c:function:: struct cando_vsock_tcp *cando_vsock_tcp_server_create(struct cando_vsock_tcp *vsock, const void *sock_info);
+.. c:function:: struct cando_vsock_tcp *cando_vsock_tcp_server_create(struct cando_vsock_tcp *vsock, const void *vsock_info);
 
 | Creates a VM socket that may be utilized for server socket operations.
 
@@ -133,7 +133,7 @@ cando_vsock_tcp_server_create
 		    | caller. If not ``NULL`` address passed will be used
 		    | to store the newly created ``struct`` :c:struct:`cando_vsock_tcp`
 		    | instance.
-		* - sock_info
+		* - vsock_info
 		  - | Implementation uses a pointer to a
 		    | ``struct`` :c:struct:`cando_vsock_tcp_server_create_info`.
 		    | no other implementation may be passed to
@@ -194,7 +194,7 @@ cando_vsock_tcp_client_create_info
 cando_vsock_tcp_client_create
 =============================
 
-.. c:function:: struct cando_vsock_tcp *cando_vsock_tcp_client_create(struct cando_vsock_tcp *vsock, const void *sock_info);
+.. c:function:: struct cando_vsock_tcp *cando_vsock_tcp_client_create(struct cando_vsock_tcp *vsock, const void *vsock_info);
 
 | Creates a VM socket that may be utilized for client socket operations.
 
@@ -209,7 +209,7 @@ cando_vsock_tcp_client_create
 		    | caller. If not ``NULL`` address passed will be used
 		    | to store the newly created ``struct`` :c:struct:`cando_vsock_tcp`
 		    | instance.
-		* - sock_info
+		* - vsock_info
 		  - | Implementation uses a pointer to a
 		    | ``struct`` :c:struct:`cando_vsock_tcp_client_create_info`.
 		    | no other implementation may be passed to
@@ -397,7 +397,7 @@ cando_vsock_tcp_get_sizeof
 cando_vsock_tcp_recv_data
 =========================
 
-.. c:function:: ssize_t cando_vsock_tcp_recv_data(const int sockfd, void *data, const size_t size, const void *opts);
+.. c:function:: ssize_t cando_vsock_tcp_recv_data(const int sock_fd, void *data, const size_t size, const void *opts);
 
 | Receive data from socket file descriptor.
 
@@ -406,7 +406,7 @@ cando_vsock_tcp_recv_data
 
 		* - Param
 	          - Decription
-		* - sockfd
+		* - sock_fd
 		  - Socket file descriptor to receive data from.
 		* - data
 		  - | Pointer to data to store data received from a socket.
@@ -426,7 +426,7 @@ cando_vsock_tcp_recv_data
 cando_vsock_tcp_send_data
 =========================
 
-.. c:function:: ssize_t cando_vsock_tcp_send_data(const int sockfd, const void *data, const size_t size, const void *opts);
+.. c:function:: ssize_t cando_vsock_tcp_send_data(const int sock_fd, const void *data, const size_t size, const void *opts);
 
 | Send data to socket file descriptor.
 
@@ -435,7 +435,7 @@ cando_vsock_tcp_send_data
 
 		* - Param
 	          - Decription
-		* - sockfd
+		* - sock_fd
 		  - | Socket file descriptor to send data to.
 		* - data
 		  - | Pointer to data to send through socket.

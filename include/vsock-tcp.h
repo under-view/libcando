@@ -32,15 +32,15 @@ struct cando_vsock_tcp_server_create_info
 /*
  * @brief Creates a VM socket that may be utilized for server socket operations.
  *
- * @param vsock     - May be NULL or a pointer to a struct cando_vsock_tcp.
- *                    If NULL memory will be allocated and return to
- *                    caller. If not NULL address passed will be used
- *                    to store the newly created struct cando_vsock_tcp
- *                    instance.
- * @param sock_info - Implementation uses a pointer to a
- *                    struct cando_vsock_tcp_server_create_info
- *                    no other implementation may be passed to
- *                    this parameter.
+ * @param vsock      - May be NULL or a pointer to a struct cando_vsock_tcp.
+ *                     If NULL memory will be allocated and return to
+ *                     caller. If not NULL address passed will be used
+ *                     to store the newly created struct cando_vsock_tcp
+ *                     instance.
+ * @param vsock_info - Implementation uses a pointer to a
+ *                     struct cando_vsock_tcp_server_create_info
+ *                     no other implementation may be passed to
+ *                     this parameter.
  *
  * @return
  *	on success: Pointer to a struct cando_vsock_tcp
@@ -49,7 +49,7 @@ struct cando_vsock_tcp_server_create_info
 CANDO_API
 struct cando_vsock_tcp *
 cando_vsock_tcp_server_create (struct cando_vsock_tcp *vsock,
-                               const void *sock_info);
+                               const void *vsock_info);
 
 
 /*
@@ -87,15 +87,15 @@ struct cando_vsock_tcp_client_create_info
 /*
  * @brief Creates a VM socket that may be utilized for client socket operations.
  *
- * @param vsock     - May be NULL or a pointer to a struct cando_vsock_tcp.
- *                    If NULL memory will be allocated and return to
- *                    caller. If not NULL address passed will be used
- *                    to store the newly created struct cando_vsock_tcp
- *                    instance.
- * @param sock_info - Implementation uses a pointer to a
- *                    struct cando_vsock_tcp_client_create_info
- *                    no other implementation may be passed to
- *                    this parameter.
+ * @param vsock      - May be NULL or a pointer to a struct cando_vsock_tcp.
+ *                     If NULL memory will be allocated and return to
+ *                     caller. If not NULL address passed will be used
+ *                     to store the newly created struct cando_vsock_tcp
+ *                     instance.
+ * @param vsock_info - Implementation uses a pointer to a
+ *                     struct cando_vsock_tcp_client_create_info
+ *                     no other implementation may be passed to
+ *                     this parameter.
  *
  * @return
  *	on success: Pointer to a struct cando_vsock_tcp
@@ -104,7 +104,7 @@ struct cando_vsock_tcp_client_create_info
 CANDO_API
 struct cando_vsock_tcp *
 cando_vsock_tcp_client_create (struct cando_vsock_tcp *vsock,
-                               const void *sock_info);
+                               const void *vsock_info);
 
 
 /*
@@ -229,11 +229,11 @@ cando_vsock_tcp_get_sizeof (void);
 /*
  * @brief Receive data from socket file descriptor.
  *
- * @param sockfd - Socket file descriptor to receive data from.
- * @param data   - Pointer to data to store data received from a socket.
- * @param size   - Size of data to receive from a socket.
- * @param opts   - Reserved for future usage. For now used
- *                 to set the flag argument of recv(2).
+ * @param sock_fd - Socket file descriptor to receive data from.
+ * @param data    - Pointer to data to store data received from a socket.
+ * @param size    - Size of data to receive from a socket.
+ * @param opts    - Reserved for future usage. For now used
+ *                  to set the flag argument of recv(2).
  *
  * @return
  *	on success: Amount of bytes received
@@ -241,7 +241,7 @@ cando_vsock_tcp_get_sizeof (void);
  */
 CANDO_API
 ssize_t
-cando_vsock_tcp_recv_data (const int sockfd,
+cando_vsock_tcp_recv_data (const int sock_fd,
                            void *data,
                            const size_t size,
                            const void *opts);
@@ -250,11 +250,11 @@ cando_vsock_tcp_recv_data (const int sockfd,
 /*
  * @brief Send data to socket file descriptor.
  *
- * @param sockfd - Socket file descriptor to send data to.
- * @param data   - Pointer to data to send through socket.
- * @param size   - Size of data to send through socket.
- * @param opts   - Reserved for future usage. For now used
- *                 to set the flag argument of send(2).
+ * @param sock_fd - Socket file descriptor to send data to.
+ * @param data    - Pointer to data to send through socket.
+ * @param size    - Size of data to send through socket.
+ * @param opts    - Reserved for future usage. For now used
+ *                  to set the flag argument of send(2).
  *
  * @return
  *	on success: Amount of bytes sent
@@ -262,7 +262,7 @@ cando_vsock_tcp_recv_data (const int sockfd,
  */
 CANDO_API
 ssize_t
-cando_vsock_tcp_send_data (const int sockfd,
+cando_vsock_tcp_send_data (const int sock_fd,
                            const void *data,
                            const size_t size,
                            const void *opts);
