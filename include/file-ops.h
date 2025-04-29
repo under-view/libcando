@@ -112,19 +112,22 @@ cando_file_ops_zero_copy (struct cando_file_ops *flops,
  *        Caller would have to copy into a secondary
  *        buffer to exclude new line character like bellow.
  *
- * @code
+ * @code@
+ * size_t len;
  * char buffer[32];
- * void *data = NULL;
+ * const void *data = NULL;
  *
  * memset(buffer, 0, sizeof(buffer));
  * data = cando_file_ops_get_data(flops, 54);
  * memccpy(buffer, data, '\n', sizeof(buffer));
+ * len = strnlen(buffer, sizeof(buffer));
+ * buffer[len-1] = '\0';
  * fprintf(stdout, "%s", buffer);
  *
  * // OR
  * data = cando_file_ops_get_data(flops, 54);
  * fprintf(stdout, "%.*s\n", 32, data);
- * @endcode
+ * @endcode@
  *
  * @param flops  - Pointer to a valid struct cando_file_ops.
  * @param offset - Byte offset within the file.
@@ -144,18 +147,22 @@ cando_file_ops_get_data (struct cando_file_ops *flops,
  *        Caller would have to copy into a secondary
  *        buffer to exclude new line character like bellow.
  *
- * @code
+ * @code@
+ * size_t len;
  * char buffer[32];
- * void *data = NULL;
+ * const char *line = NULL;
+ *
  * memset(buffer, 0, sizeof(buffer));
- * data = cando_file_ops_get_line(flops, 4);
- * memccpy(buffer, data, '\n', sizeof(buffer));
+ * line = cando_file_ops_get_line(flops, 4);
+ * memccpy(buffer, line, '\n', sizeof(buffer));
+ * len = strnlen(buffer, sizeof(buffer));
+ * buffer[len-1] = '\0';
  * fprintf(stdout, "%s", buffer);
  *
  * // OR
- * data = cando_file_ops_get_line(flops, 4);
- * fprintf(stdout, "%.*s\n", 32, data);
- * @endcode
+ * line = cando_file_ops_get_line(flops, 4);
+ * fprintf(stdout, "%.*s\n", 32, line);
+ * @endcode@
  *
  * @param flops - Pointer to a valid struct cando_file_ops.
  * @param line  - Line number in file to get data from.

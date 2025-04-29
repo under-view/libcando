@@ -241,12 +241,15 @@ cando_file_ops_get_data
 
 	.. code-block:: c
 
+		size_t len;
 		char buffer[32];
-		void *data = NULL;
+		const void *data = NULL;
 
 		memset(buffer, 0, sizeof(buffer));
 		data = cando_file_ops_get_data(flops, 54);
 		memccpy(buffer, data, '\n', sizeof(buffer));
+		len = strnlen(buffer, sizeof(buffer));
+		buffer[len-1] = '\0';
 		fprintf(stdout, "%s", buffer);
 
 		// OR
@@ -281,17 +284,20 @@ cando_file_ops_get_line
 
 	.. code-block:: c
 
+		size_t len;
 		char buffer[32];
-		void *data = NULL;
+		const char *line = NULL;
 
 		memset(buffer, 0, sizeof(buffer));
-		data = cando_file_ops_get_line(flops, 4);
-		memccpy(buffer, data, '\n', sizeof(buffer));
+		line = cando_file_ops_get_line(flops, 4);
+		memccpy(buffer, line, '\n', sizeof(buffer));
+		len = strnlen(buffer, sizeof(buffer));
+		buffer[len-1] = '\0';
 		fprintf(stdout, "%s", buffer);
 
 		// OR
-		data = cando_file_ops_get_line(flops, 4);
-		fprintf(stdout, "%.*s\n", 32, data);
+		line = cando_file_ops_get_line(flops, 4);
+		fprintf(stdout, "%.*s\n", 32, line);
 
 	.. list-table::
 		:header-rows: 1
