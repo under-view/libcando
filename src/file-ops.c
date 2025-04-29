@@ -141,7 +141,7 @@ cando_file_ops_create (struct cando_file_ops *p_flops,
 
 int
 cando_file_ops_truncate_file (struct cando_file_ops *flops,
-                              const unsigned long int size)
+                              const off_t size)
 {
 	int ret = -1;
 
@@ -172,11 +172,11 @@ cando_file_ops_truncate_file (struct cando_file_ops *flops,
  * Start of cando_file_ops_zero_copy functions *
  ***********************************************/
 
-int
+ssize_t
 cando_file_ops_zero_copy (struct cando_file_ops *flops,
                           const void *p_file_info)
 {
-	int ret;
+	ssize_t ret;
 
 	const struct cando_file_ops_zero_copy_info *file_info = p_file_info;
 
@@ -226,7 +226,7 @@ cando_file_ops_zero_copy (struct cando_file_ops *flops,
 
 const void *
 cando_file_ops_get_data (struct cando_file_ops *flops,
-                         const unsigned long int offset)
+                         const size_t offset)
 {
 	if (!flops)
 		return NULL;
@@ -244,9 +244,9 @@ cando_file_ops_get_data (struct cando_file_ops *flops,
 
 const char *
 cando_file_ops_get_line (struct cando_file_ops *flops,
-			 const unsigned long int p_line)
+			 const size_t p_line)
 {
-	unsigned long int offset, c, line = 0;
+	size_t offset, c, line = 0;
 
 	if (!flops)
 		return NULL;
@@ -275,10 +275,10 @@ cando_file_ops_get_line (struct cando_file_ops *flops,
 }
 
 
-long int
+size_t
 cando_file_ops_get_line_count (struct cando_file_ops *flops)
 {
-	long int offset, line = 0;
+	size_t offset, line = 0;
 
 	if (!flops)
 		return -1;
@@ -289,7 +289,7 @@ cando_file_ops_get_line_count (struct cando_file_ops *flops)
 		return -1;
 	}
 
-	for (offset = 0; offset < (long int) flops->data_sz; offset++)
+	for (offset = 0; offset < flops->data_sz; offset++)
 		if (*((char*)flops->data + offset) == '\n')
 			line++;
 

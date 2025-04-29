@@ -151,7 +151,7 @@ cando_file_ops_create
 cando_file_ops_truncate_file
 ============================
 
-.. c:function:: int cando_file_ops_truncate_file(struct cando_file_ops *flops, const long unsigned int size);
+.. c:function:: int cando_file_ops_truncate_file(struct cando_file_ops *flops, const off64_t size);
 
 | Adjust file to a size of precisely length bytes.
 
@@ -180,9 +180,9 @@ cando_file_ops_zero_copy_info
 	.. c:member::
 		size_t size;
 		int    in_fd;
-		off_t  *in_off;
+		loff_t *in_off;
 		int    out_fd;
-		off_t  *out_off;
+		loff_t *out_off;
 
 	:c:member:`size`
 		| Total size of the data to copy.
@@ -206,7 +206,7 @@ cando_file_ops_zero_copy_info
 cando_file_ops_zero_copy
 ========================
 
-.. c:function:: int cando_file_ops_zero_copy(struct cando_file_ops *flops, const void *file_info);
+.. c:function:: ssize_t cando_file_ops_zero_copy(struct cando_file_ops *flops, const void *file_info);
 
 | Sets the data in a file at a given offset up to a given size
 | without copying the buffer into userspace.
@@ -233,7 +233,7 @@ cando_file_ops_zero_copy
 cando_file_ops_get_data
 =======================
 
-.. c:function:: const void *cando_file_ops_get_data(struct cando_file_ops *flops, const unsigned long int offset);
+.. c:function:: const void *cando_file_ops_get_data(struct cando_file_ops *flops, const size_t offset);
 
 | Returns file data stored at a given offset.
 | Caller would have to copy into a secondary
@@ -276,7 +276,7 @@ cando_file_ops_get_data
 cando_file_ops_get_line
 =======================
 
-.. c:function:: const char *cando_file_ops_get_line(struct cando_file_ops *flops, const unsigned long int line);
+.. c:function:: const char *cando_file_ops_get_line(struct cando_file_ops *flops, const size_t line);
 
 | Returns file data stored at a given line.
 | Caller would have to copy into a secondary
@@ -319,7 +319,7 @@ cando_file_ops_get_line
 cando_file_ops_get_line_count
 =============================
 
-.. c:function:: long int cando_file_ops_get_line_count(struct cando_file_ops *flops);
+.. c:function:: size_t cando_file_ops_get_line_count(struct cando_file_ops *flops);
 
 | Returns the amount of lines a file contains.
 
@@ -333,7 +333,7 @@ cando_file_ops_get_line_count
 
 	Returns:
 		| **on success:** Line count
-		| **on failure:** -1
+		| **on failure:** size_t max size or -1
 
 =========================================================================================================================================
 
@@ -378,7 +378,7 @@ cando_file_ops_get_data_size
 
 	Returns:
 		| **on success:** Size of the `mmap(2)`_ buffer
-		| **on failure:** -1
+		| **on failure:** size_t max size or -1
 
 =========================================================================================================================================
 
@@ -412,9 +412,9 @@ cando_file_ops_set_data_info
 .. c:struct:: cando_file_ops_set_data_info
 
 	.. c:member::
-		unsigned long int offset;
-		size_t            size;
-		const void        *data;
+		size_t     offset;
+		size_t     size;
+		const void *data;
 
 	:c:member:`offset`
 		| Byte offset within the file.

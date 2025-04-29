@@ -63,7 +63,7 @@ cando_file_ops_create (struct cando_file_ops *flops,
 CANDO_API
 int
 cando_file_ops_truncate_file (struct cando_file_ops *flops,
-                              const long unsigned int size);
+                              const off64_t size);
 
 
 /*
@@ -82,9 +82,9 @@ struct cando_file_ops_zero_copy_info
 {
 	size_t size;
 	int    in_fd;
-	off_t  *in_off;
+	loff_t *in_off;
 	int    out_fd;
-	off_t  *out_off;
+	loff_t *out_off;
 };
 
 
@@ -102,7 +102,7 @@ struct cando_file_ops_zero_copy_info
  * 	on failure: -1
  */
 CANDO_API
-int
+ssize_t
 cando_file_ops_zero_copy (struct cando_file_ops *flops,
                           const void *file_info);
 
@@ -139,7 +139,7 @@ cando_file_ops_zero_copy (struct cando_file_ops *flops,
 CANDO_API
 const void *
 cando_file_ops_get_data (struct cando_file_ops *flops,
-                         const unsigned long int offset);
+                         const size_t offset);
 
 
 /*
@@ -174,7 +174,7 @@ cando_file_ops_get_data (struct cando_file_ops *flops,
 CANDO_API
 const char *
 cando_file_ops_get_line (struct cando_file_ops *flops,
-			 const unsigned long int line);
+			 const size_t line);
 
 
 /*
@@ -184,10 +184,10 @@ cando_file_ops_get_line (struct cando_file_ops *flops,
  *
  * @returns
  * 	on success: Line count
- * 	on failure: -1
+ * 	on failure: size_t max size or -1
  */
 CANDO_API
-long int
+size_t
 cando_file_ops_get_line_count (struct cando_file_ops *flops);
 
 
@@ -213,7 +213,7 @@ cando_file_ops_get_fd (struct cando_file_ops *flops);
  *
  * @returns
  * 	on success: Size of the mmap(2) buffer
- * 	on failure: -1
+ * 	on failure: size_t max size or -1
  */
 CANDO_API
 size_t
@@ -244,9 +244,9 @@ cando_file_ops_get_filename (struct cando_file_ops *flops);
  */
 struct cando_file_ops_set_data_info
 {
-	unsigned long int offset;
-	size_t            size;
-	const void        *data;
+	size_t     offset;
+	size_t     size;
+	const void *data;
 };
 
 
