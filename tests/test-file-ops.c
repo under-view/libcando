@@ -26,20 +26,20 @@ test_file_ops_create (void CANDO_UNUSED **state)
 
 	struct cando_file_ops *flops = NULL;
 
-	struct cando_file_ops_create_info finfo;
+	struct cando_file_ops_create_info file_info;
 
 	memset(&fstats, 0, sizeof(fstats));
-	memset(&finfo, 0, sizeof(finfo));
+	memset(&file_info, 0, sizeof(file_info));
 
-	finfo.fname = "/tmp/some-file.txt";
-	flops = cando_file_ops_create(NULL, &finfo);
+	file_info.fname = "/tmp/some-file.txt";
+	flops = cando_file_ops_create(NULL, &file_info);
 	assert_non_null(flops);
 
-	ret = stat(finfo.fname, &fstats);
+	ret = stat(file_info.fname, &fstats);
 	assert_int_equal(ret, 0);
 
 	cando_file_ops_destroy(flops);
-	remove(finfo.fname);
+	remove(file_info.fname);
 }
 
 
@@ -52,24 +52,24 @@ test_file_ops_create_empty_file (void CANDO_UNUSED **state)
 
 	struct cando_file_ops *flops = NULL;
 
-	struct cando_file_ops_create_info finfo;
+	struct cando_file_ops_create_info file_info;
 
 	memset(&fstats, 0, sizeof(fstats));
-	memset(&finfo, 0, sizeof(finfo));
+	memset(&file_info, 0, sizeof(file_info));
 
 	cando_log_set_level(CANDO_LOG_ERROR);
 
-	finfo.size = (1<<12);
-	finfo.fname = "/tmp/some-file.txt";
-	flops = cando_file_ops_create(NULL, &finfo);
+	file_info.size = (1<<12);
+	file_info.fname = "/tmp/some-file.txt";
+	flops = cando_file_ops_create(NULL, &file_info);
 	assert_non_null(flops);
 
-	ret = stat(finfo.fname, &fstats);
+	ret = stat(file_info.fname, &fstats);
 	assert_int_equal(ret, 0);
-	assert_int_equal(fstats.st_size, finfo.size);
+	assert_int_equal(fstats.st_size, file_info.size);
 
 	cando_file_ops_destroy(flops);
-	remove(finfo.fname);
+	remove(file_info.fname);
 }
 
 /*****************************************
@@ -92,24 +92,24 @@ test_file_ops_zero_copy (void CANDO_UNUSED **state)
 
 	struct cando_file_ops *flops = NULL, *flops_two = NULL;
 
-	struct cando_file_ops_create_info finfo;
+	struct cando_file_ops_create_info file_info;
 	struct cando_file_ops_zero_copy_info zcopy_info;
 
 	memset(&zcopy_info, 0, sizeof(zcopy_info));
-	memset(&finfo, 0, sizeof(finfo));
+	memset(&file_info, 0, sizeof(file_info));
 
-	finfo.create_pipe = 0x01;
-	finfo.fname = TESTER_FILE_ONE;
-	flops = cando_file_ops_create(NULL, &finfo);
+	file_info.create_pipe = 0x01;
+	file_info.fname = TESTER_FILE_ONE;
+	flops = cando_file_ops_create(NULL, &file_info);
 	assert_non_null(flops);
 
-	finfo.create_pipe = 0x00;
-	finfo.fname = "/tmp/test-file.txt";
-	finfo.size = cando_file_ops_get_data_size(flops);
-	flops_two = cando_file_ops_create(NULL, &finfo);
+	file_info.create_pipe = 0x00;
+	file_info.fname = "/tmp/test-file.txt";
+	file_info.size = cando_file_ops_get_data_size(flops);
+	flops_two = cando_file_ops_create(NULL, &file_info);
 	assert_non_null(flops_two);
 
-	zcopy_info.size = finfo.size;
+	zcopy_info.size = file_info.size;
 	zcopy_info.in_fd = cando_file_ops_get_fd(flops);
 	zcopy_info.in_off = &(off_t){0};
 	zcopy_info.out_fd = cando_file_ops_get_fd(flops_two);
@@ -121,9 +121,9 @@ test_file_ops_zero_copy (void CANDO_UNUSED **state)
 	cando_file_ops_destroy(flops_two); flops_two = NULL;
 
 	/* Re-open newly created file */
-	finfo.fname = "/tmp/test-file.txt";
-	finfo.size = 0;
-	flops_two = cando_file_ops_create(NULL, &finfo);
+	file_info.fname = "/tmp/test-file.txt";
+	file_info.size = 0;
+	flops_two = cando_file_ops_create(NULL, &file_info);
 	assert_non_null(flops_two);
 
 	memset(buffer, 0, sizeof(buffer));
@@ -158,13 +158,13 @@ test_file_ops_get_data (void CANDO_UNUSED **state)
 
 	struct cando_file_ops *flops = NULL;
 
-	struct cando_file_ops_create_info finfo;
+	struct cando_file_ops_create_info file_info;
 
 	memset(&fstats, 0, sizeof(fstats));
-	memset(&finfo, 0, sizeof(finfo));
+	memset(&file_info, 0, sizeof(file_info));
 
-	finfo.fname = TESTER_FILE_ONE;
-	flops = cando_file_ops_create(NULL, &finfo);
+	file_info.fname = TESTER_FILE_ONE;
+	flops = cando_file_ops_create(NULL, &file_info);
 	assert_non_null(flops);
 
 	data = cando_file_ops_get_data(flops, 0);
@@ -185,13 +185,13 @@ test_file_ops_get_line (void CANDO_UNUSED **state)
 
 	struct cando_file_ops *flops = NULL;
 
-	struct cando_file_ops_create_info finfo;
+	struct cando_file_ops_create_info file_info;
 
 	memset(&fstats, 0, sizeof(fstats));
-	memset(&finfo, 0, sizeof(finfo));
+	memset(&file_info, 0, sizeof(file_info));
 
-	finfo.fname = TESTER_FILE_ONE;
-	flops = cando_file_ops_create(NULL, &finfo);
+	file_info.fname = TESTER_FILE_ONE;
+	flops = cando_file_ops_create(NULL, &file_info);
 	assert_non_null(flops);
 
 	data = cando_file_ops_get_line(flops, 0);
@@ -223,12 +223,12 @@ test_file_ops_get_line_count (void CANDO_UNUSED **state)
 
 	struct cando_file_ops *flops = NULL;
 
-	struct cando_file_ops_create_info finfo;
+	struct cando_file_ops_create_info file_info;
 
-	memset(&finfo, 0, sizeof(finfo));
+	memset(&file_info, 0, sizeof(file_info));
 
-	finfo.fname = TESTER_FILE_ONE;
-	flops = cando_file_ops_create(NULL, &finfo);
+	file_info.fname = TESTER_FILE_ONE;
+	flops = cando_file_ops_create(NULL, &file_info);
 	assert_non_null(flops);
 
 	line_count = cando_file_ops_get_line_count(flops);
@@ -245,12 +245,12 @@ test_file_ops_get_fd (void CANDO_UNUSED **state)
 
 	struct cando_file_ops *flops = NULL;
 
-	struct cando_file_ops_create_info finfo;
+	struct cando_file_ops_create_info file_info;
 
-	memset(&finfo, 0, sizeof(finfo));
+	memset(&file_info, 0, sizeof(file_info));
 
-	finfo.fname = TESTER_FILE_ONE;
-	flops = cando_file_ops_create(NULL, &finfo);
+	file_info.fname = TESTER_FILE_ONE;
+	flops = cando_file_ops_create(NULL, &file_info);
 	assert_non_null(flops);
 
 	fd = cando_file_ops_get_fd(flops);
@@ -270,12 +270,12 @@ test_file_ops_get_filename (void CANDO_UNUSED **state)
 
 	struct cando_file_ops *flops = NULL;
 
-	struct cando_file_ops_create_info finfo;
+	struct cando_file_ops_create_info file_info;
 
-	memset(&finfo, 0, sizeof(finfo));
+	memset(&file_info, 0, sizeof(file_info));
 
-	finfo.fname = TESTER_FILE_ONE;
-	flops = cando_file_ops_create(NULL, &finfo);
+	file_info.fname = TESTER_FILE_ONE;
+	flops = cando_file_ops_create(NULL, &file_info);
 	assert_non_null(flops);
 
 	fname = cando_file_ops_get_filename(flops);
@@ -295,12 +295,12 @@ test_file_ops_get_data_size (void CANDO_UNUSED **state)
 
 	struct cando_file_ops *flops = NULL;
 
-	struct cando_file_ops_create_info finfo;
+	struct cando_file_ops_create_info file_info;
 
-	memset(&finfo, 0, sizeof(finfo));
+	memset(&file_info, 0, sizeof(file_info));
 
-	finfo.fname = TESTER_FILE_ONE;
-	flops = cando_file_ops_create(NULL, &finfo);
+	file_info.fname = TESTER_FILE_ONE;
+	flops = cando_file_ops_create(NULL, &file_info);
 	assert_non_null(flops);
 
 	size = cando_file_ops_get_data_size(flops);
@@ -330,20 +330,20 @@ test_file_ops_set_data (void CANDO_UNUSED **state)
 
 	struct cando_file_ops *flops = NULL;
 
-	struct cando_file_ops_create_info finfo;
+	struct cando_file_ops_create_info file_info;
 	struct cando_file_ops_set_data_info sd_info;
 
 	memset(&sd_info, 0, sizeof(sd_info));
-	memset(&finfo, 0, sizeof(finfo));
+	memset(&file_info, 0, sizeof(file_info));
 
-	finfo.fname = "/tmp/testing-one.txt";
-	finfo.size = 1 << 9;
-	flops = cando_file_ops_create(NULL, &finfo);
+	file_info.fname = "/tmp/testing-one.txt";
+	file_info.size = 1 << 9;
+	flops = cando_file_ops_create(NULL, &file_info);
 	assert_non_null(flops);
 
 	sd_info.offset = 0;
 	sd_info.data = "Adding data on line one.\n";
-	sd_info.size = strnlen(sd_info.data, finfo.size);
+	sd_info.size = strnlen(sd_info.data, file_info.size);
 	ret = cando_file_ops_set_data(flops, &sd_info);
 	assert_int_equal(ret, 0);
 

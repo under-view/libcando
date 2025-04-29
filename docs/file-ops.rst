@@ -121,7 +121,7 @@ cando_file_ops_create_info
 cando_file_ops_create
 =====================
 
-.. c:function:: struct cando_file_ops *cando_file_ops_create(struct cando_file_ops *flops, const void *finfo);
+.. c:function:: struct cando_file_ops *cando_file_ops_create(struct cando_file_ops *flops, const void *file_info);
 
 | Creates or opens caller define file.
 
@@ -136,7 +136,7 @@ cando_file_ops_create
 		    | caller. If not ``NULL`` address passed will be used
 		    | to store the newly created ``struct`` :c:struct:`cando_file_ops`
 		    | instance.
-		* - finfo
+		* - file_info
 		  - | Pointer to a ``struct`` :c:struct:`cando_file_ops_create_info`.
 		    | The use of pointer to a void is to limit amount
 		    | of columns required to define a function.
@@ -206,7 +206,7 @@ cando_file_ops_zero_copy_info
 cando_file_ops_zero_copy
 ========================
 
-.. c:function:: int cando_file_ops_zero_copy(struct cando_file_ops *flops, const void *finfo);
+.. c:function:: int cando_file_ops_zero_copy(struct cando_file_ops *flops, const void *file_info);
 
 | Sets the data in a file at a given offset up to a given size
 | without copying the buffer into userspace.
@@ -218,7 +218,7 @@ cando_file_ops_zero_copy
 	          - Decription
 		* - flops
 		  - | Pointer to a valid ``struct`` :c:struct:`cando_file_ops`.
-		* - finfo
+		* - file_info
 		  - | Pointer to a ``struct`` :c:struct:`cando_file_ops_zero_copy_info`.
 		    | The use of pointer to a void is to limit amount
 		    | of columns required to define a function.
@@ -429,7 +429,7 @@ cando_file_ops_set_data_info
 cando_file_ops_set_data
 =======================
 
-.. c:function:: int cando_file_ops_set_data(struct cando_file_ops *flops, const void *finfo);
+.. c:function:: int cando_file_ops_set_data(struct cando_file_ops *flops, const void *file_info);
 
 | Sets data in a file at a given offset up to a given size.
 
@@ -440,7 +440,7 @@ cando_file_ops_set_data
 	          - Decription
 		* - flops
 		  - | Pointer to a valid ``struct`` :c:struct:`cando_file_ops`.
-		* - finfo
+		* - file_info
 		  - | Pointer to a ``struct`` :c:struct:`cando_file_ops_set_data_info`.
 		    | The use of pointer to a void is to limit amount
 		    | of columns required to define a function.

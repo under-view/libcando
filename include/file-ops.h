@@ -31,15 +31,15 @@ struct cando_file_ops_create_info
 /*
  * @brief Creates or opens caller define file.
  *
- * @param flops - May be NULL or a pointer to a struct cando_file_ops.
- *                If NULL memory will be allocated and return to
- *                caller. If not NULL address passed will be used
- *                to store the newly created struct cando_file_ops
- *                instance.
- * @param finfo - Pointer to a struct cando_file_ops_create_info.
- *                The use of pointer to a void is to limit amount
- *                of columns required to define a function.
- *                 
+ * @param flops     - May be NULL or a pointer to a struct cando_file_ops.
+ *                    If NULL memory will be allocated and return to
+ *                    caller. If not NULL address passed will be used
+ *                    to store the newly created struct cando_file_ops
+ *                    instance.
+ * @param file_info - Pointer to a struct cando_file_ops_create_info.
+ *                    The use of pointer to a void is to limit amount
+ *                    of columns required to define a function.
+ *
  * @returns
  * 	on success: Pointer to a struct cando_file_ops
  * 	on failure: NULL
@@ -47,7 +47,7 @@ struct cando_file_ops_create_info
 CANDO_API
 struct cando_file_ops *
 cando_file_ops_create (struct cando_file_ops *flops,
-                       const void *finfo);
+                       const void *file_info);
 
 
 /*
@@ -92,10 +92,10 @@ struct cando_file_ops_zero_copy_info
  * @brief Sets data in a file at a given offset up to a given size
  *        without copying the buffer into userspace.
  *
- * @param flops - Pointer to a valid struct cando_file_ops.
- * @param finfo - Pointer to a struct cando_file_ops_zero_copy_info.
- *                The use of pointer to a void is to limit amount
- *                of columns required to define a function.
+ * @param flops     - Pointer to a valid struct cando_file_ops.
+ * @param file_info - Pointer to a struct cando_file_ops_zero_copy_info.
+ *                    The use of pointer to a void is to limit amount
+ *                    of columns required to define a function.
  *
  * @returns
  * 	on success: Amount of bytes splice(2) to/from a pipe(2)
@@ -104,7 +104,7 @@ struct cando_file_ops_zero_copy_info
 CANDO_API
 int
 cando_file_ops_zero_copy (struct cando_file_ops *flops,
-                          const void *finfo);
+                          const void *file_info);
 
 
 /*
@@ -253,10 +253,10 @@ struct cando_file_ops_set_data_info
 /*
  * @brief Sets data in a file at a given offset up to a given size.
  *
- * @param flops - Pointer to a valid struct cando_file_ops.
- * @param finfo - Pointer to a struct cando_file_ops_set_data_info.
- *                The use of pointer to a void is to limit amount
- *                of columns required to define a function.
+ * @param flops     - Pointer to a valid struct cando_file_ops.
+ * @param file_info - Pointer to a struct cando_file_ops_set_data_info.
+ *                    The use of pointer to a void is to limit amount
+ *                    of columns required to define a function.
  *                 
  * @returns
  * 	on success: 0
@@ -265,7 +265,7 @@ struct cando_file_ops_set_data_info
 CANDO_API
 int
 cando_file_ops_set_data (struct cando_file_ops *flops,
-                         const void *finfo);
+                         const void *file_info);
 
 
 /*
