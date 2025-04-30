@@ -154,9 +154,9 @@ cando_file_ops_truncate_file (struct cando_file_ops *flops,
 		return -1;
 	}
 
-	ret = ftruncate64(flops->fd, size);
+	ret = ftruncate(flops->fd, size);
 	if (ret == -1) {
-		cando_log_set_error(flops, errno, "ftruncate64: %s", strerror(errno));
+		cando_log_set_error(flops, errno, "ftruncate: %s", strerror(errno));
 		return -errno;
 	}
 
