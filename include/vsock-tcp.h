@@ -143,6 +143,7 @@ cando_vsock_tcp_client_send_data (struct cando_vsock_tcp *vsock,
                                   const size_t size,
                                   const void *opts);
 
+
 /*
  * @brief Acquire VM socket file descriptor associated with
  *        struct cando_vsock_tcp instance.
