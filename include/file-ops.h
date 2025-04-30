@@ -63,7 +63,7 @@ cando_file_ops_create (struct cando_file_ops *flops,
 CANDO_API
 int
 cando_file_ops_truncate_file (struct cando_file_ops *flops,
-                              const off64_t size);
+                              const off_t size);
 
 
 /*
@@ -82,9 +82,9 @@ struct cando_file_ops_zero_copy_info
 {
 	size_t size;
 	int    in_fd;
-	loff_t *in_off;
+	off_t  *in_off;
 	int    out_fd;
-	loff_t *out_off;
+	off_t  *out_off;
 };
 
 

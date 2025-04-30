@@ -151,7 +151,7 @@ cando_file_ops_create
 cando_file_ops_truncate_file
 ============================
 
-.. c:function:: int cando_file_ops_truncate_file(struct cando_file_ops *flops, const off64_t size);
+.. c:function:: int cando_file_ops_truncate_file(struct cando_file_ops *flops, const off_t size);
 
 | Adjust file to a size of precisely length bytes.
 
@@ -180,9 +180,9 @@ cando_file_ops_zero_copy_info
 	.. c:member::
 		size_t size;
 		int    in_fd;
-		loff_t *in_off;
+		off_t  *in_off;
 		int    out_fd;
-		loff_t *out_off;
+		off_t  *out_off;
 
 	:c:member:`size`
 		| Total size of the data to copy.
