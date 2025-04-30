@@ -14,6 +14,16 @@ if file_ops.enabled()
   main_headers_dict += {'FILE_OPS_INTERFACE': headers}
 endif
 
+
+if sock_udp.enabled()
+  main_headers += ['sock-udp.h']
+
+  headers = '#include "sock-udp.h"'
+
+  main_headers_dict += {'SOCK_UDP_INTERFACE': headers}
+endif
+
+
 if vsock_tcp.enabled()
   main_headers += ['vsock-tcp.h']
 
@@ -21,6 +31,7 @@ if vsock_tcp.enabled()
 
   main_headers_dict += {'VSOCK_TCP_INTERFACE': headers}
 endif
+
 
 if vsock_udp.enabled()
   main_headers += ['vsock-udp.h']

@@ -6,6 +6,10 @@ if file_ops.enabled()
   progs += ['test-file-ops.c']
 endif
 
+if sock_udp.enabled()
+  progs += ['test-sock-udp.c']
+endif
+
 if vsock_tcp.enabled()
   progs += ['test-vsock-tcp.c']
 endif

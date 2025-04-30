@@ -7,6 +7,10 @@ if file_ops.enabled()
   fs += ['src/file-ops.c']
 endif
 
+if sock_udp.enabled()
+  fs += ['src/sock-udp.c']
+endif
+
 if vsock_tcp.enabled()
   fs += ['src/vsock-tcp.c']
 endif
