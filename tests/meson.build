@@ -10,6 +10,10 @@ if vsock_tcp.enabled()
   progs += ['test-vsock-tcp.c']
 endif
 
+if vsock_udp.enabled()
+  progs += ['test-vsock-udp.c']
+endif
+
 original_args = pargs
 foreach p : progs
   exec_name = p.substring(0,-2) # remove .c extension from name

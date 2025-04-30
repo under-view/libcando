@@ -22,6 +22,14 @@ if vsock_tcp.enabled()
   main_headers_dict += {'VSOCK_TCP_INTERFACE': headers}
 endif
 
+if vsock_udp.enabled()
+  main_headers += ['vsock-udp.h']
+
+  headers = '#include "vsock-udp.h"'
+
+  main_headers_dict += {'VSOCK_UDP_INTERFACE': headers}
+endif
+
 conf_data = configuration_data(main_headers_dict)
 
 conf = configure_file(input: 'cando.h.in',

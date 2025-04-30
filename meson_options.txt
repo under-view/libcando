@@ -13,3 +13,7 @@ option('file-ops',
 option('vsock-tcp',
        type: 'feature', value: 'disabled',
        description: 'Build with vm socket-tcp support')
+
+option('vsock-udp',
+       type: 'feature', value: 'disabled',
+       description: 'Build with vm socket-udp support')

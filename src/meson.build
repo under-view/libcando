@@ -10,3 +10,7 @@ endif
 if vsock_tcp.enabled()
   fs += ['src/vsock-tcp.c']
 endif
+
+if vsock_udp.enabled()
+  fs += ['src/vsock-udp.c']
+endif

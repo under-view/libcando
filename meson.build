@@ -20,6 +20,7 @@ build_root_dir = meson.current_build_dir()
 
 file_ops = get_option('file-ops')
 vsock_tcp = get_option('vsock-tcp')
+vsock_udp = get_option('vsock-udp')
 
 inc = include_directories('include')
 
