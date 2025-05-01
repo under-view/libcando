@@ -82,9 +82,9 @@ p_vsock_get_local_vcid (void)
 static int
 p_create_sock_fd (struct cando_vsock_udp *vsock)
 {
-	int sock_fd = -1, err = -1;
+	const int enable = 1;
 
-	const int enable = 1, disable = 0;
+	int sock_fd = -1, err = -1;
 
 	sock_fd = socket(AF_VSOCK, SOCK_DGRAM, 0);
 	if (sock_fd == -1) {
@@ -191,8 +191,6 @@ int
 cando_vsock_udp_server_accept (struct cando_vsock_udp *vsock,
                                const struct sockaddr_vm *addr)
 {
-	const int enable = 1;
-
 	int err = -1, sock_fd = -1;
 
 	socklen_t len = sizeof(struct sockaddr_vm);
