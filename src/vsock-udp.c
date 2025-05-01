@@ -29,7 +29,7 @@
  * @member vcid - VM Context Identifier.
  * @member port - UDP port number to connect(2) to or accept(2) from.
  * @member addr - Stores network byte information about the VM socket context.
- *                Is used for client connect(2) and server accept(2).
+ *                Is used for client connect(2) and server bind(2)/connect(2).
  */
 struct cando_vsock_udp
 {
@@ -191,7 +191,7 @@ int
 cando_vsock_udp_server_accept (struct cando_vsock_udp *vsock,
                                const struct sockaddr_vm *addr)
 {
-	int err = -1, sock_fd = -1;
+	int err = -1, client_sock = -1;
 
 	socklen_t len = sizeof(struct sockaddr_vm);
 
@@ -203,33 +203,32 @@ cando_vsock_udp_server_accept (struct cando_vsock_udp *vsock,
 		return -1;
 	}
 
-	sock_fd = p_create_sock_fd(vsock);
-	if (sock_fd == -1)
+	client_sock = p_create_sock_fd(vsock);
+	if (client_sock == -1)
 		return -1;
 
 	/*
 	 * Will temporary take over receiving from all,
 	 * but released after call to connect(2).
 	 */
-	err = bind(sock_fd, (const struct sockaddr*)&(vsock->addr), len);
+	err = bind(client_sock, (const struct sockaddr*)&(vsock->addr), len);
 	if (err == -1) {
 		cando_log_set_error(vsock, errno, "bind: %s", strerror(errno));
-		close(sock_fd);
+		close(client_sock);
 		return -1;
 	}
 
-	err = connect(sock_fd, (const struct sockaddr*)addr, len);
+	err = connect(client_sock, (const struct sockaddr*)addr, len);
 	if (err == -1) {
 		cando_log_set_error(vsock, errno, "connect: %s", strerror(errno));
-		close(sock_fd);
+		close(client_sock);
 		return -1;
 	}
 
-	cando_log(CANDO_LOG_INFO,
-	          "[+] Connected client fd '%d' at '%lu:%u'\n",
-	          sock_fd, addr->svm_cid, ntohs(addr->svm_port));
+	cando_log_info("[+] Connected client fd '%d' at '%lu:%u'\n",
+	               client_sock, addr->svm_cid, ntohs(addr->svm_port));
 
-	return sock_fd;
+	return client_sock;
 }
 
 
@@ -291,7 +290,7 @@ cando_vsock_udp_client_connect (struct cando_vsock_udp *vsock)
 	}
 
 	cando_log(CANDO_LOG_SUCCESS,
-	          "[+] Connected to <VM cid:port> '%lu:%d'\n",
+	          "[+] Filtering to <VM cid:port> '%lu:%d'\n",
 	          vsock->vcid, vsock->port);
 
 	return 0;
@@ -419,7 +418,7 @@ cando_vsock_udp_recv_data (const int sock_fd,
 	if (errno == EINTR || errno == EAGAIN) {
 		return -errno;
 	} else if (ret == -1) {
-		cando_log_error("recv: %s", strerror(errno));
+		cando_log_error("recvfrom: %s", strerror(errno));
 		return -1;
 	}
 
@@ -452,7 +451,7 @@ cando_vsock_udp_send_data (const int sock_fd,
 	if (errno == EINTR || errno == EAGAIN) {
 		return -errno;
 	} else if (ret == -1) {
-		cando_log_error("recv: %s", strerror(errno));
+		cando_log_error("sendto: %s\n", strerror(errno));
 		return -1;
 	}
 
