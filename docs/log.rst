@@ -344,7 +344,7 @@ cando_log
 
 | Log format
 |
-| timestamp - [file:line] message
+| timestamp [file:line] message
 |
 | Default prints to ``stdout`` using ansi color codes to color text.
 |
@@ -364,7 +364,7 @@ cando_log_success
 
 | Log format
 |
-| timestamp - [file:line] message
+| timestamp [file:line] message
 |
 | Prints to ``stdout`` with ansi color codes the color **GREEN**.
 |
@@ -384,7 +384,7 @@ cando_log_info
 
 | Log format
 |
-| timestamp - [file:line] message
+| timestamp [file:line] message
 |
 | Prints to ``stdout`` with ansi color codes the color **BLUE**.
 |
@@ -404,7 +404,7 @@ cando_log_warning
 
 | Log format
 |
-| timestamp - [file:line] message
+| timestamp [file:line] message
 |
 | Prints to ``stdout`` with ansi color codes the color **YELLOW**.
 |
@@ -424,7 +424,7 @@ cando_log_error
 
 | Log format
 |
-| timestamp - [file:line] message
+| timestamp [file:line] message
 |
 | Prints to ``stderr`` with ansi color codes the color **RED**.
 |

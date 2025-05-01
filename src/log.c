@@ -32,7 +32,7 @@ static const char *tcolors[] =
 
 CANDO_STATIC_INLINE
 const char *
-_get_error (const unsigned int code)
+p_get_error (const unsigned int code)
 {
 	switch (code) {
 		case CANDO_LOG_ERR_INCORRECT_DATA:
@@ -122,7 +122,7 @@ cando_log_set_error_struct (void *context,
 	vsnprintf(error->buffer, sizeof(error->buffer), fmt, args);
 	va_end(args);
 
-	string = _get_error(error->code);
+	string = p_get_error(error->code);
 	if (string) {
 		offset = strnlen(error->buffer, sizeof(error->buffer));
 		strncpy(error->buffer+offset, string, sizeof(error->buffer)-offset);
@@ -147,7 +147,7 @@ cando_log_time (enum cando_log_level_type type,
 	rawtime = time(NULL);
 
 	/* generate time */
-	strftime(buffer, sizeof(buffer), "%F %T - ", localtime_r(&rawtime, &(struct tm){}));
+	strftime(buffer, sizeof(buffer), "%F %T ", localtime_r(&rawtime, &(struct tm){}));
 	dprintf(writefd, "%s", buffer);
 
 	va_start(args, fmt);
