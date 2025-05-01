@@ -15,6 +15,15 @@ if file_ops.enabled()
 endif
 
 
+if sock_tcp.enabled()
+  main_headers += ['sock-tcp.h']
+
+  headers = '#include "sock-tcp.h"'
+
+  main_headers_dict += {'SOCK_TCP_INTERFACE': headers}
+endif
+
+
 if sock_udp.enabled()
   main_headers += ['sock-udp.h']
 

@@ -10,6 +10,10 @@ option('file-ops',
        type: 'feature', value: 'disabled',
        description: 'Build with file-operations support')
 
+option('sock-tcp',
+       type: 'feature', value: 'disabled',
+       description: 'Build with socket-tcp support')
+
 option('sock-udp',
        type: 'feature', value: 'disabled',
        description: 'Build with socket-udp support')
