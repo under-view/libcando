@@ -214,7 +214,7 @@ cando_sock_udp_server_accept (struct cando_sock_udp *sock,
 	 * Will temporary take over receiving from all,
 	 * but released after call to connect(2).
 	 */
-	err = bind(sock_fd, (const struct sockaddr*)addr, len);
+	err = bind(sock_fd, (const struct sockaddr*)&(sock->addr), len);
 	if (err == -1) {
 		cando_log_set_error(sock, errno, "bind: %s", strerror(errno));
 		close(sock_fd);

@@ -135,11 +135,6 @@ test_sock_udp_accept_connect (void CANDO_UNUSED **state)
 	client_sock = cando_sock_udp_server_accept(server, &addr, 0);
 	assert_int_not_equal(client_sock, -1);
 
-	/*
-	 * Just so printing data doesn't extend past the test.
-	 */
-	usleep(2000);
-
 	waitpid(pid, NULL, -1);
 
 	close(client_sock);
@@ -182,6 +177,8 @@ p_test_sock_udp_send_recv_client (void)
 	/* Connect client to server */
 	err = cando_sock_udp_client_send_data(client, &accept, sizeof(int), NULL);
 	assert_int_equal(err, sizeof(int));
+
+	usleep(1000);
 
 	memset(buffer, 'T', sizeof(buffer));
 	size = cando_sock_udp_client_send_data(client, buffer, sizeof(buffer), 0);
@@ -226,16 +223,12 @@ test_sock_udp_send_recv (void CANDO_UNUSED **state)
 	assert_int_equal(err, sizeof(int));
 	assert_int_equal(data, 0x44);
 
-	client_sock = cando_sock_udp_server_accept(server, &addr, 0);
+	client_sock = cando_sock_udp_server_accept(server, &addr, 1);
 	assert_int_not_equal(client_sock, -1);
 
-	/*
-	 * Just so printing data doesn't extend past the test.
-	 */
-	usleep(2000);
-
 	memset(buffer, 'T', sizeof(buffer));
-	cando_sock_udp_recv_data(client_sock, buffer_two, sizeof(buffer_two), NULL, 0);
+	err = cando_sock_udp_recv_data(client_sock, buffer_two, sizeof(buffer_two), NULL, 0);
+	assert_int_equal(err, sizeof(buffer_two));
 	assert_memory_equal(buffer, buffer_two, sizeof(buffer));
 
 	waitpid(pid, NULL, -1);
@@ -371,7 +364,7 @@ main (void)
 		cmocka_unit_test(test_sock_udp_server_create),
 		cmocka_unit_test(test_sock_udp_client_create),
 		cmocka_unit_test(test_sock_udp_accept_connect),
-		//cmocka_unit_test(test_sock_udp_send_recv),
+		cmocka_unit_test(test_sock_udp_send_recv),
 		cmocka_unit_test(test_sock_udp_get_fd),
 		cmocka_unit_test(test_sock_udp_get_ip_addr),
 		cmocka_unit_test(test_sock_udp_get_port),
