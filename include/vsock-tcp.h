@@ -200,19 +200,6 @@ cando_vsock_tcp_destroy (struct cando_vsock_tcp *vsock);
 
 
 /*
- * @brief Returns the local CID of the VM/Hypervisor after
- *        acquiring it from /dev/vsock.
- *
- * @return
- *	on success: Local VM context identifer
- *	on failure: UINT32_MAX
- */
-CANDO_API
-unsigned int
-cando_vsock_tcp_get_local_vcid (void);
-
-
-/*
  * @brief Returns size of the internal structure. So,
  *        if caller decides to allocate memory outside
  *        of API interface they know the exact amount
@@ -225,6 +212,19 @@ cando_vsock_tcp_get_local_vcid (void);
 CANDO_API
 int
 cando_vsock_tcp_get_sizeof (void);
+
+
+/*
+ * @brief Returns the local CID of the VM/Hypervisor after
+ *        acquiring it from /dev/vsock.
+ *
+ * @return
+ *	on success: Local VM context identifer
+ *	on failure: UINT32_MAX
+ */
+CANDO_API
+unsigned int
+cando_vsock_tcp_get_local_vcid (void);
 
 
 /*

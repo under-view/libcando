@@ -41,8 +41,8 @@ Functions
 #. :c:func:`cando_vsock_tcp_get_vcid`
 #. :c:func:`cando_vsock_tcp_get_port`
 #. :c:func:`cando_vsock_tcp_destroy`
-#. :c:func:`cando_vsock_tcp_get_local_vcid`
 #. :c:func:`cando_vsock_tcp_get_sizeof`
+#. :c:func:`cando_vsock_tcp_get_local_vcid`
 #. :c:func:`cando_vsock_tcp_recv_data`
 #. :c:func:`cando_vsock_tcp_send_data`
 
@@ -361,21 +361,6 @@ cando_vsock_tcp_destroy
 
 =========================================================================================================================================
 
-==============================
-cando_vsock_tcp_get_local_vcid
-==============================
-
-.. c:function:: unsigned int cando_vsock_tcp_get_local_vcid(void);
-
-| Returns the local CID of the VM/Hypervisor after
-| acquiring it from ``/dev/vsock``.
-
-	Returns:
-		| **on success:** Local VM context identifer
-		| **on failure:** UINT32_MAX
-
-=========================================================================================================================================
-
 ==========================
 cando_vsock_tcp_get_sizeof
 ==========================
@@ -390,6 +375,21 @@ cando_vsock_tcp_get_sizeof
 	Returns:
 		| **on success:** sizeof(struct cando_vsock_tcp)
 		| **on failure:** sizeof(struct cando_vsock_tcp)
+
+=========================================================================================================================================
+
+==============================
+cando_vsock_tcp_get_local_vcid
+==============================
+
+.. c:function:: unsigned int cando_vsock_tcp_get_local_vcid(void);
+
+| Returns the local CID of the VM/Hypervisor after
+| acquiring it from ``/dev/vsock``.
+
+	Returns:
+		| **on success:** Local VM context identifer
+		| **on failure:** UINT32_MAX
 
 =========================================================================================================================================
 

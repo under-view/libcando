@@ -129,11 +129,11 @@ cando_vsock_tcp_server_create (struct cando_vsock_tcp *p_vsock,
 
 	const int enable = 1;
 
-	struct cando_vsock_tcp *vsock = p_vsock;
+	struct cando_vsock_tcp *vsock = NULL;
 
 	const struct cando_vsock_tcp_server_create_info *vsock_info = p_vsock_info;
 
-	vsock = p_create_vsock(vsock, p_vsock_info, 1);
+	vsock = p_create_vsock(p_vsock, p_vsock_info, 1);
 	if (!vsock)
 		return NULL;
 
@@ -216,9 +216,9 @@ struct cando_vsock_tcp *
 cando_vsock_tcp_client_create (struct cando_vsock_tcp *p_vsock,
                                const void *vsock_info)
 {
-	struct cando_vsock_tcp *vsock = p_vsock;
+	struct cando_vsock_tcp *vsock = NULL;
 
-	vsock = p_create_vsock(vsock, vsock_info, 0);
+	vsock = p_create_vsock(p_vsock, vsock_info, 0);
 	if (!vsock)
 		return NULL;
 
@@ -335,13 +335,6 @@ cando_vsock_tcp_destroy (struct cando_vsock_tcp *vsock)
  * Start of non struct cando_vsock param functions *
  ***************************************************/
 
-unsigned int
-cando_vsock_tcp_get_local_vcid (void)
-{
-	return p_vsock_get_local_vcid();
-}
-
-
 int
 cando_vsock_tcp_get_sizeof (void)
 {
@@ -349,32 +342,10 @@ cando_vsock_tcp_get_sizeof (void)
 }
 
 
-ssize_t
-cando_vsock_tcp_send_data (const int sock_fd,
-                           const void *data,
-                           const size_t size,
-                           const void *opts)
+unsigned int
+cando_vsock_tcp_get_local_vcid (void)
 {
-	ssize_t ret = 0;
-
-	const int flags = (opts) ? *((const int*)opts) : 0;
-
-	if (sock_fd < 0 || \
-	    !data || \
-	    !size)
-	{
-		return -1;
-	}
-
-	ret = send(sock_fd, data, size, flags);
-	if (errno == EINTR || errno == EAGAIN) {
-		return -errno;
-	} else if (ret == -1) {
-		cando_log_error("recv: %s", strerror(errno));
-		return -1;
-	}
-
-	return ret;
+	return p_vsock_get_local_vcid();
 }
 
 
@@ -400,6 +371,35 @@ cando_vsock_tcp_recv_data (const int sock_fd,
 		return -errno;
 	} else if (ret == -1) {
 		cando_log_error("recv: %s", strerror(errno));
+		return -1;
+	}
+
+	return ret;
+}
+
+
+ssize_t
+cando_vsock_tcp_send_data (const int sock_fd,
+                           const void *data,
+                           const size_t size,
+                           const void *opts)
+{
+	ssize_t ret = 0;
+
+	const int flags = (opts) ? *((const int*)opts) : 0;
+
+	if (sock_fd < 0 || \
+	    !data || \
+	    !size)
+	{
+		return -1;
+	}
+
+	ret = send(sock_fd, data, size, flags);
+	if (errno == EINTR || errno == EAGAIN) {
+		return -errno;
+	} else if (ret == -1) {
+		cando_log_error("send: %s", strerror(errno));
 		return -1;
 	}
 
