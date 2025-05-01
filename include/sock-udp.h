@@ -15,16 +15,17 @@ struct cando_sock_udp;
  * @brief Structure passed to cando_sock_udp_server_create(3)
  *        used to define how to create the server.
  *
- * @member ip_addr - IP address to receive/send data with.
- * @member port    - UDP port to receive/send data with.
- * @member ipv6    - Boolean select address family
- *                   AF_INET (ipv4) or AF_INET6 (ipv6).
+ * @member ipv6    - Boolean determines if a socket is soley
+ *                   an ipv6 socket or requires a mapping from
+ *                   ipv4-to-ipv6.
+ * @member ip_addr - Textual network IP address to receive/send data with.
+ * @member port    - Network port to receive/send data with.
  */
 struct cando_sock_udp_server_create_info
 {
+	unsigned char ipv6 : 1;
 	const char    *ip_addr;
 	int           port;
-	unsigned char ipv6 : 1;
 };
 
 
@@ -60,6 +61,8 @@ cando_sock_udp_server_create (struct cando_sock_udp *sock,
  *
  * @param sock - Must pass a pointer to a struct cando_sock_udp.
  * @param addr - Must pass a pointer to a populated struct sockaddr_in6.
+ * @param ipv6 - Boolean determines if created socket is solely an ipv6
+ *               socket or requires a mapping from ipv4-to-ipv6.
  *
  * @return
  *	on success: File descriptor to accepted client
@@ -101,16 +104,17 @@ cando_sock_udp_server_recv_data (struct cando_sock_udp *sock,
  * @brief Structure passed to cando_sock_udp_client_create(3)
  *        used to define how to create the server.
  *
- * @member ip_addr - IP address to send/receive data with.
- * @member port    - UDP port to send/receive data with.
- * @member ipv6    - Boolean select address family
- *                   AF_INET (ipv4) or AF_INET6 (ipv6).
+ * @member ipv6    - Boolean determines if a socket is soley
+ *                   an ipv6 socket or requires a mapping from
+ *                   ipv4-to-ipv6.
+ * @member ip_addr - Textual network IP address to send/receive data with.
+ * @member port    - Network port to send/receive data with.
  */
 struct cando_sock_udp_client_create_info
 {
+	unsigned char ipv6 : 1;
 	const char    *ip_addr;
 	int           port;
-	unsigned char ipv6 : 1;
 };
 
 
@@ -176,13 +180,13 @@ cando_sock_udp_client_send_data (struct cando_sock_udp *sock,
 
 
 /*
- * @brief Acquire VM socket file descriptor associated with
+ * @brief Acquire socket file descriptor associated with
  *        struct cando_sock_udp instance.
  *
  * @param sock - Must pass a pointer to a struct cando_sock_udp.
  *
  * @return
- *	on success: VM socket file descriptor
+ *	on success: Socket file descriptor
  *	on failure: -1
  */
 CANDO_API
@@ -191,13 +195,14 @@ cando_sock_udp_get_fd (struct cando_sock_udp *sock);
 
 
 /*
- * @brief Acquire ip address associated with struct cando_sock_udp context.
+ * @brief Acquire textual network ip address associated
+ *        with struct cando_sock_udp context.
  *
  * @param sock - Must pass a pointer to a struct cando_sock_udp.
  *
  * @return
- *	on success: VM socket context identifier
- *	on failure: UINT32_MAX
+ *	on success: Textual network ip address
+ *	on failure: NULL
  */
 CANDO_API
 const char *
@@ -205,12 +210,13 @@ cando_sock_udp_get_ip_addr (struct cando_sock_udp *sock);
 
 
 /*
- * @brief Acquire UDP port associated with struct cando_sock_udp instance.
+ * @brief Acquire network port associated with
+ *        struct cando_sock_udp instance.
  *
  * @param sock - Must pass a pointer to a struct cando_sock_udp.
  *
  * @return
- *	on success: UDP port connected to instance
+ *	on success: Network port connected to instance
  *	on failure: -1
  */
 CANDO_API

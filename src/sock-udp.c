@@ -25,9 +25,9 @@
  * @member free    - If structure allocated with calloc(3) member will be
  *                   set to true so that, we know to call free(3) when
  *                   destroying the instance.
- * @member fd      - File descriptor to the open VM socket.
- * @member ip_addr - Ip address to sendto(2)/recvfrom(2).
- * @member port    - UDP port number to sendto(2)/recvfrom(2).
+ * @member fd      - File descriptor to the open UDP socket.
+ * @member ip_addr - Textual network IP address to sendto(2)/recvfrom(2).
+ * @member port    - Network port number to sendto(2)/recvfrom(2).
  * @member addr    - Stores IPV6 network byte information about the socket context.
  *                   Is used for client connect(2) and server bind(2)/connect(2).
  */
@@ -48,9 +48,9 @@ struct cando_sock_udp
 
 struct cando_sock_udp_create_info
 {
+	unsigned char ipv6 : 1;
 	const char    *ip_addr;
 	int           port;
-	unsigned char ipv6 : 1;
 };
 
 
@@ -85,7 +85,7 @@ p_create_sock_fd (struct cando_sock_udp *sock, const bool ipv6)
 	err = setsockopt(sock_fd, IPPROTO_IPV6, IPV6_V6ONLY,
 		(ipv6) ? &enable : &disable, sizeof(int));
 	if (err == -1) {
-		cando_log_set_error(sock, errno, "setsockopt: %s\n", strerror(errno));
+		cando_log_set_error(sock, errno, "setsockopt: %s", strerror(errno));
 		close(sock_fd);
 		return -1;
 	}
@@ -102,11 +102,7 @@ p_create_sock (struct cando_sock_udp *p_sock,
 
 	struct cando_sock_udp *sock = p_sock;
 
-	const struct cando_sock_udp_create_info {
-		const char    *ip_addr;
-		int           port;
-		unsigned char ipv6 : 1;
-	} *sock_info = p_sock_info;
+	const struct cando_sock_udp_create_info *sock_info = p_sock_info;
 
 	if (!sock_info || \
 	    !(sock_info->ip_addr))
