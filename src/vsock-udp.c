@@ -46,6 +46,13 @@ struct cando_vsock_udp
  * Start of global to C source functions *
  *****************************************/
 
+struct cando_vsock_udp_create_info
+{
+	unsigned int vcid;
+	int          port;
+};
+
+
 static unsigned int
 p_vsock_get_local_vcid (void)
 {
@@ -72,6 +79,38 @@ p_vsock_get_local_vcid (void)
 }
 
 
+static int
+p_create_sock_fd (struct cando_vsock_udp *vsock)
+{
+	int sock_fd = -1, err = -1;
+
+	const int enable = 1, disable = 0;
+
+	sock_fd = socket(AF_VSOCK, SOCK_DGRAM, 0);
+	if (sock_fd == -1) {
+		cando_log_set_error(vsock, errno, "socket: %s\n", strerror(errno));
+		close(sock_fd);
+		return -1;
+	}
+
+	err = setsockopt(sock_fd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int));
+	if (err == -1) {
+		cando_log_set_error(vsock, errno, "setsockopt: %s", strerror(errno));
+		close(sock_fd);
+		return -1;
+	}
+
+	err = setsockopt(sock_fd, SOL_SOCKET, SO_REUSEPORT, &enable, sizeof(int));
+	if (err == -1) {
+		cando_log_set_error(vsock, errno, "setsockopt: %s", strerror(errno));
+		close(sock_fd);
+		return -1;
+	}
+
+	return sock_fd;
+}
+
+
 static struct cando_vsock_udp *
 p_create_vsock (struct cando_vsock_udp *p_vsock,
                 const void *p_vsock_info,
@@ -79,10 +118,7 @@ p_create_vsock (struct cando_vsock_udp *p_vsock,
 {
 	struct cando_vsock_udp *vsock = p_vsock;
 
-	const struct cando_vsock_udp_create_info {
-		unsigned int vcid;
-		int          port;
-	} *vsock_info = p_vsock_info;
+	const struct cando_vsock_udp_create_info *vsock_info = p_vsock_info;
 
 	if (!vsock_info) {
 		cando_log_error("Incorrect data passed\n");
@@ -99,9 +135,9 @@ p_create_vsock (struct cando_vsock_udp *p_vsock,
 		vsock->free = true;
 	}
 
-	vsock->fd = socket(AF_VSOCK, SOCK_DGRAM, 0);
+	vsock->fd = p_create_sock_fd(vsock);
 	if (vsock->fd == -1) {
-		cando_log_error("socket(%u): %s\n", errno, strerror(errno));
+		cando_log_error("%s\n", cando_log_get_error(vsock));
 		cando_vsock_udp_destroy(vsock);
 		return NULL;
 	}
@@ -133,27 +169,11 @@ cando_vsock_udp_server_create (struct cando_vsock_udp *p_vsock,
 {
 	int err = -1;
 
-	const int enable = 1;
+	struct cando_vsock_udp *vsock = NULL;
 
-	struct cando_vsock_udp *vsock = p_vsock;
-
-	vsock = p_create_vsock(vsock, p_vsock_info, 1);
+	vsock = p_create_vsock(p_vsock, p_vsock_info, 1);
 	if (!vsock)
 		return NULL;
-
-	err = setsockopt(vsock->fd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int));
-	if (err == -1) {
-		cando_vsock_udp_destroy(vsock);
-		cando_log_error("setsockopt: %s\n", strerror(errno));
-		return NULL;
-	}
-
-	err = setsockopt(vsock->fd, SOL_SOCKET, SO_REUSEPORT, &enable, sizeof(int));
-	if (err == -1) {
-		cando_vsock_udp_destroy(vsock);
-		cando_log_error("setsockopt: %s\n", strerror(errno));
-		return NULL;
-	}
 
 	err = bind(vsock->fd, (struct sockaddr*) &(vsock->addr),
 			sizeof(struct sockaddr_vm));
@@ -185,31 +205,15 @@ cando_vsock_udp_server_accept (struct cando_vsock_udp *vsock,
 		return -1;
 	}
 
-	sock_fd = socket(AF_VSOCK, SOCK_DGRAM, 0);
-	if (sock_fd == -1) {
-		cando_log_set_error(vsock, errno, "socket: %s", strerror(errno));
+	sock_fd = p_create_sock_fd(vsock);
+	if (sock_fd == -1)
 		return -1;
-	}
-
-	err = setsockopt(sock_fd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int));
-	if (err == -1) {
-		cando_log_set_error(vsock, errno, "setsockopt: %s", strerror(errno));
-		close(sock_fd);
-		return -1;
-	}
-
-	err = setsockopt(sock_fd, SOL_SOCKET, SO_REUSEPORT, &enable, sizeof(int));
-	if (err == -1) {
-		cando_log_set_error(vsock, errno, "setsockopt: %s", strerror(errno));
-		close(sock_fd);
-		return -1;
-	}
 
 	/*
 	 * Will temporary take over receiving from all,
 	 * but released after call to connect(2).
 	 */
-	err = bind(sock_fd, (const struct sockaddr*)addr, len);
+	err = bind(sock_fd, (const struct sockaddr*)&(vsock->addr), len);
 	if (err == -1) {
 		cando_log_set_error(vsock, errno, "bind: %s", strerror(errno));
 		close(sock_fd);
@@ -258,9 +262,9 @@ struct cando_vsock_udp *
 cando_vsock_udp_client_create (struct cando_vsock_udp *p_vsock,
                                const void *vsock_info)
 {
-	struct cando_vsock_udp *vsock = p_vsock;
+	struct cando_vsock_udp *vsock = NULL;
 
-	vsock = p_create_vsock(vsock, vsock_info, 0);
+	vsock = p_create_vsock(p_vsock, vsock_info, 0);
 	if (!vsock)
 		return NULL;
 
@@ -378,13 +382,6 @@ cando_vsock_udp_destroy (struct cando_vsock_udp *vsock)
  * Start of non struct cando_vsock param functions *
  ***************************************************/
 
-unsigned int
-cando_vsock_udp_get_local_vcid (void)
-{
-	return p_vsock_get_local_vcid();
-}
-
-
 int
 cando_vsock_udp_get_sizeof (void)
 {
@@ -392,8 +389,15 @@ cando_vsock_udp_get_sizeof (void)
 }
 
 
+unsigned int
+cando_vsock_udp_get_local_vcid (void)
+{
+	return p_vsock_get_local_vcid();
+}
+
+
 ssize_t
-cando_vsock_udp_recv_data (const int sockfd,
+cando_vsock_udp_recv_data (const int sock_fd,
                            void *data,
                            const size_t size,
                            struct sockaddr_vm *addr,
@@ -405,14 +409,14 @@ cando_vsock_udp_recv_data (const int sockfd,
 
 	const int flags = (opts) ? *((const int*)opts) : 0;
 
-	if (sockfd < 0 || \
+	if (sock_fd < 0 || \
 	    !data || \
 	    !size)
 	{
 		return -1;
 	}
 
-	ret = recvfrom(sockfd, data, size, flags,
+	ret = recvfrom(sock_fd, data, size, flags,
 	               (struct sockaddr*) addr, &len);
 	if (errno == EINTR || errno == EAGAIN) {
 		return -errno;
@@ -426,7 +430,7 @@ cando_vsock_udp_recv_data (const int sockfd,
 
 
 ssize_t
-cando_vsock_udp_send_data (const int sockfd,
+cando_vsock_udp_send_data (const int sock_fd,
                            const void *data,
                            const size_t size,
                            const struct sockaddr_vm *addr,
@@ -438,14 +442,14 @@ cando_vsock_udp_send_data (const int sockfd,
 
 	const int flags = (opts) ? *((const int*)opts) : 0;
 
-	if (sockfd < 0 || \
+	if (sock_fd < 0 || \
 	    !data || \
 	    !size)
 	{
 		return -1;
 	}
 
-	ret = sendto(sockfd, data, size, flags,
+	ret = sendto(sock_fd, data, size, flags,
 	             (const struct sockaddr*) addr, len);
 	if (errno == EINTR || errno == EAGAIN) {
 		return -errno;
