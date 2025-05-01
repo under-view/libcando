@@ -17,7 +17,7 @@ struct cando_vsock_tcp;
  *        used to define how to create the server.
  *
  * @member vcid        - VM Context Identifier to accept(2) with.
- * @member port        - TCP port to accept(2) with.
+ * @member port        - Network port to accept(2) with.
  * @member connections - Amount of connections that may be queued
  *                       at a given moment.
  */
@@ -75,7 +75,7 @@ cando_vsock_tcp_server_accept (struct cando_vsock_tcp *vsock,
  *        used to define how to create the server.
  *
  * @member vcid - VM Context Identifier to connect(2)/send(2) to.
- * @member port - TCP port to connect(2)/send(2) to.
+ * @member port - Network port to connect(2)/send(2) to.
  */
 struct cando_vsock_tcp_client_create_info
 {
@@ -175,12 +175,12 @@ cando_vsock_tcp_get_vcid (struct cando_vsock_tcp *vsock);
 
 
 /*
- * @brief Acquire TCP port associated with struct cando_vsock_tcp instance.
+ * @brief Acquire network port associated with struct cando_vsock_tcp instance.
  *
  * @param vsock - Must pass a pointer to a struct cando_vsock_tcp.
  *
  * @return
- *	on success: TCP port connected to instance
+ *	on success: Network port connected to instance
  *	on failure: -1
  */
 CANDO_API

@@ -82,7 +82,7 @@ cando_vsock_tcp (private)
 		| VM Context Identifier.
 
 	:c:member:`port`
-		| TCP port number to `connect(2)`_ to or `accept(2)`_ from.
+		| Network port number to `connect(2)`_ to or `accept(2)`_ from.
 
 	:c:member:`addr`
 		| Stores byte information about the VM socket context.
@@ -108,7 +108,7 @@ cando_vsock_tcp_server_create_info
 		| VM Context Identifier to `accept(2)`_ with.
 
 	:c:member:`port`
-		| TCP port to `accept(2)`_ with.
+		| Network port to `accept(2)`_ with.
 
 	:c:member:`connections`
 		| Amount of connections that may be queued
@@ -166,7 +166,7 @@ cando_vsock_tcp_server_accept
 		    | If not NULL ``addr`` is filled in via `accept(2)`_ call.
 
 	Returns:
-		| **on success:** Pointer to a ``struct`` :c:struct:`cando_vsock_tcp`
+		| **on success:** File descriptor to accepted client
 		| **on failure:** ``NULL``
 
 =========================================================================================================================================
@@ -188,7 +188,7 @@ cando_vsock_tcp_client_create_info
 		| VM Context Identifier to `connect(2)`_/`send(2)`_ to.
 
 	:c:member:`port`
-		| TCP port to `connect(2)`_/`send(2)`_ to.
+		| Network port to `connect(2)`_/`send(2)`_ to.
 
 =============================
 cando_vsock_tcp_client_create
@@ -326,7 +326,8 @@ cando_vsock_tcp_get_port
 
 .. c:function:: int cando_vsock_tcp_get_port(struct cando_vsock_tcp *vsock);
 
-| Acquire TCP port associated with ``struct`` :c:struct:`cando_vsock_tcp` instance.
+| Acquire network port associated with
+| ``struct`` :c:struct:`cando_vsock_tcp` instance.
 
 	.. list-table::
 		:header-rows: 1
@@ -337,7 +338,7 @@ cando_vsock_tcp_get_port
 		  - | Must pass a pointer to a ``struct`` :c:struct:`cando_vsock_tcp`.
 
 	Returns:
-		| **on success:** TCP port connected to instance
+		| **on success:** Network port connected to instance
 		| **on failure:** -1
 
 =========================================================================================================================================
@@ -373,8 +374,8 @@ cando_vsock_tcp_get_sizeof
 | of bytes.
 
 	Returns:
-		| **on success:** sizeof(struct cando_vsock_tcp)
-		| **on failure:** sizeof(struct cando_vsock_tcp)
+		| **on success:** sizeof(``struct`` :c:struct:`cando_vsock_tcp`)
+		| **on failure:** sizeof(``struct`` :c:struct:`cando_vsock_tcp`)
 
 =========================================================================================================================================
 
@@ -389,7 +390,7 @@ cando_vsock_tcp_get_local_vcid
 
 	Returns:
 		| **on success:** Local VM context identifer
-		| **on failure:** UINT32_MAX
+		| **on failure:** ``UINT32_MAX``
 
 =========================================================================================================================================
 
