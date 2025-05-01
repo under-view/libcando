@@ -159,6 +159,8 @@ p_test_vsock_udp_send_recv_client (void)
 
 	ssize_t size = 0;
 
+	const int accept = 0x44;
+
 	struct cando_vsock_udp *client = NULL;
 
 	struct cando_vsock_udp_client_create_info client_info;
@@ -170,6 +172,11 @@ p_test_vsock_udp_send_recv_client (void)
 
 	err = cando_vsock_udp_client_connect(client);
 	assert_int_equal(err, 0);
+
+	err = cando_vsock_udp_client_send_data(client, &accept, sizeof(int), NULL);
+	assert_int_equal(err, sizeof(int));
+
+	usleep(2000);
 
 	memset(buffer, 'T', sizeof(buffer));
 	size = cando_vsock_udp_client_send_data(client, buffer, sizeof(buffer), 0);
@@ -186,9 +193,11 @@ test_vsock_udp_send_recv (void CANDO_UNUSED **state)
 {
 	pid_t pid;
 
-	int client_sock = -1;
+	struct sockaddr_vm addr;
 
 	char buffer[512], buffer_two[512];
+
+	int client_sock = -1, err = -1, data;
 
 	struct cando_vsock_udp *server = NULL;
 
@@ -206,13 +215,13 @@ test_vsock_udp_send_recv (void CANDO_UNUSED **state)
 		p_test_vsock_udp_send_recv_client();
 	}
 
-	client_sock = cando_vsock_udp_server_accept(server, NULL);
-	assert_int_not_equal(client_sock, -1);
+	err = cando_vsock_udp_server_recv_data(server, &data,
+					sizeof(int), &addr, NULL);
+	assert_int_equal(err, sizeof(int));
+	assert_int_equal(data, 0x44);
 
-	/*
-	 * Just so printing data doesn't extend past the test.
-	 */
-	usleep(2000);
+	client_sock = cando_vsock_udp_server_accept(server, &addr);
+	assert_int_not_equal(client_sock, -1);
 
 	memset(buffer, 'T', sizeof(buffer));
 	cando_vsock_udp_recv_data(client_sock, buffer_two, sizeof(buffer_two), NULL, 0);
