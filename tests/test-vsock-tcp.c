@@ -118,15 +118,12 @@ test_vsock_tcp_accept_connect (void CANDO_UNUSED **state)
 	client_sock = cando_vsock_tcp_server_accept(server, NULL);
 	assert_int_not_equal(client_sock, -1);
 
-	/*
-	 * Just so printing data doesn't extend past the test.
-	 */
-	usleep(2000);
-
 	waitpid(pid, NULL, -1);
 
 	close(client_sock);
 	cando_vsock_tcp_destroy(server);
+
+	usleep(2000);
 }
 
 /**************************************************
@@ -198,11 +195,6 @@ test_vsock_tcp_send_recv (void CANDO_UNUSED **state)
 	client_sock = cando_vsock_tcp_server_accept(server, NULL);
 	assert_int_not_equal(client_sock, -1);
 
-	/*
-	 * Just so printing data doesn't extend past the test.
-	 */
-	usleep(2000);
-
 	memset(buffer, 'T', sizeof(buffer));
 	cando_vsock_tcp_recv_data(client_sock, buffer_two, sizeof(buffer_two), 0);
 	assert_memory_equal(buffer, buffer_two, sizeof(buffer));
@@ -211,6 +203,8 @@ test_vsock_tcp_send_recv (void CANDO_UNUSED **state)
 
 	close(client_sock);
 	cando_vsock_tcp_destroy(server);
+
+	usleep(2000);
 }
 
 /*********************************************
@@ -360,8 +354,8 @@ main (void)
 		cmocka_unit_test(test_vsock_tcp_get_fd),
 		cmocka_unit_test(test_vsock_tcp_get_vcid),
 		cmocka_unit_test(test_vsock_tcp_get_port),
-		cmocka_unit_test(test_vsock_tcp_get_local_vcid),
 		cmocka_unit_test(test_vsock_tcp_get_sizeof),
+		cmocka_unit_test(test_vsock_tcp_get_local_vcid),
 	};
 
 	return cmocka_run_group_tests(tests, NULL, NULL);

@@ -72,11 +72,39 @@ p_vsock_get_local_vcid (void)
 }
 
 
+static int
+p_set_sock_opts (struct cando_vsock_tcp *sock,
+                 const int sock_fd)
+{
+	int err = -1;
+
+	const int enable = 1;
+
+	err = setsockopt(sock_fd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int));
+	if (err == -1) {
+		cando_log_set_error(sock, errno, "setsockopt: %s", strerror(errno));
+		close(sock_fd);
+		return -1;
+	}
+
+	err = setsockopt(sock_fd, SOL_SOCKET, SO_REUSEPORT, &enable, sizeof(int));
+	if (err == -1) {
+		cando_log_set_error(sock, errno, "setsockopt: %s", strerror(errno));
+		close(sock_fd);
+		return -1;
+	}
+
+	return sock_fd;
+}
+
+
 static struct cando_vsock_tcp *
 p_create_vsock (struct cando_vsock_tcp *p_vsock,
                 const void *p_vsock_info,
                 const bool server)
 {
+	int err = -1;
+
 	struct cando_vsock_tcp *vsock = p_vsock;
 
 	const struct cando_vsock_tcp_create_info {  
@@ -96,6 +124,13 @@ p_create_vsock (struct cando_vsock_tcp *p_vsock,
 
 	vsock->fd = socket(AF_VSOCK, SOCK_STREAM, 0);
 	if (vsock->fd == -1) {
+		cando_vsock_tcp_destroy(vsock);
+		return NULL;
+	}
+
+	err = p_set_sock_opts(vsock, vsock->fd);
+	if (err == -1) {
+		cando_log_error("%s\n", cando_log_get_error(vsock));
 		cando_vsock_tcp_destroy(vsock);
 		return NULL;
 	}
@@ -127,8 +162,6 @@ cando_vsock_tcp_server_create (struct cando_vsock_tcp *p_vsock,
 {
 	int err = -1;
 
-	const int enable = 1;
-
 	struct cando_vsock_tcp *vsock = NULL;
 
 	const struct cando_vsock_tcp_server_create_info *vsock_info = p_vsock_info;
@@ -137,32 +170,18 @@ cando_vsock_tcp_server_create (struct cando_vsock_tcp *p_vsock,
 	if (!vsock)
 		return NULL;
 
-	err = setsockopt(vsock->fd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int));
-	if (err == -1) {
-		cando_vsock_tcp_destroy(vsock);
-		cando_log_error("setsockopt: %s\n", strerror(errno));
-		return NULL;
-	}
-
-	err = setsockopt(vsock->fd, SOL_SOCKET, SO_REUSEPORT, &enable, sizeof(int));
-	if (err == -1) {
-		cando_vsock_tcp_destroy(vsock);
-		cando_log_error("setsockopt: %s\n", strerror(errno));
-		return NULL;
-	}
-
 	err = bind(vsock->fd, (struct sockaddr*) &(vsock->addr),
 			sizeof(struct sockaddr_vm));
 	if (err == -1) {
-		cando_vsock_tcp_destroy(vsock);
 		cando_log_error("bind: %s\n", strerror(errno));
+		cando_vsock_tcp_destroy(vsock);
 		return NULL;
 	}
 
 	err = listen(vsock->fd, vsock_info->connections);
 	if (err == -1) {
-		cando_vsock_tcp_destroy(vsock);
 		cando_log_error("listen: %s\n", strerror(errno));
+		cando_vsock_tcp_destroy(vsock);
 		return NULL;
 	}
 
@@ -174,7 +193,7 @@ int
 cando_vsock_tcp_server_accept (struct cando_vsock_tcp *vsock,
                                struct sockaddr_vm *p_addr)
 {
-	int sock_fd = -1;
+	int client_sock = -1;
 
 	struct sockaddr_vm inaddr;
 	struct sockaddr_vm *addr = NULL;
@@ -184,23 +203,17 @@ cando_vsock_tcp_server_accept (struct cando_vsock_tcp *vsock,
 	if (!vsock)
 		return -1;
 
-	if (vsock->fd <= 0) {
-		cando_log_set_error(vsock, CANDO_LOG_ERR_INCORRECT_DATA, "");
-		return -1;
-	}
-
 	addr = (p_addr) ? p_addr : &inaddr;
-	sock_fd = accept(vsock->fd, (struct sockaddr*)addr, &len);
-	if (sock_fd == -1) {
+	client_sock = accept(vsock->fd, (struct sockaddr*)addr, &len);
+	if (client_sock == -1) {
 		cando_log_set_error(vsock, errno, "accept: %s", strerror(errno));
 		return -1;
 	}
 
-	cando_log(CANDO_LOG_INFO,
-	          "[+] Connected client fd '%d' at '%lu:%u'\n",
-	          sock_fd, addr->svm_cid, ntohs(addr->svm_port));
+	cando_log_info("[+] Connected client fd '%d' at '%lu:%u'\n",
+	               client_sock, addr->svm_cid, ntohs(addr->svm_port));
 
-	return sock_fd;
+	return client_sock;
 }
 
 /*******************************************
