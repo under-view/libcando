@@ -325,6 +325,23 @@ test_vsock_udp_get_port (void CANDO_UNUSED **state)
  ********************************************/
 
 
+/************************************************
+ * Start of test_vsock_udp_get_sizeof functions *
+ ************************************************/
+
+static void CANDO_UNUSED
+test_vsock_udp_get_sizeof (void CANDO_UNUSED **state)
+{
+	int size = 0;
+	size = cando_vsock_udp_get_sizeof();
+	assert_int_not_equal(size, 0);
+}
+
+/**********************************************
+ * End of test_vsock_udp_get_sizeof functions *
+ **********************************************/
+
+
 /****************************************************
  * Start of test_vsock_udp_get_local_vcid functions *
  ****************************************************/
@@ -341,23 +358,6 @@ test_vsock_udp_get_local_vcid (void CANDO_UNUSED **state)
 /**************************************************
  * End of test_vsock_udp_get_local_vcid functions *
  **************************************************/
-
-
-/************************************************
- * Start of test_vsock_udp_get_sizeof functions *
- ************************************************/
-
-static void CANDO_UNUSED
-test_vsock_udp_get_sizeof (void CANDO_UNUSED **state)
-{
-	int size = 0;
-	size = cando_vsock_udp_get_sizeof();
-	assert_int_not_equal(size, 0);
-}
-
-/**********************************************
- * End of test_vsock_udp_get_sizeof functions *
- **********************************************/
 
 int
 main (void)
