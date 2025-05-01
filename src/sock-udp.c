@@ -315,7 +315,7 @@ cando_sock_udp_client_send_data (struct cando_sock_udp *sock,
 	                                &(sock->addr), opts);
 }
 
-/***u**************************************
+/******************************************
  * End of cando_sock_udp_client functions *
  ******************************************/
 

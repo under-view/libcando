@@ -29,7 +29,7 @@ struct cando_sock_udp_server_create_info
 
 
 /*
- * @brief Creates a VM socket that may be utilized for server socket operations.
+ * @brief Creates a socket that may be utilized for server socket operations.
  *
  * @param sock      - May be NULL or a pointer to a struct cando_sock_udp.
  *                    If NULL memory will be allocated and return to
@@ -52,12 +52,14 @@ cando_sock_udp_server_create (struct cando_sock_udp *sock,
 
 
 /*
- * @brief Accepts client connections returns file descriptor
- *        to the connected client.
+ * @brief Creates file descriptor that can filter for
+ *        @addr data comming to server file descriptor.
+ *        Useful to utilize in an epoll(2) event loop
+ *        if caller wants to implement tcp like event
+ *        handling with UDP sockets.
  *
  * @param sock - Must pass a pointer to a struct cando_sock_udp.
  * @param addr - Must pass a pointer to a populated struct sockaddr_in6.
- * @param ipv6 - Specify if @addr will be an ipv6 or ipv4 socket.
  *
  * @return
  *	on success: File descriptor to accepted client
@@ -113,7 +115,7 @@ struct cando_sock_udp_client_create_info
 
 
 /*
- * @brief Creates a VM socket that may be utilized for client socket operations.
+ * @brief Creates a socket that may be utilized for client socket operations.
  *
  * @param sock      - May be NULL or a pointer to a struct cando_sock_udp.
  *                    If NULL memory will be allocated and return to
@@ -137,7 +139,7 @@ cando_sock_udp_client_create (struct cando_sock_udp *sock,
 
 /*
  * @brief Fliters client socket to allow sending data
- *        without passing a struct sockadd_in to sendto(2).
+ *        without passing a struct sockaddr_in to sendto(2).
  *        Address is populated with a call to cando_sock_udp_client_create.
  *
  * @param sock - Must pass a pointer to a struct cando_sock_udp.
@@ -189,8 +191,7 @@ cando_sock_udp_get_fd (struct cando_sock_udp *sock);
 
 
 /*
- * @brief Acquire VM socket context identifier associated with
- *        struct cando_sock_udp context.
+ * @brief Acquire ip address associated with struct cando_sock_udp context.
  *
  * @param sock - Must pass a pointer to a struct cando_sock_udp.
  *
