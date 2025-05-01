@@ -16,8 +16,8 @@ struct cando_vsock_udp;
  * @brief Structure passed to cando_vsock_udp_server_create(3)
  *        used to define how to create the server.
  *
- * @member vcid - VM Context Identifier to receive/send data with.
- * @member port - UDP port to receive/send data with.
+ * @member vcid - VM Context Identifier to recvfrom(2)/sendto(2) data with.
+ * @member port - Network port to recvfrom(2)/sendto(2) data with.
  */
 struct cando_vsock_udp_server_create_info
 {
@@ -57,10 +57,10 @@ cando_vsock_udp_server_create (struct cando_vsock_udp *vsock,
  *        handling with UDP sockets.
  *
  * @param vsock - Must pass a pointer to a struct cando_vsock_udp.
- * @param addr  - Must pointer to a populated struct sockaddr_vm.
+ * @param addr  - Must pass a pointer to a populated struct sockaddr_vm.
  *
  * @return
- *	on success: File descriptor to accepted client
+ *	on success: File descriptor to filtered socket
  *	on failure: -1
  */
 CANDO_API
@@ -70,7 +70,7 @@ cando_vsock_udp_server_accept (struct cando_vsock_udp *vsock,
 
 
 /*
- * @brief Receive data from socket file descriptor.
+ * @brief Receive data from server socket file descriptor.
  *
  * @param vsock      - Pointer to a struct cando_sock_udp instance.
  * @param data       - Pointer to data to store data received from a socket.
@@ -91,15 +91,15 @@ cando_vsock_udp_server_recv_data (struct cando_vsock_udp *vsock,
                                   void *data,
                                   const size_t size,
                                   struct sockaddr_vm *addr,
-                                  const void *sock_info);
+                                  const void *vsock_info);
 
 
 /*
  * @brief Structure passed to cando_vsock_udp_client_create(3)
  *        used to define how to create the server.
  *
- * @member vcid - VM Context Identifier to send/receive data with.
- * @member port - UDP port to send/receive data with.
+ * @member vcid - VM Context Identifier to sendto(2)/recvfrom(2) data with.
+ * @member port - Network port to sendto(2)/recvfrom(2) data with.
  */
 struct cando_vsock_udp_client_create_info
 {
@@ -200,7 +200,8 @@ cando_vsock_udp_get_vcid (struct cando_vsock_udp *vsock);
 
 
 /*
- * @brief Acquire UDP port associated with struct cando_vsock_udp instance.
+ * @brief Acquire network port associated with
+ *        struct cando_vsock_udp instance.
  *
  * @param vsock - Must pass a pointer to a struct cando_vsock_udp.
  *

@@ -27,8 +27,8 @@
  *                destroying the instance.
  * @member fd   - File descriptor to the open VM socket.
  * @member vcid - VM Context Identifier.
- * @member port - UDP port number to connect(2) to or accept(2) from.
- * @member addr - Stores network byte information about the VM socket context.
+ * @member port - Network port number to recvfrom(2)/sendto(2) with.
+ * @member addr - Stores byte information about the VM socket context.
  *                Is used for client connect(2) and server bind(2)/connect(2).
  */
 struct cando_vsock_udp

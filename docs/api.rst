@@ -9,3 +9,4 @@
 	file-ops
 	mm
 	vsock-tcp
+	vsock-udp
