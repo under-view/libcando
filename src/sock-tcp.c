@@ -201,11 +201,6 @@ cando_sock_tcp_server_accept (struct cando_sock_tcp *sock,
 	if (!sock)
 		return -1;
 
-	if (sock->fd <= 0) {
-		cando_log_set_error(sock, CANDO_LOG_ERR_INCORRECT_DATA, "");
-		return -1;
-	}
-
 	addr = (p_addr) ? p_addr : &inaddr;
 	client_sock = accept(sock->fd, (struct sockaddr*)addr, &len);
 	if (client_sock == -1) {
