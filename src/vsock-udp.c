@@ -392,6 +392,9 @@ cando_vsock_udp_get_local_vcid (void)
 }
 
 
+/* Used to verify data was received */
+#define VERIFIER 0xFA4C62B5
+
 ssize_t
 cando_vsock_udp_recv_data (const int sock_fd,
                            void *data,
@@ -399,7 +402,11 @@ cando_vsock_udp_recv_data (const int sock_fd,
                            struct sockaddr_vm *addr,
                            const void *vsock_info)
 {
+	int err = -1;
+
 	ssize_t ret = 0;
+
+	uint32_t received_data = VERIFIER;
 
 	socklen_t len = sizeof(struct sockaddr_vm);
 
@@ -421,6 +428,15 @@ cando_vsock_udp_recv_data (const int sock_fd,
 		return -1;
 	}
 
+	err = sendto(sock_fd, &received_data, sizeof(received_data),
+	             flags, (struct sockaddr*) addr, len);
+	if (errno == EINTR || errno == EAGAIN) {
+		return -errno;
+	} else if (err == -1) {
+		cando_log_error("sendto: %s", strerror(errno));
+		return -1;
+	}
+
 	return ret;
 }
 
@@ -432,7 +448,11 @@ cando_vsock_udp_send_data (const int sock_fd,
                            const struct sockaddr_vm *addr,
                            const void *vsock_info)
 {
+	int err = -1;
+
 	ssize_t ret = 0;
+
+	uint32_t received_data = 0;
 
 	socklen_t len = sizeof(struct sockaddr_vm);
 
@@ -451,6 +471,20 @@ cando_vsock_udp_send_data (const int sock_fd,
 		return -errno;
 	} else if (ret == -1) {
 		cando_log_error("sendto: %s\n", strerror(errno));
+		return -1;
+	}
+
+	err = recvfrom(sock_fd, &received_data, sizeof(received_data),
+	               flags, (struct sockaddr*) addr, &len);
+	if (errno == EINTR || errno == EAGAIN) {
+		return -errno;
+	} else if (err == -1) {
+		cando_log_error("recvfrom: %s", strerror(errno));
+		return -1;
+	}
+
+	if (received_data != VERIFIER) {
+		cando_log_error("Data not received\n");
 		return -1;
 	}
 
