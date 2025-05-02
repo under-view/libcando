@@ -256,14 +256,14 @@ cando_vsock_udp_get_local_vcid (void);
 /*
  * @brief Receive data from socket file descriptor.
  *
- * @param sock_fd - Socket file descriptor to receive data from.
- * @param data    - Pointer to data to store data received from a socket.
- * @param size    - Size of data to receive from a socket.
- * @param addr    - Pointer to struct sockaddr_vm which stores the
- *                  address information of the socket that data
- *                  was received from.
- * @param opts    - Reserved for future usage. For now used
- *                  to set the flag argument of recvfrom(2).
+ * @param sock_fd    - Socket file descriptor to receive data from.
+ * @param data       - Pointer to data to store data received from a socket.
+ * @param size       - Size of data to receive from a socket.
+ * @param addr       - Pointer to struct sockaddr_vm which stores the
+ *                     address information of the socket that data
+ *                     was received from.
+ * @param vsock_info - Reserved for future usage. For now used
+ *                     to set the flag argument of recvfrom(2).
  *
  * @return
  *	on success: Amount of bytes received
@@ -275,20 +275,20 @@ cando_vsock_udp_recv_data (const int sock_fd,
                            void *data,
                            const size_t size,
                            struct sockaddr_vm *addr,
-                           const void *opts);
+                           const void *vsock_info);
 
 
 /*
  * @brief Send data to socket file descriptor.
  *
- * @param sock_fd - Socket file descriptor to send data to.
- * @param data    - Pointer to data to send through socket.
- * @param size    - Size of data to send through socket.
- * @param addr    - Pointer to struct sockaddr_vm which stores the
- *                  address information of a socket that data
- *                  will be sent to.
- * @param opts    - Reserved for future usage. For now used
- *                  to set the flag argument of sendto(2).
+ * @param sock_fd    - Socket file descriptor to send data to.
+ * @param data       - Pointer to data to send through socket.
+ * @param size       - Size of data to send through socket.
+ * @param addr       - Pointer to struct sockaddr_vm which stores the
+ *                     address information of a socket that data
+ *                     will be sent to.
+ * @param vsock_info - Reserved for future usage. For now used
+ *                     to set the flag argument of sendto(2).
  *
  * @return
  *	on success: Amount of bytes sent
@@ -300,6 +300,6 @@ cando_vsock_udp_send_data (const int sock_fd,
                            const void *data,
                            const size_t size,
                            const struct sockaddr_vm *addr,
-                           const void *opts);
+                           const void *vsock_info);
 
 #endif /* CANDO_VSOCK_UDP_H */

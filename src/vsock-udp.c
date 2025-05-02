@@ -237,13 +237,13 @@ cando_vsock_udp_server_recv_data (struct cando_vsock_udp *vsock,
                                   void *data,
                                   const size_t size,
                                   struct sockaddr_vm *addr,
-                                  const void *opts)
+                                  const void *vsock_info)
 {
 	if (!vsock)
 		return -1;
 
 	return cando_vsock_udp_recv_data(vsock->fd, data,
-	                                 size, addr, opts);
+	                          size, addr, vsock_info);
 }
 
 /*******************************************
@@ -301,13 +301,13 @@ ssize_t
 cando_vsock_udp_client_send_data (struct cando_vsock_udp *vsock,
                                   const void *data,
                                   const size_t size,
-                                  const void *opts)
+                                  const void *vsock_info)
 {
 	if (!vsock)
 		return -1;
 
 	return cando_vsock_udp_send_data(vsock->fd, data, size,
-	                                 &(vsock->addr), opts);
+	                            &(vsock->addr), vsock_info);
 }
 
 /*******************************************
@@ -398,13 +398,13 @@ cando_vsock_udp_recv_data (const int sock_fd,
                            void *data,
                            const size_t size,
                            struct sockaddr_vm *addr,
-                           const void *opts)
+                           const void *vsock_info)
 {
 	ssize_t ret = 0;
 
 	socklen_t len = sizeof(struct sockaddr_vm);
 
-	const int flags = (opts) ? *((const int*)opts) : 0;
+	const int flags = (vsock_info) ? *((const int*)vsock_info) : 0;
 
 	if (sock_fd < 0 || \
 	    !data || \
@@ -431,13 +431,13 @@ cando_vsock_udp_send_data (const int sock_fd,
                            const void *data,
                            const size_t size,
                            const struct sockaddr_vm *addr,
-                           const void *opts)
+                           const void *vsock_info)
 {
 	ssize_t ret = 0;
 
 	socklen_t len = sizeof(struct sockaddr_vm);
 
-	const int flags = (opts) ? *((const int*)opts) : 0;
+	const int flags = (vsock_info) ? *((const int*)vsock_info) : 0;
 
 	if (sock_fd < 0 || \
 	    !data || \

@@ -280,7 +280,7 @@ cando_vsock_udp_client_connect
 cando_vsock_udp_client_send_data
 ================================
 
-.. c:function:: ssize_t cando_vsock_udp_client_send_data(struct cando_vsock_udp *vsock, const void *data, const size_t size, const void *opts);
+.. c:function:: ssize_t cando_vsock_udp_client_send_data(struct cando_vsock_udp *vsock, const void *data, const size_t size, const void *vsock_info);
 
 | Send data to client socket address provided via
 | call to :c:func:`cando_vsock_udp_client_create`.
@@ -296,7 +296,7 @@ cando_vsock_udp_client_send_data
 		  - | Pointer to data to send through socket.
 		* - size
 		  - | Size of data to send through socket.
-		* - opts
+		* - vsock_info
 		  - | Reserved for future usage. For now used
 		    | to set the flag argument of `sendto(2)`_.
 
@@ -430,7 +430,7 @@ cando_vsock_udp_get_local_vcid
 cando_vsock_udp_recv_data
 =========================
 
-.. c:function:: ssize_t cando_vsock_udp_recv_data(const int sock_fd, void *data, const size_t size, struct sockaddr_vm *addr, const void *opts);
+.. c:function:: ssize_t cando_vsock_udp_recv_data(const int sock_fd, void *data, const size_t size, struct sockaddr_vm *addr, const void *vsock_info);
 
 | Receive data from socket file descriptor.
 
@@ -449,7 +449,7 @@ cando_vsock_udp_recv_data
 		  - | Pointer to ``struct`` `sockaddr_vm`_ which stores the
 		    | address information of the socket that data
 		    | was received from.
-		* - opts
+		* - vsock_info
 		  - | Reserved for future usage. For now used
 		    | to set the flag argument of `recvfrom(2)`_.
 
@@ -463,7 +463,7 @@ cando_vsock_udp_recv_data
 cando_vsock_udp_send_data
 =========================
 
-.. c:function:: ssize_t cando_vsock_udp_send_data(const int sock_fd, const void *data, const size_t size, const struct sockaddr_vm *addr, const void *opts);
+.. c:function:: ssize_t cando_vsock_udp_send_data(const int sock_fd, const void *data, const size_t size, const struct sockaddr_vm *addr, const void *vsock_info);
 
 | Send data to socket file descriptor.
 
@@ -482,7 +482,7 @@ cando_vsock_udp_send_data
 		  - | Pointer to ``struct`` `sockaddr_vm`_ which stores the
 		    | address information of a socket that data
 		    | will be sent to.
-		* - opts
+		* - vsock_info
 		  - | Reserved for future usage. For now used
 		    | to set the flag argument of `sendto(2)`_.
 
