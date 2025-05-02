@@ -1,7 +1,7 @@
 .. default-domain:: C
 
-vsock-udp (VM Socket UDP)
-=========================
+vsock-udp (VM Socket UDP | WIP)
+===============================
 
 Header: cando/vsock-udp.h
 

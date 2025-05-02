@@ -1,3 +1,5 @@
+.. _build libcando:
+
 Build libcando
 ==============
 
