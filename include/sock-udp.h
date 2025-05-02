@@ -15,11 +15,10 @@ struct cando_sock_udp;
  * @brief Structure passed to cando_sock_udp_server_create(3)
  *        used to define how to create the server.
  *
- * @member ipv6    - Boolean determines if a socket is soley
- *                   an ipv6 socket or requires a mapping from
- *                   ipv4-to-ipv6.
- * @member ip_addr - Textual network IP address to receive/send data with.
- * @member port    - Network port to receive/send data with.
+ * @member ipv6    - Boolean to determine if a socket is soley an ipv6
+ *                   socket or requires an ipv4-mapped-ipv6-address.
+ * @member ip_addr - Textual network IP address to recvfrom(2)/sendto(2) data with.
+ * @member port    - Network port to recvfrom(2)/sendto(2) data with.
  */
 struct cando_sock_udp_server_create_info
 {
@@ -61,8 +60,8 @@ cando_sock_udp_server_create (struct cando_sock_udp *sock,
  *
  * @param sock - Must pass a pointer to a struct cando_sock_udp.
  * @param addr - Must pass a pointer to a populated struct sockaddr_in6.
- * @param ipv6 - Boolean determines if created socket is solely an ipv6
- *               socket or requires a mapping from ipv4-to-ipv6.
+ * @param ipv6 - Boolean determines if created socket is soley an ipv6
+ *               socket or requires an ipv4-mapped-ipv6-address.
  *
  * @return
  *	on success: File descriptor to accepted client
@@ -76,7 +75,7 @@ cando_sock_udp_server_accept (struct cando_sock_udp *sock,
 
 
 /*
- * @brief Receive data from socket file descriptor.
+ * @brief Receive data from server socket file descriptor.
  *
  * @param sock      - Pointer to a struct cando_sock_udp instance.
  * @param data      - Pointer to a buffer to store data received from a socket.
@@ -104,11 +103,10 @@ cando_sock_udp_server_recv_data (struct cando_sock_udp *sock,
  * @brief Structure passed to cando_sock_udp_client_create(3)
  *        used to define how to create the server.
  *
- * @member ipv6    - Boolean determines if a socket is soley
- *                   an ipv6 socket or requires a mapping from
- *                   ipv4-to-ipv6.
- * @member ip_addr - Textual network IP address to send/receive data with.
- * @member port    - Network port to send/receive data with.
+ * @member ipv6    - Boolean to determine if a socket is soley an ipv6
+ *                   socket or requires an ipv4-mapped-ipv6-address.
+ * @member ip_addr - Textual network IP address to recvfrom(2)/sendto(2) data with.
+ * @member port    - Network port to recvfrom(2)/sendto(2) data with.
  */
 struct cando_sock_udp_client_create_info
 {
@@ -143,7 +141,7 @@ cando_sock_udp_client_create (struct cando_sock_udp *sock,
 
 /*
  * @brief Fliters client socket to allow sending data
- *        without passing a struct sockaddr_in to sendto(2).
+ *        without passing a struct sockaddr_in6 to sendto(2).
  *        Address is populated with a call to cando_sock_udp_client_create.
  *
  * @param sock - Must pass a pointer to a struct cando_sock_udp.
@@ -196,7 +194,7 @@ cando_sock_udp_get_fd (struct cando_sock_udp *sock);
 
 /*
  * @brief Acquire textual network ip address associated
- *        with struct cando_sock_udp context.
+ *        with struct cando_sock_udp instance.
  *
  * @param sock - Must pass a pointer to a struct cando_sock_udp.
  *

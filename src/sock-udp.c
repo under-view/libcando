@@ -238,13 +238,13 @@ cando_sock_udp_server_recv_data (struct cando_sock_udp *sock,
                                  void *data,
                                  const size_t size,
                                  struct sockaddr_in6 *addr,
-                                 const void *opts)
+                                 const void *sock_info)
 {
 	if (!sock)
 		return -1;
 
 	return cando_sock_udp_recv_data(sock->fd, data,
-	                                size, addr, opts);
+	                         size, addr, sock_info);
 }
 
 /******************************************
@@ -302,13 +302,13 @@ ssize_t
 cando_sock_udp_client_send_data (struct cando_sock_udp *sock,
                                  const void *data,
                                  const size_t size,
-                                 const void *opts)
+                                 const void *sock_info)
 {
 	if (!sock)
 		return -1;
 
 	return cando_sock_udp_send_data(sock->fd, data, size,
-	                                &(sock->addr), opts);
+	                            &(sock->addr), sock_info);
 }
 
 /******************************************
@@ -395,13 +395,13 @@ cando_sock_udp_recv_data (const int sock_fd,
                           void *data,
                           const size_t size,
                           struct sockaddr_in6 *addr,
-                          const void *opts)
+                          const void *sock_info)
 {
 	ssize_t ret = 0;
 
 	socklen_t len = sizeof(struct sockaddr_in6);
 
-	const int flags = (opts) ? *((const int*)opts) : 0;
+	const int flags = (sock_info) ? *((const int*)sock_info) : 0;
 
 	if (sock_fd < 0 || \
 	    !data || \
@@ -428,13 +428,13 @@ cando_sock_udp_send_data (const int sock_fd,
                           const void *data,
                           const size_t size,
                           const struct sockaddr_in6 *addr,
-                          const void *opts)
+                          const void *sock_info)
 {
 	ssize_t ret = 0;
 
 	socklen_t len = sizeof(struct sockaddr_in6);
 
-	const int flags = (opts) ? *((const int*)opts) : 0;
+	const int flags = (sock_info) ? *((const int*)sock_info) : 0;
 
 	if (sock_fd < 0 || \
 	    !data || \

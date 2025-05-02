@@ -6,6 +6,7 @@ docs_src = [
   'docs/log.rst',
   'docs/mm.rst',
   'docs/sock-tcp.rst',
+  'docs/sock-udp.rst',
   'docs/vsock-tcp.rst',
   'docs/vsock-udp.rst',
 ]
