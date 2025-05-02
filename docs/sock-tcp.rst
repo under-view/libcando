@@ -105,9 +105,8 @@ cando_sock_tcp_server_create_info
 		int           connections;
 
 	:c:member:`ipv6`
-		| Boolean to determine if a socket is soley
-		| an ipv6 socket or requires a mapping from
-		| `ipv4-to-ipv6`_.
+		| Boolean to determine if a socket is soley an ipv6
+		| socket or requires an `ipv4-mapped-ipv6-address`_.
 
 	:c:member:`ip_addr`
 		| Textual network IP addresses to `accept(2)`_ with.
@@ -191,9 +190,8 @@ cando_sock_tcp_client_create_info
 		int           port;
 
 	:c:member:`ipv6`
-		| Boolean to determine if a socket is soley
-		| an ipv6 socket or requires a mapping from
-		| `ipv4-to-ipv6`_.
+		| Boolean to determine if a socket is soley an ipv6
+		| socket or requires an `ipv4-mapped-ipv6-address`_.
 
 	:c:member:`ip_addr`
 		| Textual network IP addresses to `connect(2)`_/`send(2)`_ to.
@@ -455,4 +453,4 @@ cando_sock_tcp_send_data
 .. _send(2): https://www.man7.org/linux/man-pages/man2/send.2.html
 .. _recv(2): https://www.man7.org/linux/man-pages/man2/recv.2.html
 .. _sockaddr_in6: https://www.man7.org/linux/man-pages/man7/sock.7.html
-.. _ipv4-to-ipv6: https://en.wikipedia.org/wiki/IPv6#IPv4-mapped_IPv6_addresses
+.. _ipv4-mapped-ipv6-address: https://en.wikipedia.org/wiki/IPv6#IPv4-mapped_IPv6_addresses

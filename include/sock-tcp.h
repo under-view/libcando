@@ -16,9 +16,8 @@ struct cando_sock_tcp;
  * @brief Structure passed to cando_sock_tcp_server_create(3)
  *        used to define how to create the server.
  *
- * @member ipv6        - Boolean to determine if a socket is soley
- *                       an ipv6 socket or requires a mapping from
- *                       ipv4-to-ipv6.
+ * @member ipv6        - Boolean to determine if a socket is soley an ipv6
+ *                       socket or requires an ipv4-mapped-ipv6-address.
  * @member ip_addr     - Textual network IP addresses to accept(2) with.
  * @member port        - Network port to accept(2) with.
  * @member connections - Amount of connections that may be queued
@@ -78,9 +77,8 @@ cando_sock_tcp_server_accept (struct cando_sock_tcp *sock,
  * @brief Structure passed to cando_sock_tcp_client_create(3)
  *        used to define how to create the server.
  *
- * @member ipv6    - Boolean to determine if a socket is soley
- *                   an ipv6 socket or requires a mapping from
- *                   ipv4-to-ipv6.
+ * @member ipv6    - Boolean to determine if a socket is soley an ipv6
+ *                   socket or requires an ipv4-mapped-ipv6-address.
  * @member ip_addr - Textual network IP addresses to connect(2)/send(2) to.
  * @member port    - Network port to connect(2)/send(2) to.
  */
