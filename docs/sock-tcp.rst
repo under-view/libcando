@@ -325,7 +325,7 @@ cando_sock_tcp_get_ip_addr
 
 	Returns:
 		| **on success:** Textual network address
-		| **on failure:** ``UINT32_MAX``
+		| **on failure:** ``NULL``
 
 =========================================================================================================================================
 
