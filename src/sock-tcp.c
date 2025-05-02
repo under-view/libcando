@@ -258,9 +258,8 @@ cando_sock_tcp_client_connect (struct cando_sock_tcp *sock)
 		return -1;
 	}
 
-	cando_log(CANDO_LOG_SUCCESS,
-	          "[+] Connected to <ip_addr:port> '%s:%d'\n",
-	          sock->ip_addr, sock->port);
+	cando_log_success("[+] Connected to <ip_addr:port> '%s:%d'\n",
+	                  sock->ip_addr, sock->port);
 
 	return 0;
 }

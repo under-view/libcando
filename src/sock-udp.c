@@ -225,9 +225,8 @@ cando_sock_udp_server_accept (struct cando_sock_udp *sock,
 	}
 
 	ip_addr = inet_ntop(AF_INET6, addr, buff, len);
-	cando_log(CANDO_LOG_INFO,
-	          "[+] Connected client fd '%d' at '%s:%u'\n",
-	          sock_fd, ip_addr, ntohs(addr->sin6_port));
+	cando_log_info("[+] Connected client fd '%d' at '%s:%u'\n",
+	               sock_fd, ip_addr, ntohs(addr->sin6_port));
 
 	return sock_fd;
 }
@@ -290,9 +289,8 @@ cando_sock_udp_client_connect (struct cando_sock_udp *sock)
 		return -1;
 	}
 
-	cando_log(CANDO_LOG_SUCCESS,
-	          "[+] Filtering to <ip_addr:port> '%s:%d'\n",
-	          sock->ip_addr, sock->port);
+	cando_log_success("[+] Filtering to <ip_addr:port> '%s:%d'\n",
+	                  sock->ip_addr, sock->port);
 
 	return 0;
 }

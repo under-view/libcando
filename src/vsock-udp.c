@@ -289,9 +289,8 @@ cando_vsock_udp_client_connect (struct cando_vsock_udp *vsock)
 		return -1;
 	}
 
-	cando_log(CANDO_LOG_SUCCESS,
-	          "[+] Filtering to <VM cid:port> '%lu:%d'\n",
-	          vsock->vcid, vsock->port);
+	cando_log_success("[+] Filtering to <VM cid:port> '%lu:%d'\n",
+	                  vsock->vcid, vsock->port);
 
 	return 0;
 }

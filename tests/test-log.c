@@ -21,16 +21,16 @@
 static void CANDO_UNUSED
 test_log (void CANDO_UNUSED **state)
 {
-	cando_log(CANDO_LOG_SUCCESS, "SUCCESS\n");
-	cando_log(CANDO_LOG_ERROR, "DANGER\n");
-	cando_log(CANDO_LOG_INFO, "INFO\n");
-	cando_log(CANDO_LOG_WARNING, "WARNING\n");
+	cando_log_success("SUCCESS\n");
+	cando_log_error("DANGER\n");
+	cando_log_info("INFO\n");
+	cando_log_warning("WARNING\n");
 
 	cando_log_set_level(CANDO_LOG_ERROR|CANDO_LOG_INFO);
-	cando_log(CANDO_LOG_SUCCESS, "SUCCESS: After log level set\n");
-	cando_log(CANDO_LOG_ERROR, "DANGER: After log level set\n");
-	cando_log(CANDO_LOG_INFO, "INFO: After log level set\n");
-	cando_log(CANDO_LOG_WARNING, "WARNING: After log level set\n");
+	cando_log_success("SUCCESS: After log level set\n");
+	cando_log_error("DANGER: After log level set\n");
+	cando_log_info("INFO: After log level set\n");
+	cando_log_warning("WARNING: After log level set\n");
 }
 
 /*****************************
@@ -49,17 +49,17 @@ test_log_remove_reset_colors (void CANDO_UNUSED **state)
 
 	cando_log_remove_colors();
 
-	cando_log(CANDO_LOG_SUCCESS, "SUCCESS\n");
-	cando_log(CANDO_LOG_ERROR, "DANGER\n");
-	cando_log(CANDO_LOG_INFO, "INFO\n");
-	cando_log(CANDO_LOG_WARNING, "WARNING\n");
+	cando_log_success("SUCCESS\n");
+	cando_log_error("DANGER\n");
+	cando_log_info("INFO\n");
+	cando_log_warning("WARNING\n");
 
 	cando_log_reset_colors();
 
-	cando_log(CANDO_LOG_SUCCESS, "SUCCESS: After reset\n");
-	cando_log(CANDO_LOG_ERROR, "DANGER: After reset\n");
-	cando_log(CANDO_LOG_INFO, "INFO: After reset\n");
-	cando_log(CANDO_LOG_WARNING, "WARNING: After reset\n");
+	cando_log_success("SUCCESS: After reset\n");
+	cando_log_error("DANGER: After reset\n");
+	cando_log_info("INFO: After reset\n");
+	cando_log_warning("WARNING: After reset\n");
 }
 
 /*******************************************
