@@ -27,9 +27,9 @@
  *                   set to true so that, we know to call free(3) when
  *                   destroying the instance.
  * @member fd      - File descriptor to the open TCP socket.
- * @member ip_addr - Textual network IP address to connect(2) or accept(2) with.
- * @member port    - Network port number to connect(2) or accept(2) with.
- * @member addr    - Stores network byte information about the VM socket context.
+ * @member ip_addr - Textual network IP address to connect(2) to or accept(2) with.
+ * @member port    - Network port number to connect(2) to or accept(2) with.
+ * @member addr    - Stores network byte information about the TCP socket context.
  *                   Is used for client connect(2) and server accept(2).
  */
 struct cando_sock_tcp
@@ -270,12 +270,12 @@ ssize_t
 cando_sock_tcp_client_send_data (struct cando_sock_tcp *sock,
                                  const void *data,
                                  const size_t size,
-                                 const void *opts)
+                                 const void *sock_info)
 {
 	if (!sock)
 		return -1;
 
-	return cando_sock_tcp_send_data(sock->fd, data, size, opts);
+	return cando_sock_tcp_send_data(sock->fd, data, size, sock_info);
 }
 
 /******************************************
@@ -361,11 +361,11 @@ ssize_t
 cando_sock_tcp_recv_data (const int sock_fd,
                           void *data,
                           const size_t size,
-                          const void *opts)
+                          const void *sock_info)
 {
 	ssize_t ret = 0;
 
-	const int flags = (opts) ? *((const int*)opts) : 0;
+	const int flags = (sock_info) ? *((const int*)sock_info) : 0;
 
 	if (sock_fd < 0 || \
 	    !data || \
@@ -390,11 +390,11 @@ ssize_t
 cando_sock_tcp_send_data (const int sock_fd,
                           const void *data,
                           const size_t size,
-                          const void *opts)
+                          const void *sock_info)
 {
 	ssize_t ret = 0;
 
-	const int flags = (opts) ? *((const int*)opts) : 0;
+	const int flags = (sock_info) ? *((const int*)sock_info) : 0;
 
 	if (sock_fd < 0 || \
 	    !data || \

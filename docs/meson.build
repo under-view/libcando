@@ -5,6 +5,7 @@ docs_src = [
   'docs/index.rst',
   'docs/log.rst',
   'docs/mm.rst',
+  'docs/sock-tcp.rst',
   'docs/vsock-tcp.rst',
   'docs/vsock-udp.rst',
 ]
