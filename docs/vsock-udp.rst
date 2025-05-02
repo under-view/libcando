@@ -145,7 +145,7 @@ cando_vsock_udp_server_create
 cando_vsock_udp_server_accept
 =============================
 
-.. c:function:: int cando_vsock_udp_server_accept(struct cando_vsock_udp *vsock, struct sockaddr_vm *addr);
+.. c:function:: int cando_vsock_udp_server_accept(struct cando_vsock_udp *vsock, const struct sockaddr_vm *addr);
 
 | Creates file descriptor that can filter for
 | ``addr`` data comming to server file descriptor.
