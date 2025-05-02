@@ -1,6 +1,8 @@
 #ifndef CANDO_FILE_OPS_H
 #define CANDO_FILE_OPS_H
 
+#include <sys/types.h>
+
 #include "macros.h"
 
 /*
