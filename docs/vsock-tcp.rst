@@ -248,7 +248,7 @@ cando_vsock_tcp_client_connect
 cando_vsock_tcp_client_send_data
 ================================
 
-.. c:function:: ssize_t cando_vsock_tcp_client_send_data(struct cando_vsock_tcp *vsock, const void *data, const size_t size, const void *opts);
+.. c:function:: ssize_t cando_vsock_tcp_client_send_data(struct cando_vsock_tcp *vsock, const void *data, const size_t size, const void *vsock_info);
 
 | Send data to client socket address provided via
 | call to :c:func:`cando_vsock_tcp_client_create`.
@@ -264,7 +264,7 @@ cando_vsock_tcp_client_send_data
 		  - | Pointer to data to send through socket.
 		* - size
 		  - | Size of data to send through socket.
-		* - opts
+		* - vsock_info
 		  - | Reserved for future usage. For now used
 		    | to set the flag argument of `send(2)`_.
 
@@ -398,7 +398,7 @@ cando_vsock_tcp_get_local_vcid
 cando_vsock_tcp_recv_data
 =========================
 
-.. c:function:: ssize_t cando_vsock_tcp_recv_data(const int sock_fd, void *data, const size_t size, const void *opts);
+.. c:function:: ssize_t cando_vsock_tcp_recv_data(const int sock_fd, void *data, const size_t size, const void *vsock_info);
 
 | Receive data from socket file descriptor.
 
@@ -413,7 +413,7 @@ cando_vsock_tcp_recv_data
 		  - | Pointer to data to store data received from a socket.
 		* - size
 		  - | Size of data to receive from a socket.
-		* - opts
+		* - vsock_info
 		  - | Reserved for future usage. For now used
 		    | to set the flag argument of `recv(2)`_.
 
@@ -427,7 +427,7 @@ cando_vsock_tcp_recv_data
 cando_vsock_tcp_send_data
 =========================
 
-.. c:function:: ssize_t cando_vsock_tcp_send_data(const int sock_fd, const void *data, const size_t size, const void *opts);
+.. c:function:: ssize_t cando_vsock_tcp_send_data(const int sock_fd, const void *data, const size_t size, const void *vsock_info);
 
 | Send data to socket file descriptor.
 
@@ -442,7 +442,7 @@ cando_vsock_tcp_send_data
 		  - | Pointer to data to send through socket.
 		* - size
 		  - | Size of data to send through socket.
-		* - opts
+		* - vsock_info
 		  - | Reserved for future usage. For now used
 		    | to set the flag argument of `send(2)`_.
 

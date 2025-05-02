@@ -126,11 +126,11 @@ cando_vsock_tcp_client_connect (struct cando_vsock_tcp *vsock);
  * @brief Send data to client socket address provided via
  *        call to cando_vsock_tcp_client_create(3).
  *
- * @param vsock - Must pass a pointer to a struct cando_vsock_tcp.
- * @param data  - Pointer to data to send through socket.
- * @param size  - Size of data to send through socket.
- * @param opts  - Reserved for future usage. For now used
- *                to set the flag argument of send(2).
+ * @param vsock      - Must pass a pointer to a struct cando_vsock_tcp.
+ * @param data       - Pointer to data to send through socket.
+ * @param size       - Size of data to send through socket.
+ * @param vsock_info - Reserved for future usage. For now used
+ *                     to set the flag argument of send(2).
  *
  * @return
  *	on success: Amount of bytes sent
@@ -141,7 +141,7 @@ ssize_t
 cando_vsock_tcp_client_send_data (struct cando_vsock_tcp *vsock,
                                   const void *data,
                                   const size_t size,
-                                  const void *opts);
+                                  const void *vsock_info);
 
 
 /*
@@ -230,11 +230,11 @@ cando_vsock_tcp_get_local_vcid (void);
 /*
  * @brief Receive data from socket file descriptor.
  *
- * @param sock_fd - Socket file descriptor to receive data from.
- * @param data    - Pointer to data to store data received from a socket.
- * @param size    - Size of data to receive from a socket.
- * @param opts    - Reserved for future usage. For now used
- *                  to set the flag argument of recv(2).
+ * @param sock_fd    - Socket file descriptor to receive data from.
+ * @param data       - Pointer to data to store data received from a socket.
+ * @param size       - Size of data to receive from a socket.
+ * @param vsock_info - Reserved for future usage. For now used
+ *                     to set the flag argument of recv(2).
  *
  * @return
  *	on success: Amount of bytes received
@@ -245,17 +245,17 @@ ssize_t
 cando_vsock_tcp_recv_data (const int sock_fd,
                            void *data,
                            const size_t size,
-                           const void *opts);
+                           const void *vsock_info);
 
 
 /*
  * @brief Send data to socket file descriptor.
  *
- * @param sock_fd - Socket file descriptor to send data to.
- * @param data    - Pointer to data to send through socket.
- * @param size    - Size of data to send through socket.
- * @param opts    - Reserved for future usage. For now used
- *                  to set the flag argument of send(2).
+ * @param sock_fd    - Socket file descriptor to send data to.
+ * @param data       - Pointer to data to send through socket.
+ * @param size       - Size of data to send through socket.
+ * @param vsock_info - Reserved for future usage. For now used
+ *                     to set the flag argument of send(2).
  *
  * @return
  *	on success: Amount of bytes sent
@@ -266,6 +266,6 @@ ssize_t
 cando_vsock_tcp_send_data (const int sock_fd,
                            const void *data,
                            const size_t size,
-                           const void *opts);
+                           const void *vsock_info);
 
 #endif /* CANDO_VSOCK_TCP_H */

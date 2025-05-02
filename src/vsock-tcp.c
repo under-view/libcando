@@ -271,12 +271,12 @@ ssize_t
 cando_vsock_tcp_client_send_data (struct cando_vsock_tcp *vsock,
                                   const void *data,
                                   const size_t size,
-                                  const void *opts)
+                                  const void *vsock_info)
 {
 	if (!vsock)
 		return -1;
 
-	return cando_vsock_tcp_send_data(vsock->fd, data, size, opts);
+	return cando_vsock_tcp_send_data(vsock->fd, data, size, vsock_info);
 }
 
 /*******************************************
@@ -366,11 +366,11 @@ ssize_t
 cando_vsock_tcp_recv_data (const int sock_fd,
                            void *data,
                            const size_t size,
-                           const void *opts)
+                           const void *vsock_info)
 {
 	ssize_t ret = 0;
 
-	const int flags = (opts) ? *((const int*)opts) : 0;
+	const int flags = (vsock_info) ? *((const int*)vsock_info) : 0;
 
 	if (sock_fd < 0 || \
 	    !data || \
@@ -395,11 +395,11 @@ ssize_t
 cando_vsock_tcp_send_data (const int sock_fd,
                            const void *data,
                            const size_t size,
-                           const void *opts)
+                           const void *vsock_info)
 {
 	ssize_t ret = 0;
 
-	const int flags = (opts) ? *((const int*)opts) : 0;
+	const int flags = (vsock_info) ? *((const int*)vsock_info) : 0;
 
 	if (sock_fd < 0 || \
 	    !data || \
