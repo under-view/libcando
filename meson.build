@@ -37,6 +37,13 @@ libcando = library(
   install: true
 )
 
+libcando_a = static_library(
+  project_name, files(fs),
+  include_directories: inc,
+  c_args: pargs,
+  install: true
+)
+
 pkg = import('pkgconfig')
 
 pkglibs = []
