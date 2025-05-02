@@ -48,7 +48,10 @@ All options/features are disabled by default.
 	tests=true           # Default [false]
 	docs=true            # Default [false]
 	file-ops=enabled     # Default [disabled]
-	vsocket-tcp=enabled  # Default [disabled]
+	sock-tcp=enabled     # Default [disabled]
+	sock-udp=enabled     # Default [disabled]
+	vsock-tcp=enabled    # Default [disabled]
+	vsock-udp=enabled    # Default [disabled]
 
 ======================
 Build/Install (Normal)
@@ -65,7 +68,10 @@ Build/Install (Normal)
 		-Dtests="true" \
 		-Ddocs="false" \
 		-Dfile-ops="enabled" \
+		-Dsock-tcp="enabled" \
+		-Dsock-udp="enabled" \
 		-Dvsock-tcp="enabled" \
+		-Dvsock-udp="enabled" \
 		build
 	$ ninja install -C build
 
@@ -91,7 +97,10 @@ Build/Install (SDK)
 		-Dtests="true" \
 		-Ddocs="false" \
 		-Dfile-ops="enabled" \
+		-Dsock-tcp="enabled" \
+		-Dsock-udp="enabled" \
 		-Dvsock-tcp="enabled" \
+		-Dvsock-udp="enabled" \
 		build
 	$ ninja install -C build
 
