@@ -49,6 +49,7 @@ All options/features are disabled by default.
 	default_library=shared
 	tests=true           # Default [false]
 	docs=true            # Default [false]
+	file-offset-bits=32  # Default [64]
 	file-ops=enabled     # Default [disabled]
 	sock-tcp=enabled     # Default [disabled]
 	sock-udp=enabled     # Default [disabled]
@@ -69,6 +70,7 @@ Build/Install (Normal)
 	$ meson setup \
 		-Dtests="true" \
 		-Ddocs="false" \
+		-Dfile-offset-bits=64 \
 		-Dfile-ops="enabled" \
 		-Dsock-tcp="enabled" \
 		-Dsock-udp="enabled" \
@@ -98,6 +100,7 @@ Build/Install (SDK)
 		--libdir="${SDKTARGETSYSROOT}/usr/lib64" \
 		-Dtests="true" \
 		-Ddocs="false" \
+		-Dfile-offset-bits=64 \
 		-Dfile-ops="enabled" \
 		-Dsock-tcp="enabled" \
 		-Dsock-udp="enabled" \
