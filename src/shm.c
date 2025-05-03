@@ -75,6 +75,13 @@ p_shm_create (struct cando_shm *shm,
 {
 	int err = -1, len;
 
+	if (!(shm_info->shm_size)) {
+		cando_log_set_error(shm, CANDO_LOG_ERR_UNCOMMON,
+		                    "Shared memory size must not be zero",
+		                    shm_info->shm_size);
+		return -1;
+	}
+
 	if (shm_info->shm_file[0] != '/') {
 		cando_log_set_error(shm, CANDO_LOG_ERR_UNCOMMON,
 		                    "Shared memory file name '%s' doesn't start with '/'",

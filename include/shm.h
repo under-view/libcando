@@ -24,7 +24,7 @@ struct cando_shm;
 struct cando_shm_create_info
 {
 	const char *shm_file;
-	off_t      shm_size;
+	size_t     shm_size;
 	const char *sem_file;
 	int        sem_count;
 };

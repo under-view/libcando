@@ -1,3 +1,5 @@
+#include <string.h>
+
 /*
  * Required by cmocka
  */
@@ -20,10 +22,18 @@ test_shm_create (void CANDO_UNUSED **state)
 	struct cando_shm *shm = NULL;
 
 	struct cando_shm_create_info shm_info;
+	memset(&shm_info, 0, sizeof(shm_info));
+
+	/* Test shm_size zero */
+	shm_info.shm_file = "/kms-shm-testing";
+	shm_info.sem_file = "/kms-sem-testing";
+	shm = cando_shm_create(NULL, &shm_info);
+	assert_null(shm);
 
 	/* Test shm no leading '/' */
 	shm_info.shm_file = "kms-shm-testing";
 	shm_info.sem_file = "/kms-sem-testing";
+	shm_info.shm_size  = CANDO_PAGE_SIZE;
 	shm = cando_shm_create(NULL, &shm_info);
 	assert_null(shm);
 
@@ -48,8 +58,8 @@ test_shm_create (void CANDO_UNUSED **state)
 	/* Test correct info passed */
 	shm_info.shm_file  = "/kms-shm-testing";
 	shm_info.sem_file  = "/kms-sem-testing";
-	shm_info.sem_count = 1;
 	shm_info.shm_size  = CANDO_PAGE_SIZE;
+	shm_info.sem_count = 1;
 	shm = cando_shm_create(NULL, &shm_info);
 	assert_non_null(shm);
 
