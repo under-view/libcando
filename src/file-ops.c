@@ -415,6 +415,28 @@ cando_file_ops_get_sizeof (void)
 	return sizeof(struct cando_file_ops);
 }
 
+
+int
+cando_file_ops_set_fd_flags (const int fd, const int flags)
+{
+	int opt = 0, err = -1;
+
+	opt = fcntl(fd, F_GETFL);
+	if (opt < 0) {
+		cando_log_error("fcntl: %s\n", strerror(errno));
+		return -1;
+	}
+
+	opt |= flags;
+	err = fcntl(fd, F_SETFL, opt);
+	if (err < 0) {
+		cando_log_error("fcntl: %s\n", strerror(errno));
+		return -1;
+	}
+
+	return 0;
+}
+
 /****************************************************
  * End of non struct cando_file_ops param functions *
  ****************************************************/

@@ -295,4 +295,21 @@ CANDO_API
 int
 cando_file_ops_get_sizeof (void);
 
+
+/*
+ * @brief Updates the file descriptor to new status flags.
+ *
+ * @param fd    - File descriptor who's flags to update.
+ * @param flags - Set the file status flags to the value
+ *                specified by parameter. For more information
+ *                on status flags see fcntl(2) and open(2).
+ *
+ * @return
+ *	on success: 0
+ *	on failure: -1
+ */
+CANDO_API
+int
+cando_file_ops_set_fd_flags (const int fd, const int flags);
+
 #endif /* CANDO_FILE_OPS_H */

@@ -2,6 +2,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <fcntl.h>
 
 /* Required by cmocka */
 #include <stdarg.h>
@@ -374,6 +375,38 @@ test_file_ops_get_sizeof (void CANDO_UNUSED **state)
  * End of test_file_ops_get_sizeof functions *
  *********************************************/
 
+
+/*************************************************
+ * Start of test_file_ops_set_fd_flags functions *
+ *************************************************/
+
+static void CANDO_UNUSED
+test_file_ops_set_fd_flags (void CANDO_UNUSED **state)
+{
+	int err = 0, fd = -1;
+
+	struct cando_file_ops *flops = NULL;
+
+	struct cando_file_ops_create_info file_info;
+	memset(&file_info, 0, sizeof(file_info));
+
+	file_info.fname = "/tmp/testing-one.txt";
+	file_info.size = 1 << 9;
+	flops = cando_file_ops_create(NULL, &file_info);
+	assert_non_null(flops);
+
+	fd = cando_file_ops_get_fd(flops);
+	err = cando_file_ops_set_fd_flags(fd, O_NONBLOCK);
+	assert_int_equal(err, 0);
+
+	cando_file_ops_destroy(flops);
+	remove(file_info.fname);
+}
+
+/***********************************************
+ * End of test_file_ops_set_fd_flags functions *
+ ***********************************************/
+
 int
 main (void)
 {
@@ -389,6 +422,7 @@ main (void)
 		cmocka_unit_test(test_file_ops_get_filename),
 		cmocka_unit_test(test_file_ops_set_data),
 		cmocka_unit_test(test_file_ops_get_sizeof),
+		cmocka_unit_test(test_file_ops_set_fd_flags),
 	};
 
 	return cmocka_run_group_tests(tests, NULL, NULL);

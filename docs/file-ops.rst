@@ -487,11 +487,38 @@ cando_file_ops_get_sizeof
 
 =========================================================================================================================================
 
+===========================
+cando_file_ops_set_fd_flags
+===========================
+
+.. c:function:: int cando_file_ops_set_fd_flags(const int fd, const int flags);
+
+| Updates the file descriptor to new status flags.
+
+	.. list-table::
+		:header-rows: 1
+
+		* - Param
+	          - Decription
+		* - fd
+		  - | File descriptor who's flags to update.
+		* - flags
+		  - | Set the file status flags to the value
+		    | specified by parameter. For more information
+		    | on status flags see `fcntl(2)`_ and `open(2)`_.
+
+	Returns:
+		| **on success:** 0
+		| **on failure:** -1
+
+=========================================================================================================================================
+
 .. _calloc(3): https://www.man7.org/linux/man-pages/man3/malloc.3.html
 .. _free(3): https://www.man7.org/linux/man-pages/man3/free.3.html
 .. _mmap(2):  https://man7.org/linux/man-pages/man2/mmap.2.html
+.. _fcntl(2):  https://man7.org/linux/man-pages/man2/fcntl.2.html
 .. _open(2):  https://man7.org/linux/man-pages/man2/open.2.html
-.. _creat(2):  https://man7.org/linux/man-pages/man2/open.2.html
+.. _creat(2):  https://man7.org/linux/man-pages/man2/creat.2.html
 .. _pipe(2):  https://man7.org/linux/man-pages/man2/pipe.2.html
 .. _truncate(2):  https://man7.org/linux/man-pages/man2/pipe.2.html
 .. _splice(2):  https://man7.org/linux/man-pages/man2/splice.2.html
