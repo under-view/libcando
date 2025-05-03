@@ -9,7 +9,7 @@ main_headers = [
 if file_ops.enabled()
   main_headers += ['file-ops.h']
 
-  headers = '#include "file-ops.h"'
+  headers = '\n#define CANDO_FILE_OPS_INTERFACE\n#include "file-ops.h"'
 
   main_headers_dict += {'FILE_OPS_INTERFACE': headers}
 endif
@@ -18,7 +18,7 @@ endif
 if sock_tcp.enabled()
   main_headers += ['sock-tcp.h']
 
-  headers = '#include "sock-tcp.h"'
+  headers = '\n#define CANDO_SOCK_TCP_INTERFACE\n#include "sock-tcp.h"'
 
   main_headers_dict += {'SOCK_TCP_INTERFACE': headers}
 endif
@@ -27,7 +27,7 @@ endif
 if sock_udp.enabled()
   main_headers += ['sock-udp.h']
 
-  headers = '#include "sock-udp.h"'
+  headers = '\n#define CANDO_SOCK_UDP_INTERFACE\n#include "sock-udp.h"'
 
   main_headers_dict += {'SOCK_UDP_INTERFACE': headers}
 endif
@@ -36,7 +36,7 @@ endif
 if vsock_tcp.enabled()
   main_headers += ['vsock-tcp.h']
 
-  headers = '#include "vsock-tcp.h"'
+  headers = '\n#define CANDO_VSOCK_TCP_INTERFACE\n#include "vsock-tcp.h"'
 
   main_headers_dict += {'VSOCK_TCP_INTERFACE': headers}
 endif
@@ -45,7 +45,7 @@ endif
 if vsock_udp.enabled()
   main_headers += ['vsock-udp.h']
 
-  headers = '#include "vsock-udp.h"'
+  headers = '\n#define CANDO_VSOCK_UDP_INTERFACE\n#include "vsock-udp.h"'
 
   main_headers_dict += {'VSOCK_UDP_INTERFACE': headers}
 endif

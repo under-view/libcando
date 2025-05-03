@@ -5,6 +5,9 @@
 #include "log.h"
 #include "mm.h"
 @FILE_OPS_INTERFACE@
+@SOCK_TCP_INTERFACE@
+@SOCK_UDP_INTERFACE@
 @VSOCK_TCP_INTERFACE@
+@VSOCK_UDP_INTERFACE@
 
 #endif /* CANDO_H */
