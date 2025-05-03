@@ -14,7 +14,8 @@
 #include "shm.h"
 
 #define SHM_FILE_NAME_MAX (1<<5)
-#define SEM_FILE_NAME_MAX (1<<5)
+#define SEM_FILE_NAME_SUFFIX_MAX 8
+#define SEM_FILE_NAME_MAX (1<<5)+SEM_FILE_NAME_SUFFIX_MAX
 #define SEM_COUNT_MAX (1<<5)
 
 
@@ -68,21 +69,21 @@ struct cando_shm
  ***************************************/
 
 static int
-p_shm_file_create (struct cando_shm *shm,
-                   const struct cando_shm_create_info *shm_info)
+p_shm_create (struct cando_shm *shm,
+              const struct cando_shm_create_info *shm_info)
 {
 	int err = -1, len;
 
 	if (shm_info->shm_file[0] != '/') {
 		cando_log_set_error(shm, CANDO_LOG_ERR_UNCOMMON,
-		                    "'%s' doesn't start with '/'", shm_info->shm_file);
+		                    "Shared memory file name '%s' doesn't start with '/'", shm_info->shm_file);
 		return -1;
 	}
 
 	len = strnlen(shm_info->shm_file, SHM_FILE_NAME_MAX+32);
 	if (len >= SHM_FILE_NAME_MAX) {
 		cando_log_set_error(shm, CANDO_LOG_ERR_UNCOMMON,
-		                    "'%s' name length to long", shm_info->shm_file);
+		                    "Shared memory '%s' name length to long", shm_info->shm_file);
 		return -1;
 	}
 
@@ -112,6 +113,30 @@ p_shm_file_create (struct cando_shm *shm,
 }
 
 
+static int
+p_sem_create (struct cando_shm *shm,
+              const struct cando_shm_create_info *shm_info)
+{
+	int len;
+
+	if (shm_info->sem_file[0] != '/') {
+		cando_log_set_error(shm, CANDO_LOG_ERR_UNCOMMON,
+		                    "Semaphore file name '%s' doesn't start with '/'", shm_info->sem_file);
+		return -1;
+	}
+
+	len = strnlen(shm_info->sem_file, SEM_FILE_NAME_MAX+32);
+	if (len >= (SEM_FILE_NAME_MAX - SEM_FILE_NAME_SUFFIX_MAX)) {
+		cando_log_set_error(shm, CANDO_LOG_ERR_UNCOMMON,
+		                    "Semaphore file name '%s' name length to long", shm_info->sem_file);
+		return -1;
+	}
+
+
+	return 0;
+}
+
+
 struct cando_shm *
 cando_shm_create (struct cando_shm *p_shm,
                   const void *p_shm_info)
@@ -132,7 +157,14 @@ cando_shm_create (struct cando_shm *p_shm,
 		shm->free = true;
 	}
 
-	err = p_shm_file_create(shm, shm_info);
+	err = p_shm_create(shm, shm_info);
+	if (err == -1) {
+		cando_log_error("%s\n", cando_log_get_error(shm));
+		cando_shm_destroy(shm);
+		return NULL;
+	}
+
+	err = p_sem_create(shm, shm_info);
 	if (err == -1) {
 		cando_log_error("%s\n", cando_log_get_error(shm));
 		cando_shm_destroy(shm);

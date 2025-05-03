@@ -35,6 +35,18 @@ test_shm_create (void CANDO_UNUSED **state)
 	shm = cando_shm_create(NULL, &shm_info);
 	assert_null(shm);
 
+	/* Test sem no leading '/' */
+	shm_info.shm_file = "/kms-shm-testing";
+	shm_info.sem_file = "kms-sem-testing";
+	shm = cando_shm_create(NULL, &shm_info);
+	assert_null(shm);
+
+	/* Test sem name to long */
+	shm_info.shm_file = "/kms-shm-testing";
+	shm_info.sem_file = "/kms-sem-testing-XXXXXXXXXXXXXXX";
+	shm = cando_shm_create(NULL, &shm_info);
+	assert_null(shm);
+
 	shm_info.shm_file = "/kms-shm-testing";
 	shm_info.sem_file = "/kms-sem-testing";
 	shm = cando_shm_create(NULL, &shm_info);
