@@ -20,9 +20,23 @@ test_shm_create (void CANDO_UNUSED **state)
 	struct cando_shm *shm = NULL;
 
 	struct cando_shm_create_info shm_info;
+
+	cando_log_set_level(CANDO_LOG_ALL);
+
+	/* Test shm no leading '/' */
+	shm_info.shm_file = "kms-shm-testing";
+	shm_info.sem_file = "/kms-sem-testing";
+	shm = cando_shm_create(NULL, &shm_info);
+	assert_null(shm);
+
+	/* Test shm name to long */
+	shm_info.shm_file = "/kms-shm-testing-XXXXXXXXXXXXXXX";
+	shm_info.sem_file = "/kms-sem-testing";
+	shm = cando_shm_create(NULL, &shm_info);
+	assert_null(shm);
+
 	shm_info.shm_file = "/kms-shm-testing";
 	shm_info.sem_file = "/kms-sem-testing";
-
 	shm = cando_shm_create(NULL, &shm_info);
 	assert_non_null(shm);
 

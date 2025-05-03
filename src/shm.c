@@ -13,8 +13,8 @@
 #include "log.h"
 #include "shm.h"
 
-#define SHM_FILE_NAME_MAX (1<<6)
-#define SEM_FILE_NAME_MAX (1<<6)
+#define SHM_FILE_NAME_MAX (1<<5)
+#define SEM_FILE_NAME_MAX (1<<5)
 #define SEM_COUNT_MAX (1<<5)
 
 
@@ -43,7 +43,7 @@ struct cando_sem
  * @member shm_file       - Name of the POSIX shared memory file starting with '/'.
  * @member data_sz        - Total size of the shared memory region mapped with mmap(2).
  * @member data           - Pointer to mmap(2) shared memory data.
- * @member write_sem      - POSIX semaphore used to syncronize writes. 
+ * @member write_sem      - Pointer to POSIX semaphore used to syncronize writes.
  * @member write_sem_file - Name of the POSIX semaphore used to synchronize writes.
  * @member sem_count      - Amount of semaphores in @sems.
  * @member sems           - Array of pointers to read semaphores.
@@ -71,7 +71,20 @@ static int
 p_shm_file_create (struct cando_shm *shm,
                    const struct cando_shm_create_info *shm_info)
 {
-	int err = -1;
+	int err = -1, len;
+
+	if (shm_info->shm_file[0] != '/') {
+		cando_log_set_error(shm, CANDO_LOG_ERR_UNCOMMON,
+		                    "'%s' doesn't start with '/'", shm_info->shm_file);
+		return -1;
+	}
+
+	len = strnlen(shm_info->shm_file, SHM_FILE_NAME_MAX+32);
+	if (len >= SHM_FILE_NAME_MAX) {
+		cando_log_set_error(shm, CANDO_LOG_ERR_UNCOMMON,
+		                    "'%s' name length to long", shm_info->shm_file);
+		return -1;
+	}
 
 	shm->fd = shm_open(shm_info->shm_file, O_RDWR|O_CREAT, 0644);
 	if (shm->fd == -1) {
