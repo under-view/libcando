@@ -18,6 +18,7 @@ project_name = meson.project_name()
 src_root_dir = meson.current_source_dir()
 build_root_dir = meson.current_build_dir()
 
+file_offset_bits = get_option('file-offset-bits')
 file_ops = get_option('file-ops')
 sock_tcp = get_option('sock-tcp')
 sock_udp = get_option('sock-udp')
@@ -25,6 +26,8 @@ vsock_tcp = get_option('vsock-tcp')
 vsock_udp = get_option('vsock-udp')
 
 inc = include_directories('include')
+
+pargs += ['-D_FILE_OFFSET_BITS=@0@'.format(file_offset_bits)]
 
 subdir('include')
 subdir('src')
