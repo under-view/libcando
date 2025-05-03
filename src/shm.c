@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
 #include <errno.h>
@@ -76,14 +77,16 @@ p_shm_create (struct cando_shm *shm,
 
 	if (shm_info->shm_file[0] != '/') {
 		cando_log_set_error(shm, CANDO_LOG_ERR_UNCOMMON,
-		                    "Shared memory file name '%s' doesn't start with '/'", shm_info->shm_file);
+		                    "Shared memory file name '%s' doesn't start with '/'",
+		                    shm_info->shm_file);
 		return -1;
 	}
 
 	len = strnlen(shm_info->shm_file, SHM_FILE_NAME_MAX+32);
 	if (len >= SHM_FILE_NAME_MAX) {
 		cando_log_set_error(shm, CANDO_LOG_ERR_UNCOMMON,
-		                    "Shared memory '%s' name length to long", shm_info->shm_file);
+		                    "Shared memory '%s' name length to long",
+		                    shm_info->shm_file);
 		return -1;
 	}
 
@@ -117,21 +120,52 @@ static int
 p_sem_create (struct cando_shm *shm,
               const struct cando_shm_create_info *shm_info)
 {
-	int len;
+	int len, s;
+
+	struct cando_sem *sem = NULL;
 
 	if (shm_info->sem_file[0] != '/') {
 		cando_log_set_error(shm, CANDO_LOG_ERR_UNCOMMON,
-		                    "Semaphore file name '%s' doesn't start with '/'", shm_info->sem_file);
+		                    "Semaphore file name '%s' doesn't start with '/'",
+		                    shm_info->sem_file);
 		return -1;
 	}
 
 	len = strnlen(shm_info->sem_file, SEM_FILE_NAME_MAX+32);
 	if (len >= (SEM_FILE_NAME_MAX - SEM_FILE_NAME_SUFFIX_MAX)) {
 		cando_log_set_error(shm, CANDO_LOG_ERR_UNCOMMON,
-		                    "Semaphore file name '%s' name length to long", shm_info->sem_file);
+		                    "Semaphore file name '%s' name length to long",
+		                    shm_info->sem_file);
 		return -1;
 	}
 
+	/*
+	 * Initialize write semaphore in unlocked state.
+	 */
+	snprintf(shm->write_sem_file, SEM_FILE_NAME_MAX,
+	         "%s-write", shm_info->sem_file);
+	shm->write_sem = sem_open(shm->write_sem_file, O_CREAT|O_RDONLY, 0644, 1);
+	if (!(shm->write_sem)) {
+		cando_log_set_error(shm, errno, "sem_open: %s", strerror(errno));
+		return -1;
+	}
+
+	/*
+	 * Initialize read semaphores in locked state.
+	 */
+	shm->sem_count = shm_info->sem_count;
+	for (s = 0; s < shm->sem_count; s++) {
+		sem = &(shm->sems[s]);
+
+		snprintf(sem->read_sem_file, SEM_FILE_NAME_MAX,
+			 "%s-read-%d", shm_info->sem_file, s);
+		sem->read_sem = sem_open(sem->read_sem_file,
+		                         O_CREAT|O_RDONLY, 0644, 0);
+		if (!(sem->read_sem)) {
+			cando_log_set_error(shm, errno, "sem_open: %s", strerror(errno));
+			return -1;
+		}
+	}
 
 	return 0;
 }
@@ -204,10 +238,23 @@ cando_shm_get_fd (struct cando_shm *shm)
 void
 cando_shm_destroy (struct cando_shm *shm)
 {
+	int s;
+
+	struct cando_sem *sem = NULL;
+
 	if (!shm)
 		return;
 
 	munmap(shm->data, shm->data_sz);
+
+	for (s = 0; s < shm->sem_count; s++) {
+		sem = &(shm->sems[s]);
+		sem_close(sem->read_sem);
+		sem_unlink(sem->read_sem_file);
+	}
+
+	sem_close(shm->write_sem);
+	sem_unlink(shm->write_sem_file);
 	shm_unlink(shm->shm_file);
 
 	if (shm->free) {
