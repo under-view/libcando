@@ -6,6 +6,10 @@ if file_ops.enabled()
   progs += ['test-file-ops.c']
 endif
 
+if shm.enabled()
+  progs += ['test-shm.c']
+endif
+
 if sock_tcp.enabled()
   progs += ['test-sock-tcp.c']
 endif

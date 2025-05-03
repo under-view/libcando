@@ -15,6 +15,15 @@ if file_ops.enabled()
 endif
 
 
+if shm.enabled()
+  main_headers += ['shm.h']
+
+  headers = '\n#define CANDO_SHM_INTERFACE\n#include "shm.h"'
+
+  main_headers_dict += {'SHM_INTERFACE': headers}
+endif
+
+
 if sock_tcp.enabled()
   main_headers += ['sock-tcp.h']
 

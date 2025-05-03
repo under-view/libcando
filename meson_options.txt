@@ -14,6 +14,10 @@ option('file-ops',
 	type: 'feature', value: 'disabled',
 	description: 'Build with file-operations support')
 
+option('shm',
+	type: 'feature', value: 'disabled',
+	description: 'Build with shared memory support')
+
 option('sock-tcp',
 	type: 'feature', value: 'disabled',
 	description: 'Build with socket-tcp support')

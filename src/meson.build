@@ -1,3 +1,7 @@
+rt = cc.find_library('rt', required: shm.enabled())
+
+libcando_deps = [rt]
+
 fs = [
   'src/log.c',
   'src/mm.c'
@@ -5,6 +9,10 @@ fs = [
 
 if file_ops.enabled()
   fs += ['src/file-ops.c']
+endif
+
+if shm.enabled()
+  fs += ['src/shm.c']
 endif
 
 if sock_tcp.enabled()

@@ -20,6 +20,7 @@ build_root_dir = meson.current_build_dir()
 
 file_offset_bits = get_option('file-offset-bits')
 file_ops = get_option('file-ops')
+shm = get_option('shm')
 sock_tcp = get_option('sock-tcp')
 sock_udp = get_option('sock-udp')
 vsock_tcp = get_option('vsock-tcp')
@@ -36,6 +37,7 @@ libcando = library(
   project_name, files(fs),
   version: '.'.join(so_version),
   include_directories: inc,
+  dependencies: libcando_deps,
   c_args: pargs,
   install: true
 )
@@ -43,6 +45,7 @@ libcando = library(
 libcando_a = static_library(
   project_name, files(fs),
   include_directories: inc,
+  dependencies: libcando_deps,
   c_args: pargs,
   install: true
 )
