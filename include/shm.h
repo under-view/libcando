@@ -130,6 +130,36 @@ cando_shm_get_fd (struct cando_shm *shm);
 
 
 /*
+ * @brief Returns mmap(2) map'd POSIX shared memory buffer
+ *        created after call to cando_shm_create().
+ *
+ * @param shm - Pointer to a valid struct cando_shm.
+ *
+ * @return
+ *	on success: Pointer to map'd memory
+ *	on failure: NULL
+ */
+CANDO_API
+void *
+cando_shm_get_data (struct cando_shm *shm);
+
+
+/*
+ * @brief Returns size of mmap(2) POSIX shared memory buffer
+ *        created after call to cando_shm_create().
+ *
+ * @param shm - Pointer to a valid struct cando_shm.
+ *
+ * @return
+ *	on success: Pointer to map'd memory
+ *	on failure: NULL
+ */
+CANDO_API
+size_t
+cando_shm_get_data_size (struct cando_shm *shm);
+
+
+/*
  * @brief Frees any allocated memory and closes FD's (if open)
  *        created after cando_shm_create() call.
  *

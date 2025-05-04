@@ -337,6 +337,26 @@ cando_shm_get_fd (struct cando_shm *shm)
 	return shm->fd;
 }
 
+
+void *
+cando_shm_get_data (struct cando_shm *shm)
+{
+	if (!shm)
+		return NULL;
+
+	return shm->data;
+}
+
+
+size_t
+cando_shm_get_data_size (struct cando_shm *shm)
+{
+	if (!shm)
+		return -1;
+
+	return shm->data_sz;
+}
+
 /************************************
  * Start of cando_shm_get functions *
  ************************************/
