@@ -10,16 +10,16 @@ struct cando_shm;
 
 
 /*
- * @brief Structure passed to cando_shm_create(3) used
+ * @brief Structure passed to cando_shm_create() used
  *        to define shared memory and semaphore names.
  *
  * @param shm_file  - Shared memory file name. Must start
  *                    with the character '/'.
- * @param shm_size  - Size of shared memory region/file.
+ * @param shm_size  - Size of shared memory.
  * @param sem_file  - Prefix of semaphore file name. Must
  *                    start with the character '/'.
  * @param sem_count - Amount of POSIX semaphores to create.
- *
+ *                    May be zero.
  */
 struct cando_shm_create_info
 {
@@ -56,7 +56,7 @@ cando_shm_create (struct cando_shm *shm,
 /*
  * @brief Structure defining what operations to perform
  *        and data to retrieve during calls to
- *        cando_shm_read() and cando_shm_write().
+ *        cando_shm_data_read() and cando_shm_data_write().
  *
  * @member data      - Pointer to a buffer that will either be used
  *                     to store shm data or write to shm data.
@@ -96,7 +96,7 @@ cando_shm_data_read (struct cando_shm *shm,
 
 
 /*
- * @brief Write data stored int caller defined buffer
+ * @brief Write data stored in caller defined buffer
  *        into shared memory at a caller defined
  *        shared memory offset.
  *
@@ -136,7 +136,7 @@ cando_shm_get_fd (struct cando_shm *shm);
  * @param shm - Pointer to a valid struct cando_shm.
  *
  * @return
- *	on success: Pointer to map'd memory
+ *	on success: Pointer to map'd shared memory buffer
  *	on failure: NULL
  */
 CANDO_API
@@ -145,14 +145,14 @@ cando_shm_get_data (struct cando_shm *shm);
 
 
 /*
- * @brief Returns size of mmap(2) POSIX shared memory buffer
+ * @brief Returns size of POSIX shared memory buffer
  *        created after call to cando_shm_create().
  *
  * @param shm - Pointer to a valid struct cando_shm.
  *
  * @return
- *	on success: Pointer to map'd memory
- *	on failure: NULL
+ *	on success: Size of POSIX shared memory buffer
+ *	on failure: Maximum size or -1
  */
 CANDO_API
 size_t
@@ -160,8 +160,8 @@ cando_shm_get_data_size (struct cando_shm *shm);
 
 
 /*
- * @brief Frees any allocated memory and closes FD's (if open)
- *        created after cando_shm_create() call.
+ * @brief Frees any allocated memory and closes FD's (if open) create after
+ *        cando_shm_create() call.
  *
  * @param shm - Pointer to a valid struct cando_shm.
  */

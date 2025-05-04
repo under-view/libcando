@@ -36,6 +36,17 @@ Memory Management Test
 
 	./build/tests/test-mm
 
+Running Shared Memory
+~~~~~~~~~~~~~~~~~~~~~
+
+==================
+Shared Memory Test
+==================
+
+.. code-block:: sh
+
+	./build/tests/test-shm
+
 Running TCP/UDP IP sockets
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 

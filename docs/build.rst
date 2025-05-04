@@ -51,6 +51,7 @@ All options/features are disabled by default.
 	docs=true            # Default [false]
 	file-offset-bits=32  # Default [64]
 	file-ops=enabled     # Default [disabled]
+	shm=enabled          # Default [disabled]
 	sock-tcp=enabled     # Default [disabled]
 	sock-udp=enabled     # Default [disabled]
 	vsock-tcp=enabled    # Default [disabled]
@@ -72,6 +73,7 @@ Build/Install (Normal)
 		-Ddocs="false" \
 		-Dfile-offset-bits=64 \
 		-Dfile-ops="enabled" \
+		-Dshm="enabled" \
 		-Dsock-tcp="enabled" \
 		-Dsock-udp="enabled" \
 		-Dvsock-tcp="enabled" \
@@ -102,6 +104,7 @@ Build/Install (SDK)
 		-Ddocs="false" \
 		-Dfile-offset-bits=64 \
 		-Dfile-ops="enabled" \
+		-Dshm="enabled" \
 		-Dsock-tcp="enabled" \
 		-Dsock-udp="enabled" \
 		-Dvsock-tcp="enabled" \

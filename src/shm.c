@@ -21,7 +21,7 @@
 
 
 /*
- * @brief Structure defining the cando_sem (cando sempahore) intance.
+ * @brief Structure defining the cando_sem (cando sempahore) instance.
  *
  * @member read_sem      - Pointer to POSIX semaphore used to synchronize reads.
  * @member read_sem_file - Name of the POSIX semaphore used to synchronize reads.
@@ -41,14 +41,16 @@ struct cando_sem
  *                          by caller.
  * @member free           - If structure allocated with calloc(3) member will be
  *                          set to true so that, we know to call free(3) when
+ *                          destroying the instance.
  * @member fd             - Open file descriptor to POSIX shared memory.
  * @member shm_file       - Name of the POSIX shared memory file starting with '/'.
+ * @member data           - Pointer to mmap(2) map'd shared memory data.
  * @member data_sz        - Total size of the shared memory region mapped with mmap(2).
- * @member data           - Pointer to mmap(2) shared memory data.
  * @member write_sem      - Pointer to POSIX semaphore used to syncronize writes.
  * @member write_sem_file - Name of the POSIX semaphore used to synchronize writes.
  * @member sem_count      - Amount of semaphores in @sems.
- * @member sems           - Array of pointers to read semaphores.
+ * @member sems           - Array of struct cando_sem which contain pointers
+ *                          to read semaphores.
  */
 struct cando_shm
 {
@@ -56,8 +58,8 @@ struct cando_shm
 	bool                          free;
 	int                           fd;
 	char                          shm_file[SHM_FILE_NAME_MAX];
-	size_t                        data_sz;
 	void                          *data;
+	size_t                        data_sz;
 	sem_t                         *write_sem;
 	char                          write_sem_file[SEM_FILE_NAME_MAX];
 	int                           sem_count;

@@ -8,6 +8,7 @@
 	log
 	file-ops
 	mm
+	shm
 	sock-tcp
 	sock-udp
 	vsock-tcp
