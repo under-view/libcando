@@ -112,8 +112,7 @@ p_shm_create (struct cando_shm *shm,
 
 	shm->data = mmap(NULL, shm->data_sz,
 	                 PROT_READ|PROT_WRITE,
-	                 MAP_SHARED|MAP_ANONYMOUS,
-	                 shm->fd, 0);
+	                 MAP_SHARED, shm->fd, 0);
 	if (err == -1) {
 		cando_log_set_error(shm, errno, "mmap: %s", strerror(errno));
 		return -1;
@@ -218,6 +217,111 @@ cando_shm_create (struct cando_shm *p_shm,
 /*************************************
  * End of cando_shm_create functions *
  *************************************/
+
+
+/*************************************
+ * Start of cando_shm_data functions *
+ *************************************/
+
+int
+cando_shm_data_read (struct cando_shm *shm,
+                     const void *p_shm_info)
+{
+	int err = -1;
+
+	void *shm_data = NULL;
+
+	struct cando_sem *sem = NULL;
+
+	const struct cando_shm_data_info *shm_info = p_shm_info;
+
+	if (!shm)
+		return -1;
+
+	if (!shm_info || \
+	    !(shm_info->data) || \
+	    shm_info->offset >= shm->data_sz || \
+	    shm_info->sem_index >= shm->sem_count)
+	{
+		cando_log_set_error(shm, CANDO_LOG_ERR_INCORRECT_DATA, "");
+		return -1;
+	}
+
+	sem = &(shm->sems[shm_info->sem_index]);
+
+	err = (shm_info->block) ? \
+		sem_wait(sem->read_sem) : \
+		sem_trywait(sem->read_sem);
+	if (errno == EINTR || errno == EAGAIN) {
+		return -errno;
+	} else if (err < 0) {
+		cando_log_set_error(shm, errno, "%s", strerror(errno));
+		return -1;
+	}
+
+	shm_data = ((char*)shm->data) + shm_info->offset;
+	memcpy(shm_info->data, shm_data, shm_info->size);
+	memset(shm_data, 0, shm_info->size);
+
+	err = sem_post(shm->write_sem);
+	if (err == -1) {
+		cando_log_set_error(shm, errno,
+		                    "sem_post: %s",
+		                    strerror(errno));
+		return -1;
+	}
+
+	return 0;
+}
+
+
+int
+cando_shm_data_write (struct cando_shm *shm,
+                      const void *p_shm_info)
+{
+	int err = -1;
+
+	const struct cando_shm_data_info *shm_info = p_shm_info;
+
+	if (!shm)
+		return -1;
+
+	if (!shm_info || \
+	    !(shm_info->data) || \
+	    shm_info->offset >= shm->data_sz || \
+	    shm_info->sem_index >= shm->sem_count)
+	{
+		cando_log_set_error(shm, CANDO_LOG_ERR_INCORRECT_DATA, "");
+		return -1;
+	}
+
+	err = (shm_info->block) ? \
+		sem_wait(shm->write_sem) : \
+		sem_trywait(shm->write_sem);
+	if (errno == EINTR || errno == EAGAIN) {
+		return -errno;
+	} else if (err < 0) {
+		cando_log_set_error(shm, errno, "%s", strerror(errno));
+		return -1;
+	}
+
+	memcpy(((char*)shm->data)+shm_info->offset,
+	       shm_info->data, shm_info->size);
+
+	err = sem_post(shm->sems[shm_info->sem_index].read_sem);
+	if (err == -1) {
+		cando_log_set_error(shm, errno,
+		                    "sem_post: %s",
+		                    strerror(errno));
+		return -1;
+	}
+
+	return 0;
+}
+
+/***********************************
+ * End of cando_shm_data functions *
+ ***********************************/
 
 
 /************************************

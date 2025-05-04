@@ -54,6 +54,67 @@ cando_shm_create (struct cando_shm *shm,
 
 
 /*
+ * @brief Structure defining what operations to perform
+ *        and data to retrieve during calls to
+ *        cando_shm_read() and cando_shm_write().
+ *
+ * @member data      - Pointer to a buffer that will either be used
+ *                     to store shm data or write to shm data.
+ * @member size      - Size in bytes to read from or write to shared memory.
+ * @member offset    - Byte offset in shared memory to either read
+ *                     from or write to.
+ * @member sem_index - Read semaphore index to either lock or unlock.
+ * @member block     - Determines if caller wants to perform a blocking
+ *                     or busy wait read/write operation.
+ */
+struct cando_shm_data_info
+{
+	void          *data;
+	size_t        size;
+	size_t        offset;
+	int           sem_index;
+	unsigned char block : 1;
+};
+
+
+/*
+ * @brief Reads data stored in shared memory at
+ *        caller defined offset and writes into
+ *        a caller defined buffer.
+ *
+ * @param shm      - Pointer to a valid struct cando_shm.
+ * @param shm_info - Must pass a pointer to a struct cando_shm_data_info.
+ *
+ * @return
+ *	on success: 0
+ *	on failure: -1
+ */
+CANDO_API
+int
+cando_shm_data_read (struct cando_shm *shm,
+                     const void *shm_info);
+
+
+/*
+ * @brief Write data stored int caller defined buffer
+ *        into shared memory at a caller defined
+ *        shared memory offset.
+ *
+ * @param shm      - Pointer to a valid struct cando_shm.
+ * @param shm_info - Must pass a pointer to a struct cando_shm_data_info.
+ *
+ * @return
+ *	on success: 0
+ *	on failure: -1
+ *
+ */
+CANDO_API
+int
+cando_shm_data_write (struct cando_shm *shm,
+                      const void *shm_info);
+
+
+/*
  * @brief Returns file descriptor to the POSIX shared memory
  *        created after call to cando_shm_create().
  *
