@@ -252,6 +252,23 @@ test_shm_get_data_size (void **state CANDO_UNUSED)
  * End of test_shm_get_data_size functions *
  *******************************************/
 
+
+/******************************************
+ * Start of test_shm_get_sizeof functions *
+ ******************************************/
+
+static void CANDO_UNUSED
+test_shm_get_sizeof (void CANDO_UNUSED **state)
+{
+	int size = 0;
+	size = cando_shm_get_sizeof();
+	assert_int_not_equal(size, 0);
+}
+
+/****************************************
+ * End of test_shm_get_sizeof functions *
+ ****************************************/
+
 int
 main (void)
 {
@@ -261,6 +278,7 @@ main (void)
 		cmocka_unit_test(test_shm_get_fd),
 		cmocka_unit_test(test_shm_get_data),
 		cmocka_unit_test(test_shm_get_data_size),
+		cmocka_unit_test(test_shm_get_sizeof),
 	};
 
 	return cmocka_run_group_tests(tests, NULL, NULL);
