@@ -49,6 +49,16 @@ Functions
 API Documentation
 ~~~~~~~~~~~~~~~~~
 
+==============
+Kernel Modules
+==============
+
+**On host machine**
+
+.. code-block:: sh
+
+	sudo modprobe -a vhost_vsock vsock_loopback
+
 =========================
 cando_vsock_tcp (private)
 =========================

@@ -8,7 +8,6 @@ docs_src = [
   'docs/shm.rst',
   'docs/sock-tcp.rst',
   'docs/sock-udp.rst',
-  'docs/testing.rst',
   'docs/vsock-tcp.rst',
   'docs/vsock-udp.rst',
 ]

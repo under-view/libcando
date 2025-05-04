@@ -16,12 +16,6 @@ libcando Documentation
 
 	api
 
-.. toctree::
-	:maxdepth: 2
-	:caption: Testing
-
-	testing
-
 Indices and Tables
 ==================
 
