@@ -53,11 +53,25 @@ API Documentation
 Kernel Modules
 ==============
 
-**On host machine**
+**On Host Machine**
 
 .. code-block:: sh
 
 	sudo modprobe -a vhost_vsock vsock_loopback
+
+**Guest Machine Kernel Config Symbols**
+
+.. code-block:: sh
+
+	CONFIG_PCI=Y
+	CONFIG_VIRTIO_MENU=y
+	CONFIG_VIRTIO_PCI=y
+	CONFIG_VIRTIO_BALLON=y
+	CONFIG_VSOCKETS_DIAG=y
+
+	CONFIG_NET=y
+	CONFIG_VSOCKETS=y
+	CONFIG_VIRTIO_VSOCKETS=y
 
 =========================
 cando_vsock_tcp (private)
