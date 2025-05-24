@@ -336,8 +336,11 @@ cando_sock_tcp_destroy (struct cando_sock_tcp *sock)
 	close(sock->fd);
 	sock->fd = -1;
 
-	if (sock->free)
+	if (sock->free) {
 		free(sock);
+	} else {
+		memset(sock, 0, sizeof(struct cando_sock_tcp));
+	}
 }
 
 /*******************************************

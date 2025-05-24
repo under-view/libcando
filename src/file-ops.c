@@ -396,8 +396,11 @@ cando_file_ops_destroy (struct cando_file_ops *flops)
 	close(flops->pipe_fds[1]);
 	close(flops->fd);
 
-	if (flops->free)
+	if (flops->free) {
 		free(flops);
+	} else {
+		memset(flops, 0, sizeof(struct cando_file_ops));
+	}
 }
 
 /*******************************************
