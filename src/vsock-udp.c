@@ -363,12 +363,12 @@ cando_vsock_udp_destroy (struct cando_vsock_udp *vsock)
 		return;
 
 	close(vsock->fd);
-	vsock->fd = -1;
 
 	if (vsock->free) {
 		free(vsock);
 	} else {
 		memset(vsock, 0, sizeof(struct cando_vsock_udp));
+		vsock->fd = -1;
 	}
 }
 

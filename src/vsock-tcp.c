@@ -332,12 +332,12 @@ cando_vsock_tcp_destroy (struct cando_vsock_tcp *vsock)
 		return;
 
 	close(vsock->fd);
-	vsock->fd = -1;
 
 	if (vsock->free) {
 		free(vsock);
 	} else {
 		memset(vsock, 0, sizeof(struct cando_vsock_tcp));
+		vsock->fd = -1;
 	}
 }
 

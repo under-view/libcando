@@ -366,12 +366,12 @@ cando_sock_udp_destroy (struct cando_sock_udp *sock)
 		return;
 
 	close(sock->fd);
-	sock->fd = -1;
 
 	if (sock->free) {
 		free(sock);
 	} else {
 		memset(sock, 0, sizeof(struct cando_sock_udp));
+		sock->fd = -1;
 	}
 }
 
