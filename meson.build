@@ -52,9 +52,9 @@ libcando_a = static_library(
 
 pkg = import('pkgconfig')
 
-pkglibs = []
+pkglibs = [libcando]
 pkgsubdirs = []
-pkg.generate(libraries: [pkglibs, libcando],
+pkg.generate(libraries: pkglibs,
              subdirs : pkgsubdirs,
              version : so_version,
              name : project_name,
