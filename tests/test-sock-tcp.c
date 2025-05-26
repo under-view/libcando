@@ -176,7 +176,7 @@ test_sock_tcp_send_recv (void CANDO_UNUSED **state)
 {
 	pid_t pid;
 
-	int client_sock = -1;
+	int client_sock = -1, recv = 15;
 
 	char buffer[512], buffer_two[512];
 
@@ -204,6 +204,11 @@ test_sock_tcp_send_recv (void CANDO_UNUSED **state)
 	memset(buffer, 'T', sizeof(buffer));
 	cando_sock_tcp_recv_data(client_sock, buffer_two, sizeof(buffer_two), 0);
 	assert_memory_equal(buffer, buffer_two, sizeof(buffer));
+
+	/* Test client disconnects */
+	memset(buffer_two, 0, sizeof(buffer_two));
+	recv = cando_sock_tcp_recv_data(client_sock, buffer_two, sizeof(buffer_two), 0);
+	assert_int_equal(recv, 0);
 
 	waitpid(pid, NULL, -1);
 

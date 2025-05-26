@@ -6,11 +6,11 @@
 #include <unistd.h>
 #include <errno.h>
 
-#include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/ioctl.h>
 #include <sys/socket.h>
-#include <linux/vm_sockets.h>
+#include <netinet/in.h>
+#include <netinet/tcp.h>
 
 #include "log.h"
 #include "macros.h"
@@ -154,7 +154,7 @@ struct cando_sock_tcp *
 cando_sock_tcp_server_create (struct cando_sock_tcp *p_sock,
                               const void *p_sock_info)
 {
-	int err = -1;
+	int err = -1, flags = 0;
 
 	struct cando_sock_tcp *sock = NULL;
 
@@ -163,6 +163,29 @@ cando_sock_tcp_server_create (struct cando_sock_tcp *p_sock,
 	sock = p_create_sock(p_sock, p_sock_info);
 	if (!sock)
 		return NULL;
+
+	flags = sock_info->connections;
+	err = setsockopt(sock->fd, SOL_TCP, TCP_KEEPCNT, &flags, sizeof(int));
+	if (err == -1) {
+		cando_sock_tcp_destroy(sock);
+		cando_log_error("setsockopt: %s\n", strerror(errno));
+		return NULL;
+	}
+
+	flags = 5; // 5 seconds
+	err = setsockopt(sock->fd, SOL_TCP, TCP_KEEPIDLE, &flags, sizeof(int));
+	if (err == -1) {
+		cando_sock_tcp_destroy(sock);
+		cando_log_error("setsockopt: %s\n", strerror(errno));
+		return NULL;
+	}
+
+	err = setsockopt(sock->fd, SOL_TCP, TCP_KEEPINTVL, &flags, sizeof(int));
+	if (err == -1) {
+		cando_sock_tcp_destroy(sock);
+		cando_log_error("setsockopt: %s\n", strerror(errno));
+		return NULL;
+	}
 
 	err = bind(sock->fd, (struct sockaddr*) &(sock->addr),
 			sizeof(struct sockaddr_in6));
@@ -187,14 +210,14 @@ int
 cando_sock_tcp_server_accept (struct cando_sock_tcp *sock,
                               struct sockaddr_in6 *p_addr)
 {
-	int client_sock = -1;
-
 	const char *ip_addr = NULL;
 
 	char buff[INET6_ADDRSTRLEN];
 
 	struct sockaddr_in6 inaddr;
 	struct sockaddr_in6 *addr = NULL;
+
+	int client_sock = -1, err = -1, enabled = 1;
 
 	socklen_t len = sizeof(struct sockaddr_in6);
 
@@ -205,6 +228,13 @@ cando_sock_tcp_server_accept (struct cando_sock_tcp *sock,
 	client_sock = accept(sock->fd, (struct sockaddr*)addr, &len);
 	if (client_sock == -1) {
 		cando_log_set_error(sock, errno, "accept: %s", strerror(errno));
+		return -1;
+	}
+
+	err = setsockopt(client_sock, SOL_SOCKET, SO_KEEPALIVE, &enabled, sizeof(int));
+	if (err == -1) {
+		cando_log_set_error(sock, errno, "accept: %s", strerror(errno));
+		close(client_sock);
 		return -1;
 	}
 
