@@ -23,6 +23,10 @@ if sock_udp.enabled()
   fs += ['src/sock-udp.c']
 endif
 
+if usock_tcp.enabled()
+  fs += ['src/usock-tcp.c']
+endif
+
 if vsock_tcp.enabled()
   fs += ['src/vsock-tcp.c']
 endif

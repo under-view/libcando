@@ -42,6 +42,15 @@ if sock_udp.enabled()
 endif
 
 
+if usock_tcp.enabled()
+  main_headers += ['usock-tcp.h']
+
+  headers = '\n#define CANDO_USOCK_TCP_INTERFACE\n#include "usock-tcp.h"'
+
+  main_headers_dict += {'USOCK_TCP_INTERFACE': headers}
+endif
+
+
 if vsock_tcp.enabled()
   main_headers += ['vsock-tcp.h']
 

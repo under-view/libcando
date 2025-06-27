@@ -18,6 +18,10 @@ if sock_udp.enabled()
   progs += ['test-sock-udp.c']
 endif
 
+if usock_tcp.enabled()
+  progs += ['test-usock-tcp.c']
+endif
+
 if vsock_tcp.enabled()
   progs += ['test-vsock-tcp.c']
 endif
