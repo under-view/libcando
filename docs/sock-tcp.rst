@@ -301,7 +301,7 @@ cando_sock_tcp_get_fd
 		  - | Must pass a pointer to a ``struct`` :c:struct:`cando_sock_tcp`.
 
 	Returns:
-		| **on success:** VM socket file descriptor
+		| **on success:** TCP socket file descriptor
 		| **on failure:** -1
 
 =========================================================================================================================================

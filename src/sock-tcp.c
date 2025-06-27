@@ -378,9 +378,9 @@ cando_sock_tcp_destroy (struct cando_sock_tcp *sock)
  *******************************************/
 
 
-/**************************************************
- * Start of non struct cando_sock param functions *
- **************************************************/
+/******************************************************
+ * Start of non struct cando_sock_tcp param functions *
+ ******************************************************/
 
 int
 cando_sock_tcp_get_sizeof (void)
@@ -446,6 +446,6 @@ cando_sock_tcp_send_data (const int sock_fd,
 	return ret;
 }
 
-/************************************************
- * End of non struct cando_sock param functions *
- ************************************************/
+/****************************************************
+ * End of non struct cando_sock_tcp param functions *
+ ****************************************************/

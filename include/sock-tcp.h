@@ -157,7 +157,7 @@ cando_sock_tcp_client_send_data (struct cando_sock_tcp *sock,
  * @param sock - Must pass a pointer to a struct cando_sock_tcp.
  *
  * @return
- *	on success: VM socket file descriptor
+ *	on success: TCP socket file descriptor
  *	on failure: -1
  */
 CANDO_API
