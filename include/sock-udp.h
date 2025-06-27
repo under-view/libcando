@@ -1,5 +1,5 @@
-#ifndef CANDO_VSOCK_UDP_H
-#define CANDO_VSOCK_UDP_H
+#ifndef CANDO_SOCK_UDP_H
+#define CANDO_SOCK_UDP_H
 
 #include "macros.h"
 
@@ -297,4 +297,4 @@ cando_sock_udp_send_data (const int sock_fd,
                           const struct sockaddr_in6 *addr,
                           const void *sock_info);
 
-#endif /* CANDO_VSOCK_UDP_H */
+#endif /* CANDO_SOCK_UDP_H */

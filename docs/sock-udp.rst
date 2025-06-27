@@ -85,7 +85,7 @@ cando_sock_udp (private)
 		| Network port number to `sendto(2)`_/`recvfrom(2)`_ with.
 
 	:c:member:`addr`
-		| Stores IPV6 network byte information about the VM socket context.
+		| Stores IPV6 network byte information about the UDP socket context.
 		| Is used for client `connect(2)`_ and server `bind(2)`_/`connect(2)`_.
 
 =========================================================================================================================================
@@ -334,7 +334,7 @@ cando_sock_udp_get_fd
 		  - | Must pass a pointer to a ``struct`` :c:struct:`cando_sock_udp`.
 
 	Returns:
-		| **on success:** VM socket file descriptor
+		| **on success:** UDP socket file descriptor
 		| **on failure:** -1
 
 =========================================================================================================================================

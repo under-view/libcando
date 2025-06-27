@@ -380,9 +380,9 @@ cando_sock_udp_destroy (struct cando_sock_udp *sock)
  *******************************************/
 
 
-/**************************************************
- * Start of non struct cando_sock param functions *
- **************************************************/
+/******************************************************
+ * Start of non struct cando_sock_udp param functions *
+ ******************************************************/
 
 int
 cando_sock_udp_get_sizeof (void)
@@ -490,6 +490,6 @@ cando_sock_udp_send_data (const int sock_fd,
 	return ret;
 }
 
-/*************************************************
- * End of non struct cando_sock param functions *
- *************************************************/
+/****************************************************
+ * End of non struct cando_sock_udp param functions *
+ ****************************************************/
