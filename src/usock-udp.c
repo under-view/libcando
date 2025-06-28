@@ -29,21 +29,18 @@
  *                     set to true so that, we know to call free(3) when
  *                     destroying the instance.
  * @member fd        - File descriptor to the open UDP unix domain usocket.
- * @member unix_path - Textual string path to unix domain usocket to
- *                     sendto(2)/recvfrom(2) with.
  * @member addr      - Stores byte information about the UDP unix domain
- *                     usocket context. Is used for client connect(2) and
- *                     server bind(2)/connect(2).
+ *                     usocket context. Is used for client and server bind(2).
+ * @member saddr     - Stores byte information about the UDP unix domain
+ *                     usocket context. Is used for client connect(2).
  */
 struct cando_usock_udp
 {
 	struct cando_log_error_struct err;
 	bool                          free;
 	int                           fd;
-	char                          unix_path[UNIX_PATH_SIZE];
-	char                          cli_unix_path[UNIX_PATH_SIZE];
 	struct sockaddr_un            addr;
-	struct sockaddr_un            cli_addr;
+	struct sockaddr_un            saddr;
 };
 
 
@@ -85,11 +82,9 @@ p_create_sock_fd (struct cando_usock_udp *usock)
 
 static struct cando_usock_udp *
 p_create_usock (struct cando_usock_udp *p_usock,
-                const void *p_usock_info)
+                const void CANDO_UNUSED *p_usock_info)
 {
 	struct cando_usock_udp *usock = p_usock;
-
-	const struct cando_usock_udp_create_info *usock_info = p_usock_info;
 
 	if (!usock) {
 		usock = calloc(1, sizeof(struct cando_usock_udp));
@@ -107,10 +102,6 @@ p_create_usock (struct cando_usock_udp *p_usock,
 		cando_usock_udp_destroy(usock);
 		return NULL;
 	}
-
-	usock->addr.sun_family = AF_UNIX;
-	strncpy(usock->unix_path, usock_info->unix_path, UNIX_PATH_SIZE-1);
-	strncpy(usock->addr.sun_path, usock_info->unix_path, UNIX_PATH_SIZE-1);
 
 	return usock;
 }
@@ -144,6 +135,9 @@ cando_usock_udp_server_create (struct cando_usock_udp *p_usock,
 	usock = p_create_usock(p_usock, p_usock_info);
 	if (!usock)
 		return NULL;
+
+	usock->addr.sun_family = AF_UNIX;
+	strncpy(usock->addr.sun_path, usock_info->unix_path, UNIX_PATH_SIZE-1);
 
 	err = bind(usock->fd, (const struct sockaddr*)&(usock->addr),
 			sizeof(struct sockaddr_un));
@@ -202,11 +196,12 @@ cando_usock_udp_client_create (struct cando_usock_udp *p_usock,
 	if (!usock)
 		return NULL;
 
-	usock->cli_addr.sun_family = AF_UNIX;
-	strncpy(usock->cli_addr.sun_path, usock_info->cli_unix_path, UNIX_PATH_SIZE-1);
-	strncpy(usock->cli_unix_path, usock_info->cli_unix_path, UNIX_PATH_SIZE-1);
+	usock->addr.sun_family = AF_UNIX;
+	usock->saddr.sun_family = AF_UNIX;
+	strncpy(usock->addr.sun_path, usock_info->cli_unix_path, UNIX_PATH_SIZE-1);
+	strncpy(usock->saddr.sun_path, usock_info->unix_path, UNIX_PATH_SIZE-1);
 
-	err = bind(usock->fd, (const struct sockaddr*)&(usock->cli_addr),
+	err = bind(usock->fd, (const struct sockaddr*)&(usock->addr),
 			sizeof(struct sockaddr_un));
 	if (err == -1) {
 		cando_log_error("bind: %s\n", strerror(errno));
@@ -231,14 +226,12 @@ cando_usock_udp_client_connect (struct cando_usock_udp *usock)
 		return -1;
 	}
 
-	err = connect(usock->fd, (struct sockaddr*)&(usock->addr),
+	err = connect(usock->fd, (struct sockaddr*)&(usock->saddr),
 			sizeof(struct sockaddr_un));
 	if (err == -1) {
 		cando_log_set_error(usock, errno, "connect: %s", strerror(errno));
 		return -1;
 	}
-
-	cando_log_success("[+] Filtering to <unix_path> '%s'\n", usock->unix_path);
 
 	return 0;
 }
@@ -254,7 +247,7 @@ cando_usock_udp_client_send_data (struct cando_usock_udp *usock,
 		return -1;
 
 	return cando_usock_udp_send_data(usock->fd, data, size,
-	                            &(usock->addr), usock_info);
+	                            &(usock->saddr), usock_info);
 }
 
 /*******************************************
@@ -280,12 +273,12 @@ const char *
 cando_usock_udp_get_unix_path (struct cando_usock_udp *usock)
 {
 	if (!usock || \
-	    !(*usock->unix_path))
+	    !(*usock->addr.sun_path))
 	{
 		return NULL;
 	}
 
-	return usock->unix_path;
+	return usock->addr.sun_path;
 }
 
 /****************************************
@@ -304,8 +297,7 @@ cando_usock_udp_destroy (struct cando_usock_udp *usock)
 		return;
 
 	close(usock->fd);
-	remove(usock->unix_path);
-	remove(usock->cli_unix_path);
+	remove(usock->addr.sun_path);
 
 	if (usock->free) {
 		free(usock);

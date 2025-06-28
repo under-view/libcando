@@ -209,7 +209,7 @@ test_usock_udp_get_unix_path (void CANDO_UNUSED **state)
 	assert_null(unix_path);
 
 	unix_path = cando_usock_udp_get_unix_path(client);
-	assert_string_equal(unix_path, client_info.unix_path);
+	assert_string_equal(unix_path, client_info.cli_unix_path);
 
 	cando_usock_udp_destroy(client);
 }
