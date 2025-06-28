@@ -54,6 +54,7 @@ All options/features are disabled by default.
 	shm=enabled          # Default [disabled]
 	sock-tcp=enabled     # Default [disabled]
 	sock-udp=enabled     # Default [disabled]
+	usock-tcp=enabled    # Default [disabled]
 	vsock-tcp=enabled    # Default [disabled]
 	vsock-udp=enabled    # Default [disabled]
 
@@ -76,6 +77,7 @@ Build/Install (Normal)
 		-Dshm="enabled" \
 		-Dsock-tcp="enabled" \
 		-Dsock-udp="enabled" \
+		-Dusock-tcp="enabled" \
 		-Dvsock-tcp="enabled" \
 		-Dvsock-udp="enabled" \
 		build
@@ -107,6 +109,7 @@ Build/Install (SDK)
 		-Dshm="enabled" \
 		-Dsock-tcp="enabled" \
 		-Dsock-udp="enabled" \
+		-Dusock-tcp="enabled" \
 		-Dvsock-tcp="enabled" \
 		-Dvsock-udp="enabled" \
 		build

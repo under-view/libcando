@@ -71,7 +71,7 @@ cando_usock_tcp_server_accept (struct cando_usock_tcp *usock,
 
 /*
  * @brief Structure passed to cando_usock_tcp_client_create(3)
- *        used to define how to create the server.
+ *        used to define how to create the client.
  *
  * @member unix_path - Absolute path to unix domain socket.
  */
@@ -148,7 +148,7 @@ cando_usock_tcp_client_send_data (struct cando_usock_tcp *usock,
  * @param usock - Must pass a pointer to a struct cando_usock_tcp.
  *
  * @return
- *	on success: Unix domain socket file descriptor
+ *	on success: TCP unix domain socket file descriptor
  *	on failure: -1
  */
 CANDO_API
