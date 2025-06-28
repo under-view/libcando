@@ -29,8 +29,6 @@
  *                     set to true so that, we know to call free(3) when
  *                     destroying the instance.
  * @member fd        - File descriptor to the open TCP unix domain socket.
- * @member unix_path - Textual string path to unix domain socket to
- *                     connect(2) to or accept(2) with.
  * @member addr      - Stores byte information about the TCP unix domain socket
  *                     context. Is used for client connect(2) and server accept(2).
  */
@@ -39,7 +37,6 @@ struct cando_usock_tcp
 	struct cando_log_error_struct err;
 	bool                          free;
 	int                           fd;
-	char                          unix_path[UNIX_PATH_SIZE];
 	struct sockaddr_un            addr;
 };
 
@@ -112,7 +109,6 @@ p_create_sock (struct cando_usock_tcp *p_sock,
 	}
 
 	usock->addr.sun_family = AF_UNIX;
-	snprintf(usock->unix_path, UNIX_PATH_SIZE, "%s", usock_info->unix_path);
 	snprintf(usock->addr.sun_path, UNIX_PATH_SIZE, "%s", usock_info->unix_path);
 
 	return usock;
@@ -189,7 +185,7 @@ cando_usock_tcp_server_accept (struct cando_usock_tcp *usock,
 	}
 
 	cando_log_info("[+] Connected client fd '%d' at '%s'\n",
-	               client_sock, usock->unix_path);
+	               client_sock, usock->addr.sun_path);
 
 	return client_sock;
 }
@@ -237,7 +233,7 @@ cando_usock_tcp_client_connect (struct cando_usock_tcp *usock)
 		return -1;
 	}
 
-	cando_log_success("[+] Connected to <unix_path> '%s'\n", usock->unix_path);
+	cando_log_success("[+] Connected to <unix_path> '%s'\n", usock->addr.sun_path);
 
 	return 0;
 }
@@ -278,12 +274,12 @@ const char *
 cando_usock_tcp_get_unix_path (struct cando_usock_tcp *usock)
 {
 	if (!usock || \
-	    !(*usock->unix_path))
+	    !(*usock->addr.sun_path))
 	{
 		return NULL;
 	}
 
-	return usock->unix_path;
+	return usock->addr.sun_path;
 }
 
 /****************************************
@@ -302,7 +298,7 @@ cando_usock_tcp_destroy (struct cando_usock_tcp *usock)
 		return;
 
 	close(usock->fd);
-	remove(usock->unix_path);
+	remove(usock->addr.sun_path);
 
 	if (usock->free) {
 		free(usock);
