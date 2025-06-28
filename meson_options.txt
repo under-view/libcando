@@ -30,6 +30,10 @@ option('usock-tcp',
 	type: 'feature', value: 'disabled',
 	description: 'Build with unix socket-tcp support')
 
+option('usock-udp',
+	type: 'feature', value: 'disabled',
+	description: 'Build with unix socket-udp support')
+
 option('vsock-tcp',
 	type: 'feature', value: 'disabled',
 	description: 'Build with vm socket-tcp support')

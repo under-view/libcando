@@ -22,6 +22,10 @@ if usock_tcp.enabled()
   progs += ['test-usock-tcp.c']
 endif
 
+if usock_udp.enabled()
+  progs += ['test-usock-udp.c']
+endif
+
 if vsock_tcp.enabled()
   progs += ['test-vsock-tcp.c']
 endif

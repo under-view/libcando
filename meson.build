@@ -24,6 +24,7 @@ shm = get_option('shm')
 sock_tcp = get_option('sock-tcp')
 sock_udp = get_option('sock-udp')
 usock_tcp = get_option('usock-tcp')
+usock_udp = get_option('usock-udp')
 vsock_tcp = get_option('vsock-tcp')
 vsock_udp = get_option('vsock-udp')
 
