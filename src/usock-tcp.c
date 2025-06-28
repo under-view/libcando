@@ -6,7 +6,6 @@
 #include <unistd.h>
 #include <errno.h>
 
-#include <sys/ioctl.h>
 #include <sys/socket.h>
 #include <sys/un.h>
 
@@ -23,17 +22,17 @@
 /*
  * @brief Structure defining Cando Unix Socket TCP interface implementation.
  *
- * @member err        - Stores information about the error that occured
- *                      for the given instance and may later be retrieved
- *                      by caller.
- * @member free       - If structure allocated with calloc(3) member will be
- *                      set to true so that, we know to call free(3) when
- *                      destroying the instance.
- * @member fd         - File descriptor to the open TCP unix domain socket.
- * @member unix_parth - Textual string path to unix domain socket to
- *                      connect(2) to or accept(2) with.
- * @member addr       - Stores network byte information about the TCP unix domain
- *                      socket context. Is used for client connect(2) and server accept(2).
+ * @member err       - Stores information about the error that occured
+ *                     for the given instance and may later be retrieved
+ *                     by caller.
+ * @member free      - If structure allocated with calloc(3) member will be
+ *                     set to true so that, we know to call free(3) when
+ *                     destroying the instance.
+ * @member fd        - File descriptor to the open TCP unix domain socket.
+ * @member unix_path - Textual string path to unix domain socket to
+ *                     connect(2) to or accept(2) with.
+ * @member addr      - Stores byte information about the TCP unix domain socket
+ *                     context. Is used for client connect(2) and server accept(2).
  */
 struct cando_usock_tcp
 {
@@ -81,7 +80,9 @@ p_create_sock (struct cando_usock_tcp *p_sock,
 		const char *unix_path;
 	} *usock_info = p_usock_info;
 
-	if (!(usock_info->unix_path)) {
+	if (!usock_info || \
+	    !(usock_info->unix_path))
+	{
 		cando_log_error("Incorrect data passed\n");
 		return NULL;
 	}

@@ -8,7 +8,7 @@
 
 /*
  * Stores information about the cando_usock_tcp instace.
- * uusock - Unix domain socket.
+ * usock - Unix domain socket.
  */
 struct cando_usock_tcp;
 
