@@ -1,7 +1,7 @@
 .. default-domain:: C
 
-usock-tcp (Unix Domain Socket TCP)
-==================================
+usock-tcp (Unix Socket TCP)
+===========================
 
 Header: cando/usock-tcp.h
 
