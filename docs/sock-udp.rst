@@ -214,7 +214,7 @@ cando_sock_udp_client_create_info
 =================================
 
 | Structure passed to :c:func:`cando_sock_udp_client_create`
-| used to define how to create the server.
+| used to define how to create the client.
 
 .. c:struct:: cando_sock_udp_client_create_info
 

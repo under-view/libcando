@@ -75,7 +75,7 @@ cando_usock_udp_server_recv_data (struct cando_usock_udp *usock,
 
 /*
  * @brief Structure passed to cando_usock_udp_client_create(3)
- *        used to define how to create the server.
+ *        used to define how to create the client.
  *
  * @member unix_path - Absolute path to unix domain socket.
  */

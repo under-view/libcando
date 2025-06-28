@@ -96,7 +96,7 @@ cando_vsock_udp_server_recv_data (struct cando_vsock_udp *vsock,
 
 /*
  * @brief Structure passed to cando_vsock_udp_client_create(3)
- *        used to define how to create the server.
+ *        used to define how to create the client.
  *
  * @member vcid - VM Context Identifier to sendto(2)/recvfrom(2) data with.
  * @member port - Network port to sendto(2)/recvfrom(2) data with.

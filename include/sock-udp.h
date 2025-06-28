@@ -101,7 +101,7 @@ cando_sock_udp_server_recv_data (struct cando_sock_udp *sock,
 
 /*
  * @brief Structure passed to cando_sock_udp_client_create(3)
- *        used to define how to create the server.
+ *        used to define how to create the client.
  *
  * @member ipv6    - Boolean to determine if a socket is soley an ipv6
  *                   socket or requires an ipv4-mapped-ipv6-address.

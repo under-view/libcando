@@ -72,7 +72,7 @@ cando_vsock_tcp_server_accept (struct cando_vsock_tcp *vsock,
 
 /*
  * @brief Structure passed to cando_vsock_tcp_client_create(3)
- *        used to define how to create the server.
+ *        used to define how to create the client.
  *
  * @member vcid - VM Context Identifier to connect(2)/send(2) to.
  * @member port - Network port to connect(2)/send(2) to.

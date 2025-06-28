@@ -175,12 +175,12 @@ cando_sock_tcp_server_accept
 
 =========================================================================================================================================
 
-==================================
+=================================
 cando_sock_tcp_client_create_info
-==================================
+=================================
 
 | Structure passed to :c:func:`cando_sock_tcp_client_create`
-| used to define how to create the server.
+| used to define how to create the client.
 
 .. c:struct:: cando_sock_tcp_client_create_info
 
@@ -199,9 +199,9 @@ cando_sock_tcp_client_create_info
 	:c:member:`port`
 		| Network port to `connect(2)`_/`send(2)`_ to.
 
-=============================
+============================
 cando_sock_tcp_client_create
-=============================
+============================
 
 .. c:function:: struct cando_sock_tcp *cando_sock_tcp_client_create(struct cando_sock_tcp *sock, const void *sock_info);
 
@@ -283,9 +283,9 @@ cando_sock_tcp_client_send_data
 
 =========================================================================================================================================
 
-======================
+=====================
 cando_sock_tcp_get_fd
-======================
+=====================
 
 .. c:function:: int cando_sock_tcp_get_fd(struct cando_sock_tcp *sock);
 
