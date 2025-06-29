@@ -54,7 +54,7 @@ test_usock_udp_client_create (void CANDO_UNUSED **state)
 
 	struct cando_usock_udp_client_create_info client_info;
 
-	client_info.unix_path = TESTING_UNIX_SOCK;
+	client_info.srv_unix_path = TESTING_UNIX_SOCK;
 	client_info.cli_unix_path = TESTING_CLIENT_UNIX_SOCK;
 	client = cando_usock_udp_client_create(NULL, &client_info);
 	assert_non_null(client);
@@ -86,13 +86,10 @@ p_test_usock_udp_send_recv_client (void)
 
 	struct cando_usock_udp_client_create_info client_info;
 
-	client_info.unix_path = TESTING_UNIX_SOCK;
+	client_info.srv_unix_path = TESTING_UNIX_SOCK;
 	client_info.cli_unix_path = TESTING_CLIENT_UNIX_SOCK;
 	client = cando_usock_udp_client_create(NULL, &client_info);
 	assert_non_null(client);
-
-	err = cando_usock_udp_client_connect(client);
-	assert_int_equal(err, 0);
 
 	/* Connect client to server */
 	err = cando_usock_udp_client_send_data(client, &accept, sizeof(int), NULL);
@@ -169,7 +166,8 @@ test_usock_udp_get_fd (void CANDO_UNUSED **state)
 
 	struct cando_usock_udp_client_create_info client_info;
 
-	client_info.unix_path = TESTING_UNIX_SOCK;
+	client_info.srv_unix_path = TESTING_UNIX_SOCK;
+	client_info.cli_unix_path = TESTING_CLIENT_UNIX_SOCK;
 	client = cando_usock_udp_client_create(NULL, &client_info);
 	assert_non_null(client);
 
@@ -200,7 +198,7 @@ test_usock_udp_get_unix_path (void CANDO_UNUSED **state)
 
 	struct cando_usock_udp_client_create_info client_info;
 
-	client_info.unix_path = TESTING_UNIX_SOCK;
+	client_info.srv_unix_path = TESTING_UNIX_SOCK;
 	client_info.cli_unix_path = TESTING_CLIENT_UNIX_SOCK;
 	client = cando_usock_udp_client_create(NULL, &client_info);
 	assert_non_null(client);

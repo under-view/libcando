@@ -77,17 +77,22 @@ cando_usock_udp_server_recv_data (struct cando_usock_udp *usock,
  * @brief Structure passed to cando_usock_udp_client_create(3)
  *        used to define how to create the client.
  *
- * @member unix_path - Absolute path to unix domain socket.
+ * @member srv_unix_path - Absolute path to unix domain socket to write to.
+ * @member cli_unix_path - Absolute path to unix domain socket to read with.
+ *                         Largely so the @srv_unix_path knows the path to
+ *                         the client when leveraging the recvfrom(2) call.
  */
 struct cando_usock_udp_client_create_info
 {
-	const char *unix_path;
+	const char *srv_unix_path;
 	const char *cli_unix_path;
 };
 
 
 /*
  * @brief Creates a socket that may be utilized for client socket operations.
+ *        Fliters client socket to allow sending data without passing a
+ *        struct sockaddr_un to sendto(2).
  *
  * @param usock      - May be NULL or a pointer to a struct cando_usock_udp.
  *                     If NULL memory will be allocated and return to
@@ -107,22 +112,6 @@ CANDO_API
 struct cando_usock_udp *
 cando_usock_udp_client_create (struct cando_usock_udp *usock,
                                const void *usock_info);
-
-
-/*
- * @brief Fliters client socket to allow sending data
- *        without passing a struct sockaddr_un to sendto(2).
- *        Address is populated with a call to cando_usock_udp_client_create.
- *
- * @param usock - Must pass a pointer to a struct cando_usock_udp.
- *
- * @return
- *	on success: 0
- *	on failure: -1
- */
-CANDO_API
-int
-cando_usock_udp_client_connect (struct cando_usock_udp *usock);
 
 
 /*

@@ -15,7 +15,7 @@
 #include "usock-udp.h"
 
 /*
- * Unix domain usocket path length size defined in <sys/un.h>.
+ * Unix domain socket path length size defined in <sys/un.h>.
  */
 #define UNIX_PATH_SIZE 108
 
@@ -28,11 +28,11 @@
  * @member free      - If structure allocated with calloc(3) member will be
  *                     set to true so that, we know to call free(3) when
  *                     destroying the instance.
- * @member fd        - File descriptor to the open UDP unix domain usocket.
+ * @member fd        - File descriptor to the open UDP unix domain socket.
  * @member addr      - Stores byte information about the UDP unix domain
- *                     usocket context. Is used for client and server bind(2).
+ *                     socket context. Is used for client and server bind(2).
  * @member saddr     - Stores byte information about the UDP unix domain
- *                     usocket context. Is used for client connect(2).
+ *                     socket context. Is used for client connect(2).
  */
 struct cando_usock_udp
 {
@@ -64,7 +64,7 @@ p_create_sock_fd (struct cando_usock_udp *usock)
 
 	sock_fd = socket(AF_UNIX, SOCK_DGRAM, 0);
 	if (sock_fd == -1) {
-		cando_log_set_error(usock, errno, "usocket: %s\n", strerror(errno));
+		cando_log_set_error(usock, errno, "socket: %s\n", strerror(errno));
 		close(sock_fd);
 		return -1;
 	}
@@ -209,31 +209,15 @@ cando_usock_udp_client_create (struct cando_usock_udp *p_usock,
 		return NULL;
 	}
 
-	return usock;
-}
-
-
-int
-cando_usock_udp_client_connect (struct cando_usock_udp *usock)
-{
-	int err = -1;
-
-	if (!usock)
-		return -1;
-
-	if (usock->fd <= 0) {
-		cando_log_set_error(usock, CANDO_LOG_ERR_INCORRECT_DATA, "");
-		return -1;
-	}
-
 	err = connect(usock->fd, (struct sockaddr*)&(usock->saddr),
 			sizeof(struct sockaddr_un));
 	if (err == -1) {
 		cando_log_set_error(usock, errno, "connect: %s", strerror(errno));
-		return -1;
+		cando_usock_udp_destroy(usock);
+		return NULL;
 	}
 
-	return 0;
+	return usock;
 }
 
 
