@@ -61,9 +61,9 @@ cando_sock_udp (private)
 		struct cando_log_error_struct err;
 		bool                          free;
 		int                           fd;
-		unsigned int                  vcid;
+		char                          ip_addr[INET6_ADDRSTRLEN];
 		int                           port;
-		struct sockaddr_in6            addr;
+		struct sockaddr_in6           addr;
 
 	:c:member:`err`
 		| Stores information about the error that occured
