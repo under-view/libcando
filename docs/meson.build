@@ -9,6 +9,7 @@ docs_src = [
   'docs/sock-tcp.rst',
   'docs/sock-udp.rst',
   'docs/usock-tcp.rst',
+  'docs/usock-udp.rst',
   'docs/vsock-tcp.rst',
   'docs/vsock-udp.rst',
 ]

@@ -55,6 +55,7 @@ All options/features are disabled by default.
 	sock-tcp=enabled     # Default [disabled]
 	sock-udp=enabled     # Default [disabled]
 	usock-tcp=enabled    # Default [disabled]
+	usock-udp=enabled    # Default [disabled]
 	vsock-tcp=enabled    # Default [disabled]
 	vsock-udp=enabled    # Default [disabled]
 
@@ -78,6 +79,7 @@ Build/Install (Normal)
 		-Dsock-tcp="enabled" \
 		-Dsock-udp="enabled" \
 		-Dusock-tcp="enabled" \
+		-Dusock-udp="enabled" \
 		-Dvsock-tcp="enabled" \
 		-Dvsock-udp="enabled" \
 		build
@@ -110,6 +112,7 @@ Build/Install (SDK)
 		-Dsock-tcp="enabled" \
 		-Dsock-udp="enabled" \
 		-Dusock-tcp="enabled" \
+		-Dusock-udp="enabled" \
 		-Dvsock-tcp="enabled" \
 		-Dvsock-udp="enabled" \
 		build

@@ -17,7 +17,8 @@ struct cando_usock_udp;
  * @brief Structure passed to cando_usock_udp_server_create(3)
  *        used to define how to create the server.
  *
- * @member unix_path - Absolute path to unix domain socket.
+ * @member unix_path - Absolute path to unix domain socket
+ *                     to recvfrom(2) data with.
  */
 struct cando_usock_udp_server_create_info
 {

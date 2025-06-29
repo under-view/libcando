@@ -22,17 +22,17 @@
 /*
  * @brief Structure defining Cando Unix Socket UDP interface implementation.
  *
- * @member err       - Stores information about the error that occured
- *                     for the given instance and may later be retrieved
- *                     by caller.
- * @member free      - If structure allocated with calloc(3) member will be
- *                     set to true so that, we know to call free(3) when
- *                     destroying the instance.
- * @member fd        - File descriptor to the open UDP unix domain socket.
- * @member addr      - Stores byte information about the UDP unix domain
- *                     socket context. Is used for client and server bind(2).
- * @member saddr     - Stores byte information about the UDP unix domain
- *                     socket context. Is used for client connect(2).
+ * @member err   - Stores information about the error that occured
+ *                 for the given instance and may later be retrieved
+ *                 by caller.
+ * @member free  - If structure allocated with calloc(3) member will be
+ *                 set to true so that, we know to call free(3) when
+ *                 destroying the instance.
+ * @member fd    - File descriptor to the open UDP unix domain socket.
+ * @member addr  - Stores byte information about the UDP unix domain
+ *                 socket context. Is used for client and server bind(2).
+ * @member saddr - Stores byte information about the UDP unix domain
+ *                 socket context. Is used for client connect(2).
  */
 struct cando_usock_udp
 {

@@ -12,5 +12,6 @@
 	sock-tcp
 	sock-udp
 	usock-tcp
+	usock-udp
 	vsock-tcp
 	vsock-udp
