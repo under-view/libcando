@@ -127,7 +127,7 @@ cando_vsock_tcp_client_connect (struct cando_vsock_tcp *vsock);
  *        call to cando_vsock_tcp_client_create(3).
  *
  * @param vsock      - Must pass a pointer to a struct cando_vsock_tcp.
- * @param data       - Pointer to data to send through socket.
+ * @param data       - Pointer to buffer to send through socket.
  * @param size       - Size of data to send through socket.
  * @param vsock_info - Reserved for future usage. For now used
  *                     to set the flag argument of send(2).
@@ -231,7 +231,7 @@ cando_vsock_tcp_get_local_vcid (void);
  * @brief Receive data from socket file descriptor.
  *
  * @param sock_fd    - Socket file descriptor to receive data from.
- * @param data       - Pointer to data to store data received from a socket.
+ * @param data       - Pointer to buffer to store data received from a socket.
  * @param size       - Size of data to receive from a socket.
  * @param vsock_info - Reserved for future usage. For now used
  *                     to set the flag argument of recv(2).
@@ -252,7 +252,7 @@ cando_vsock_tcp_recv_data (const int sock_fd,
  * @brief Send data to socket file descriptor.
  *
  * @param sock_fd    - Socket file descriptor to send data to.
- * @param data       - Pointer to data to send through socket.
+ * @param data       - Pointer to buffer to send through socket.
  * @param size       - Size of data to send through socket.
  * @param vsock_info - Reserved for future usage. For now used
  *                     to set the flag argument of send(2).

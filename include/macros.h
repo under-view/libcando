@@ -58,7 +58,7 @@
 /*
  * @brief Sets a grouping a pages write-only
  *
- * @param ptr  - Pointer to data caller wants write-only
+ * @param ptr  - Pointer to buffer caller wants write-only
  * @param size - Size of data that needs to be set write-only
  */
 #define CANDO_PAGE_SET_WRITE(ptr, size) \
@@ -74,7 +74,7 @@
 /*
  * @brief Sets a grouping a pages read-only
  *
- * @param ptr  - Pointer to data caller wants write-only
+ * @param ptr  - Pointer to buffer caller wants write-only
  * @param size - Size of data that needs to be set write-only
  */
 #define CANDO_PAGE_SET_READ(ptr, size) \

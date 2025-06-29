@@ -124,7 +124,7 @@ cando_usock_tcp_client_connect (struct cando_usock_tcp *usock);
  *        call to cando_usock_tcp_client_create(3).
  *
  * @param usock      - Must pass a pointer to a struct cando_usock_tcp.
- * @param data       - Pointer to data to send through socket.
+ * @param data       - Pointer to buffer to send through socket.
  * @param size       - Size of data to send through socket.
  * @param usock_info - Reserved for future usage. For now used
  *                     to set the flag argument of send(2).
@@ -201,7 +201,7 @@ cando_usock_tcp_get_sizeof (void);
  * @brief Receive data from socket file descriptor.
  *
  * @param sock_fd    - Socket file descriptor to receive data from.
- * @param data       - Pointer to data to store data received from a socket.
+ * @param data       - Pointer to buffer to store data received from a socket.
  * @param size       - Size of data to receive from a socket.
  * @param usock_info - Reserved for future usage. For now used
  *                     to set the flag argument of recv(2).
@@ -222,7 +222,7 @@ cando_usock_tcp_recv_data (const int sock_fd,
  * @brief Send data to socket file descriptor.
  *
  * @param sock_fd    - Socket file descriptor to send data to.
- * @param data       - Pointer to data to send through socket.
+ * @param data       - Pointer to buffer to send through socket.
  * @param size       - Size of data to send through socket.
  * @param usock_info - Reserved for future usage. For now used
  *                     to set the flag argument of send(2).

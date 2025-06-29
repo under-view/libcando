@@ -270,7 +270,7 @@ cando_sock_tcp_client_send_data
 		* - sock
 		  - | Must pass a pointer to a ``struct`` :c:struct:`cando_sock_tcp`.
 		* - data
-		  - | Pointer to data to send through socket.
+		  - | Pointer to buffer to send through socket.
 		* - size
 		  - | Size of data to send through socket.
 		* - sock_info
@@ -404,7 +404,7 @@ cando_sock_tcp_recv_data
 		* - sock_fd
 		  - Socket file descriptor to receive data from.
 		* - data
-		  - | Pointer to data to store data received from a socket.
+		  - | Pointer to buffer to store data received from a socket.
 		* - size
 		  - | Size of data to receive from a socket.
 		* - sock_info
@@ -433,7 +433,7 @@ cando_sock_tcp_send_data
 		* - sock_fd
 		  - | Socket file descriptor to send data to.
 		* - data
-		  - | Pointer to data to send through socket.
+		  - | Pointer to buffer to send through socket.
 		* - size
 		  - | Size of data to send through socket.
 		* - sock_info

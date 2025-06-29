@@ -209,7 +209,7 @@ cando_vsock_udp_server_recv_data
 		* - vsock
 		  - | Pointer to a ``struct`` :c:struct:`cando_vsock_udp` instance.
 		* - data
-		  - | Pointer to data to store data received from a socket.
+		  - | Pointer to buffer to store data received from a socket.
 		* - size
 		  - | Size of data to receive from a socket.
 		* - addr
@@ -317,7 +317,7 @@ cando_vsock_udp_client_send_data
 		* - vsock
 		  - | Must pass a pointer to a ``struct`` :c:struct:`cando_vsock_udp`.
 		* - data
-		  - | Pointer to data to send through socket.
+		  - | Pointer to buffer to send through socket.
 		* - size
 		  - | Size of data to send through socket.
 		* - vsock_info
@@ -466,7 +466,7 @@ cando_vsock_udp_recv_data
 		* - sock_fd
 		  - Socket file descriptor to receive data from.
 		* - data
-		  - | Pointer to data to store data received from a socket.
+		  - | Pointer to buffer to store data received from a socket.
 		* - size
 		  - | Size of data to receive from a socket.
 		* - addr
@@ -499,7 +499,7 @@ cando_vsock_udp_send_data
 		* - sock_fd
 		  - | Socket file descriptor to send data to.
 		* - data
-		  - | Pointer to data to send through socket.
+		  - | Pointer to buffer to send through socket.
 		* - size
 		  - | Size of data to send through socket.
 		* - addr
