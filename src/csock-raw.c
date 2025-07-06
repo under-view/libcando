@@ -30,8 +30,6 @@
  *                 destroying the instance.
  * @member fd    - File descriptor to the open CAN socket.
  * @member iface - Textual CAN interface name in string format to bind(2) to.
- * @member addr  - Stores network byte information about the CAN socket
- *                 context. Is used for send(2) and recv(2).
  */
 struct cando_csock_raw
 {
@@ -39,7 +37,6 @@ struct cando_csock_raw
 	bool                          free;
 	int                           fd;
 	char                          iface[IFNAMSIZ];
-	struct sockaddr_can           addr;
 };
 
 
@@ -54,12 +51,14 @@ cando_csock_raw_create (struct cando_csock_raw *p_csock,
 	int err = -1;
 
 	struct ifreq ifr;
+	struct sockaddr_can addr;
 
 	struct cando_csock_raw *csock = p_csock;
 
 	const struct cando_csock_raw_create_info *csock_info = p_csock_info;
 
 	if (!csock_info) {
+		cando_log_error("Incorrect data passed\n");
 		return NULL;
 	}
 
@@ -79,7 +78,7 @@ cando_csock_raw_create (struct cando_csock_raw *p_csock,
 	}
 
 	memset(&ifr, 0, sizeof(struct ifreq));
-	memset(&(csock->addr), 0, sizeof(struct sockaddr_can));
+	memset(&addr, 0, sizeof(struct sockaddr_can));
 
 	strncpy(ifr.ifr_name, csock_info->iface, IFNAMSIZ);
 	err = ioctl(csock->fd, SIOCGIFINDEX, &ifr);
@@ -89,9 +88,9 @@ cando_csock_raw_create (struct cando_csock_raw *p_csock,
 		return NULL;
 	}
 
-	csock->addr.can_family = AF_CAN;
-	csock->addr.can_ifindex = ifr.ifr_ifindex;
-	err = bind(csock->fd, (struct sockaddr*) &(csock->addr),
+	addr.can_family = AF_CAN;
+	addr.can_ifindex = ifr.ifr_ifindex;
+	err = bind(csock->fd, (struct sockaddr*) &addr,
 			sizeof(struct sockaddr_can));
 	if (err == -1) {
 		cando_log_error("bind: %s\n", strerror(errno));
