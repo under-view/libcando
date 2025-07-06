@@ -1,7 +1,3 @@
-option('tests',
-	type: 'boolean', value: false,
-	description: 'Build tests')
-
 option('docs',
 	type: 'boolean', value: false,
 	description: 'Build documentation')
@@ -26,6 +22,10 @@ option('sock-udp',
 	type: 'feature', value: 'disabled',
 	description: 'Build with socket-udp support')
 
+option('csock-raw',
+	type: 'feature', value: 'disabled',
+	description: 'Build with can socket-raw support')
+
 option('usock-tcp',
 	type: 'feature', value: 'disabled',
 	description: 'Build with unix socket-tcp support')
@@ -41,3 +41,11 @@ option('vsock-tcp',
 option('vsock-udp',
 	type: 'feature', value: 'disabled',
 	description: 'Build with vm socket-udp support')
+
+option('tests',
+	type: 'boolean', value: false,
+	description: 'Build tests')
+
+option('vcan-iface',
+	type: 'string', value: 'vcan0',
+	description: 'Virtual CAN interface to run test with')

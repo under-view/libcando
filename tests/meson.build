@@ -18,6 +18,11 @@ if sock_udp.enabled()
   progs += ['test-sock-udp.c']
 endif
 
+if csock_raw.enabled()
+  progs += ['test-csock-raw.c']
+  csock_raw_iface = get_option('vcan-iface')
+endif
+
 if usock_tcp.enabled()
   progs += ['test-usock-tcp.c']
 endif
@@ -40,6 +45,10 @@ foreach p : progs
 
   if exec_name == 'test-file-ops'
     pargs += ['-DTESTER_FILE_ONE="@0@/tests/tester-file-one.txt"'.format(src_root_dir)]
+  endif
+
+  if exec_name == 'test-csock-raw'
+    pargs += ['-DTEST_VCAN_IFACE="@0@"'.format(csock_raw_iface)]
   endif
 
   exec = executable(exec_name, p,

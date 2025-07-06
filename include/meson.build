@@ -42,6 +42,15 @@ if sock_udp.enabled()
 endif
 
 
+if csock_raw.enabled()
+  main_headers += ['csock-raw.h']
+
+  headers = '\n#define CANDO_CSOCK_RAW_INTERFACE\n#include "csock-raw.h"'
+
+  main_headers_dict += {'CSOCK_RAW_INTERFACE': headers}
+endif
+
+
 if usock_tcp.enabled()
   main_headers += ['usock-tcp.h']
 
