@@ -12,8 +12,8 @@ struct cando_csock_raw;
 
 
 /*
- * @brief Structure passed to cando_csock_raw_server_create(3)
- *        used to define how to create the server.
+ * @brief Structure passed to cando_csock_raw_create(3)
+ *        used to define how to create the CAN socket.
  *
  * @member iface - Must pass textual CAN interface
  *                 name in string format.
@@ -50,7 +50,7 @@ cando_csock_raw_create (struct cando_csock_raw *csock,
 
 
 /*
- * @brief Send CAN frame through socket bounded to interface
+ * @brief Send CAN frame through socket bounded to CAN interface
  *        specified by a call to cando_csock_raw_create(3).
  *
  * @param csock      - Must pass a pointer to a struct cando_csock_raw.
@@ -93,7 +93,7 @@ cando_csock_raw_recv_data (struct cando_csock_raw *csock,
  * @brief Acquire socket file descriptor associated with
  *        struct cando_csock_raw instance.
  *
- * @param sock - Must pass a pointer to a struct cando_csock_raw.
+ * @param csock - Must pass a pointer to a struct cando_csock_raw.
  *
  * @return
  *	on success: RAW socket file descriptor
@@ -108,7 +108,7 @@ cando_csock_raw_get_fd (struct cando_csock_raw *csock);
  * @brief Acquire textual CAN interface name in string format
  *        associated with struct cando_csock_raw instance.
  *
- * @param sock - Must pass a pointer to a struct cando_csock_raw.
+ * @param csock - Must pass a pointer to a struct cando_csock_raw.
  *
  * @return
  *	on success: Textual CAN interface name in string format
@@ -123,7 +123,7 @@ cando_csock_raw_get_iface (struct cando_csock_raw *csock);
  * @brief Frees any allocated memory and closes FD's (if open)
  *        created after cando_csock_raw_create() call.
  *
- * @param sock - Pointer to a valid struct cando_csock_raw.
+ * @param csock - Pointer to a valid struct cando_csock_raw.
  */
 CANDO_API
 void

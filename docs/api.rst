@@ -11,6 +11,7 @@
 	shm
 	sock-tcp
 	sock-udp
+	csock-raw
 	usock-tcp
 	usock-udp
 	vsock-tcp
