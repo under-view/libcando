@@ -3,8 +3,9 @@ rt = cc.find_library('rt', required: shm.enabled())
 libcando_deps = [rt]
 
 fs = [
+  'src/futex.c',
   'src/log.c',
-  'src/mm.c'
+  'src/mm.c',
 ]
 
 if file_ops.enabled()

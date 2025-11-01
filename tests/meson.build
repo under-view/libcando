@@ -1,6 +1,6 @@
 libcmocka = dependency('cmocka', required: true)
 
-progs = [ 'test-log.c', 'test-mm.c' ]
+progs = [ 'test-log.c', 'test-mm.c', 'test-futex.c' ]
 
 if file_ops.enabled()
   progs += ['test-file-ops.c']
