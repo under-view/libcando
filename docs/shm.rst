@@ -45,24 +45,6 @@ API Documentation
 ~~~~~~~~~~~~~~~~~
 
 ===================
-cando_sem (private)
-===================
-
-| Structure defining the cando_sem (cando sempahore) instance.
-
-.. c:struct:: cando_sem
-
-	.. c:member::
-		sem_t *read_sem;
-		char  read_sem_file[SEM_FILE_NAME_MAX];
-
-	:c:member:`read_sem`
-		| Pointer to POSIX semaphore used to synchronize reads.
-
-	:c:member:`read_sem_file`
-		| Name of the POSIX semaphore used to synchronize reads.
-
-===================
 cando_shm (private)
 ===================
 
@@ -77,10 +59,6 @@ cando_shm (private)
 		char                          shm_file[SHM_FILE_NAME_MAX];
 		size_t                        data_sz;
 		void                          *data;
-		sem_t                         *write_sem;
-		char                          write_sem_file[SEM_FILE_NAME_MAX];
-		int                           sem_count;
-		struct cando_sem              sems[SEM_COUNT_MAX];
 
 	:c:member:`err`
 		| Stores information about the error that occured
@@ -104,19 +82,6 @@ cando_shm (private)
 	:c:member:`data_sz`
 		| Total size of the shared memory region mapped with `mmap(2)`_.
 
-	:c:member:`write_sem`
-		| Pointer to POSIX semaphore used to syncronize writes.
-
-	:c:member:`write_sem_file`
-		| Name of the POSIX semaphore used to synchronize writes.
-
-	:c:member:`sem_count`
-		| Amount of semaphores in :c:member:`sems`.
-
-	:c:member:`sems`
-		| Array of ``struct`` :c:struct:`cando_sem` which contain pointers
-		| to read semaphores.
-
 =========================================================================================================================================
 
 =====================
@@ -131,8 +96,6 @@ cando_shm_create_info
 	.. c:member::
 		const char *shm_file;
 		size_t     shm_size;
-		const char *sem_file;
-		int        sem_count;
 
 	:c:member:`shm_file`
 		| Shared memory file name. Must start
@@ -140,14 +103,6 @@ cando_shm_create_info
 
 	:c:member:`shm_size`
 		| Size of shared memory.
-
-	:c:member:`sem_file`
-		| Prefix of semaphore file name. Must
-		| start with the character ``'/'``.
-
-	:c:member:`sem_count`
-		| Amount of POSIX semaphores to create.
-		| May be zero.
 
 .. c:function:: struct cando_shm *cando_shm_create(struct cando_shm *shm, const void *shm_info);
 
@@ -189,9 +144,6 @@ cando_shm_data_info
 	.. c:member::
 		void          *data;
 		size_t        size;
-		size_t        offset;
-		int           sem_index;
-		unsigned char block : 1;
 
 	:c:member:`data`
 		| Pointer to a buffer that will either be used
@@ -199,18 +151,6 @@ cando_shm_data_info
 
 	:c:member:`size`
 		| Size in bytes to read from or write to shared memory.
-
-	:c:member:`offset`
-		| Byte offset in shared memory to either read
-		| from or write to.
-
-	:c:member:`sem_index`
-		| Read semaphore index to either lock or unlock.
-
-	:c:member:`block`
-		| Determines if caller wants to perform a blocking
-		| or busy wait when waiting for the read/write
-		| semaphore to lock/unlock.
 
 ===================
 cando_shm_data_read

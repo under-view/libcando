@@ -16,17 +16,11 @@ struct cando_shm;
  * @param shm_file  - Shared memory file name. Must start
  *                    with the character '/'.
  * @param shm_size  - Size of shared memory.
- * @param sem_file  - Prefix of semaphore file name. Must
- *                    start with the character '/'.
- * @param sem_count - Amount of POSIX semaphores to create.
- *                    May be zero.
  */
 struct cando_shm_create_info
 {
 	const char *shm_file;
 	size_t     shm_size;
-	const char *sem_file;
-	int        sem_count;
 };
 
 
@@ -61,19 +55,11 @@ cando_shm_create (struct cando_shm *shm,
  * @member data      - Pointer to a buffer that will either be used
  *                     to store shm data or write to shm data.
  * @member size      - Size in bytes to read from or write to shared memory.
- * @member offset    - Byte offset in shared memory to either read
- *                     from or write to.
- * @member sem_index - Read semaphore index to either lock or unlock.
- * @member block     - Determines if caller wants to perform a blocking
- *                     or busy wait read/write operation.
  */
 struct cando_shm_data_info
 {
 	void          *data;
 	size_t        size;
-	size_t        offset;
-	int           sem_index;
-	unsigned char block : 1;
 };
 
 
