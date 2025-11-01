@@ -2,7 +2,6 @@
 #define CANDO_FUTEX_H
 
 #include "macros.h"
-#include "atomic.h"
 
 /*
  * @brief Atomically updates futex value to the locked state.
