@@ -12,23 +12,50 @@
 #include "log.h"
 #include "shm.h"
 
+/*
+ * Maximum amount of processes
+ * allowed to watch shared memory.
+ */
+#define SHM_PROC_MAX (1<<4)
 #define SHM_FILE_NAME_MAX (1<<5)
+
+
+/*
+ * @brief Struct defining the cando_shm_proc
+ *        (Cando Shared Memory Process) instance.
+ *
+ * @member rd_fux - Pointer to a given process read futex
+ *                  stored in front segment of shared memory.
+ * @member wr_fux - Pointer to a given process write futex
+ *                  stored in front segment of shared memory.
+ * @member data   - Unsigned long long int storing the integer
+ *                  representation of a pointer to a location
+ *                  within shared memory.
+ */
+struct cando_shm_proc
+{
+	cando_atomic_u32  *rd_fux;
+	cando_atomic_u32  *wr_fux;
+	cando_atomic_addr data;
+};
 
 
 /*
  * @brief Structure defining the cando_shm instance.
  *
- * @member err            - Stores information about the error that occured
- *                          for the given instance and may later be retrieved
- *                          by caller.
- * @member free           - If structure allocated with calloc(3) member will be
- *                          set to true so that, we know to call free(3) when
- *                          destroying the instance.
- * @member fd             - Open file descriptor to POSIX shared memory.
- * @member shm_file       - Name of the POSIX shared memory file starting with '/'.
- * @member data           - Pointer to mmap(2) map'd shared memory data.
- * @member data_sz        - Total size of the shared memory region mapped with mmap(2).
- *                          to read semaphores.
+ * @member err      - Stores information about the error that occured
+ *                    for the given instance and may later be retrieved
+ *                    by caller.
+ * @member free     - If structure allocated with calloc(3) member will be
+ *                    set to true so that, we know to call free(3) when
+ *                    destroying the instance.
+ * @member fd       - Open file descriptor to POSIX shared memory.
+ * @member shm_file - Name of the POSIX shared memory file starting with '/'.
+ * @member data     - Pointer to mmap(2) map'd shared memory data.
+ * @member data_sz  - Total size of the shared memory region mapped with mmap(2).
+ *                    to read semaphores.
+ * @member procs    - An array storing the shared memory locations
+ *                    of each processes futexes and data.
  */
 struct cando_shm
 {
@@ -36,8 +63,9 @@ struct cando_shm
 	bool                          free;
 	int                           fd;
 	char                          shm_file[SHM_FILE_NAME_MAX];
-	void                          *data;
 	size_t                        data_sz;
+	void                          *data;
+	struct cando_shm_proc         procs[SHM_PROC_MAX];
 };
 
 
@@ -50,6 +78,15 @@ p_shm_create (struct cando_shm *shm,
               const struct cando_shm_create_info *shm_info)
 {
 	int err = -1, len;
+
+	if (!(shm_info->proc_count) || \
+	    shm_info->proc_count >= SHM_PROC_MAX)
+	{
+		cando_log_set_error(shm, CANDO_LOG_ERR_UNCOMMON,
+		                    "Unsupported process count (%u:%u)",
+		                    shm_info->proc_count, SHM_PROC_MAX);
+		return -1;
+	}
 
 	if (!(shm_info->shm_size)) {
 		cando_log_set_error(shm, CANDO_LOG_ERR_UNCOMMON,
@@ -65,7 +102,7 @@ p_shm_create (struct cando_shm *shm,
 		return -1;
 	}
 
-	len = strnlen(shm_info->shm_file, SHM_FILE_NAME_MAX+32);
+	len = strnlen(shm_info->shm_file, SHM_FILE_NAME_MAX);
 	if (len >= SHM_FILE_NAME_MAX) {
 		cando_log_set_error(shm, CANDO_LOG_ERR_UNCOMMON,
 		                    "Shared memory '%s' name length to long",
