@@ -2,6 +2,8 @@
 #define CANDO_H
 
 #include "macros.h"
+#include "atomic.h"
+#include "futex.h"
 #include "log.h"
 #include "mm.h"
 @FILE_OPS_INTERFACE@
