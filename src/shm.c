@@ -10,6 +10,7 @@
 #include <fcntl.h>
 
 #include "log.h"
+#include "futex.h"
 #include "shm.h"
 
 /*
@@ -114,7 +115,8 @@ p_shm_create (struct cando_shm *shm,
 		return -1;
 	}
 
-	shm->fd = shm_open(shm_info->shm_file, O_RDWR|O_CREAT, 0644);
+	strncpy(shm->shm_file, shm_info->shm_file, len);
+	shm->fd = shm_open(shm->shm_file, O_RDWR|O_CREAT, 0644);
 	if (shm->fd == -1) {
 		cando_log_set_error(shm, errno, "shm_open: %s", strerror(errno));
 		return -1;
@@ -142,9 +144,9 @@ p_shm_create (struct cando_shm *shm,
 	 * The next X amount of bytes (2 * 4 * proc_count)
 	 * stores each processes read/write futexes.
 	 */
-	__atomic_add_fetch((cando_atomic_int*)shm->data, 1, __ATOMIC_SEQ_CST);
+	__atomic_add_fetch((cando_atomic_u32*)shm->data, 1, __ATOMIC_SEQ_CST);
 
-	fux_off = sizeof(cando_atomic_int);
+	fux_off = sizeof(cando_atomic_u32);
 	data_off = fux_off + (2 * sizeof(cando_atomic_u32) * shm_info->proc_count);
 	proc_data_sz = (shm->data_sz - data_off) / shm_info->proc_count;
 
@@ -154,6 +156,12 @@ p_shm_create (struct cando_shm *shm,
 		shm->procs[p].rd_fux = (cando_atomic_u32*)((char*)shm->data + fux_off);
 		shm->procs[p].wr_fux = (cando_atomic_u32*)((char*)shm->data + \
 				fux_off + sizeof(cando_atomic_u32));
+
+		/* Initialize read futex to lock state */
+		__atomic_store_n(shm->procs[p].rd_fux, 1, __ATOMIC_RELEASE);
+
+		/* Initialize write futex to unlocked state */
+		__atomic_store_n(shm->procs[p].wr_fux, 0, __ATOMIC_RELEASE);
 
 		data_off += proc_data_sz;
 		fux_off += (2 * sizeof(cando_atomic_u32));
@@ -202,27 +210,59 @@ cando_shm_create (struct cando_shm *p_shm,
  * Start of cando_shm_data functions *
  *************************************/
 
+CANDO_STATIC_INLINE
+unsigned char
+p_check_proc_count (struct cando_shm *shm,
+                    const unsigned int proc_index)
+{
+	return proc_index >= __atomic_load_n((cando_atomic_u32*) \
+			shm->data, __ATOMIC_ACQUIRE);
+}
+
+
 int
 cando_shm_data_read (struct cando_shm *shm,
                      const void *p_shm_info)
 {
-	void *shm_data = NULL;
+	int data;
 
+	size_t s;
+
+	const struct cando_shm_proc *shm_proc;
 	const struct cando_shm_data_info *shm_info = p_shm_info;
 
 	if (!shm)
 		return -1;
 
 	if (!shm_info || \
-	    !(shm_info->data))
+	    !(shm_info->data) || \
+	    p_check_proc_count(shm, shm_info->proc_index))
 	{
 		cando_log_set_error(shm, CANDO_LOG_ERR_INCORRECT_DATA, "");
 		return -1;
 	}
 
-	shm_data = ((char*)shm->data);
-	memcpy(shm_info->data, shm_data, shm_info->size);
-	memset(shm_data, 0, shm_info->size);
+	shm_proc = &(shm->procs[shm_info->proc_index]);
+
+	cando_futex_lock(shm_proc->rd_fux);
+	if (errno == EINTR)
+		return -errno;
+
+	for (s = 0; s < shm_info->size; s += sizeof(int)) {
+		data = __atomic_load_n((cando_atomic_int*) \
+			((char*)shm_proc->data + s), \
+			__ATOMIC_ACQUIRE);
+
+		__atomic_store_n((cando_atomic_int*) \
+			((char*)shm_info->data + s), \
+			data, __ATOMIC_RELEASE);
+
+		__atomic_clear((cando_atomic_int*) \
+			((char*)shm_proc->data + s),
+			__ATOMIC_RELEASE);
+	}
+
+	cando_futex_unlock(shm_proc->wr_fux);
 
 	return 0;
 }
@@ -232,20 +272,36 @@ int
 cando_shm_data_write (struct cando_shm *shm,
                       const void *p_shm_info)
 {
+	size_t s;
+
+	const struct cando_shm_proc *shm_proc;
 	const struct cando_shm_data_info *shm_info = p_shm_info;
 
 	if (!shm)
 		return -1;
 
 	if (!shm_info || \
-	    !(shm_info->data))
+	    !(shm_info->data) || \
+	    p_check_proc_count(shm, shm_info->proc_index))
 	{
 		cando_log_set_error(shm, CANDO_LOG_ERR_INCORRECT_DATA, "");
 		return -1;
 	}
 
-	memcpy(((char*)shm->data),
-	       shm_info->data, shm_info->size);
+	shm_proc = &(shm->procs[shm_info->proc_index]);
+
+	cando_futex_lock(shm_proc->wr_fux);
+	if (errno == EINTR)
+		return -errno;
+
+	for (s = 0; s < shm_info->size; s += sizeof(int)) {
+		__atomic_store_n((cando_atomic_int*) \
+			((char*)shm_proc->data + s), \
+			*((int*)((char*)shm_info->data + s)), \
+			__ATOMIC_RELEASE);
+	}
+
+	cando_futex_unlock(shm_proc->rd_fux);
 
 	return 0;
 }
@@ -306,7 +362,7 @@ cando_shm_destroy (struct cando_shm *shm)
 		return;
 
 	if (shm->data) {
-		value = __atomic_sub_fetch((cando_atomic_int*) \
+		value = (int) __atomic_sub_fetch((cando_atomic_u32*) \
 			shm->data, 1, __ATOMIC_SEQ_CST);
 		munmap(shm->data, shm->data_sz);
 	}
