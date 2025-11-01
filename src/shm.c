@@ -77,7 +77,11 @@ static int
 p_shm_create (struct cando_shm *shm,
               const struct cando_shm_create_info *shm_info)
 {
+	unsigned int p;
+
 	int err = -1, len;
+
+	size_t data_off, fux_off, proc_data_sz;
 
 	if (!(shm_info->proc_count) || \
 	    shm_info->proc_count >= SHM_PROC_MAX)
@@ -129,6 +133,30 @@ p_shm_create (struct cando_shm *shm,
 	if (err == -1) {
 		cando_log_set_error(shm, errno, "mmap: %s", strerror(errno));
 		return -1;
+	}
+
+	/*
+	 * First 4 bytes of shared memory used to store
+	 * amount of processes watching shared memory.
+	 *
+	 * The next X amount of bytes (2 * 4 * proc_count)
+	 * stores each processes read/write futexes.
+	 */
+	__atomic_add_fetch((cando_atomic_int*)shm->data, 1, __ATOMIC_SEQ_CST);
+
+	fux_off = sizeof(cando_atomic_int);
+	data_off = fux_off + (2 * sizeof(cando_atomic_u32) * shm_info->proc_count);
+	proc_data_sz = (shm->data_sz - data_off) / shm_info->proc_count;
+
+	for (p = 0; p < shm_info->proc_count; p++) {
+		shm->procs[p].data = (cando_atomic_addr)((char*)shm->data + data_off);
+
+		shm->procs[p].rd_fux = (cando_atomic_u32*)((char*)shm->data + fux_off);
+		shm->procs[p].wr_fux = (cando_atomic_u32*)((char*)shm->data + \
+				fux_off + sizeof(cando_atomic_u32));
+
+		data_off += proc_data_sz;
+		fux_off += (2 * sizeof(cando_atomic_u32));
 	}
 
 	return 0;
@@ -272,10 +300,21 @@ cando_shm_get_data_size (struct cando_shm *shm)
 void
 cando_shm_destroy (struct cando_shm *shm)
 {
+	int value = -1;
+
 	if (!shm)
 		return;
 
-	munmap(shm->data, shm->data_sz);
+	if (shm->data) {
+		value = __atomic_sub_fetch((cando_atomic_int*) \
+			shm->data, 1, __ATOMIC_SEQ_CST);
+		munmap(shm->data, shm->data_sz);
+	}
+
+	close(shm->fd);
+
+	if (value == 0)
+		shm_unlink(shm->shm_file);
 
 	if (shm->free) {
 		free(shm);
