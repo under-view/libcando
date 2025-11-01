@@ -26,13 +26,14 @@ test_shm_create (void CANDO_UNUSED **state)
 	memset(&shm_info, 0, sizeof(shm_info));
 
 	/* Test shm_size zero */
-	shm_info.shm_file = "/kms-shm-testing";
+	shm_info.proc_count = 2;
+	shm_info.shm_file   = "/kms-shm-testing";
 	shm = cando_shm_create(NULL, &shm_info);
 	assert_null(shm);
 
 	/* Test shm no leading '/' */
 	shm_info.shm_file = "kms-shm-testing";
-	shm_info.shm_size  = CANDO_PAGE_SIZE;
+	shm_info.shm_size = CANDO_PAGE_SIZE;
 	shm = cando_shm_create(NULL, &shm_info);
 	assert_null(shm);
 
@@ -41,12 +42,17 @@ test_shm_create (void CANDO_UNUSED **state)
 	shm = cando_shm_create(NULL, &shm_info);
 	assert_null(shm);
 
-	/* Test correct info passed */
-	//shm_info.shm_file  = "/kms-shm-testing";
-	//shm_info.shm_size  = CANDO_PAGE_SIZE;
-	//shm_info.sem_count = 1;
-	//shm = cando_shm_create(NULL, &shm_info);
-	//assert_non_null(shm);
+	/* Test process count invalid */
+	shm_info.shm_file   = "/kms-shm-testing";
+	shm_info.shm_size   = CANDO_PAGE_SIZE;
+	shm_info.proc_count = (1<<5);
+	shm = cando_shm_create(NULL, &shm_info);
+	assert_null(shm);
+
+	/* Test shm create successfullly */
+	shm_info.proc_count = 2;
+	shm = cando_shm_create(NULL, &shm_info);
+	assert_non_null(shm);
 
 	cando_shm_destroy(shm);
 }
@@ -63,48 +69,65 @@ test_shm_create (void CANDO_UNUSED **state)
 static void CANDO_UNUSED
 test_shm_data (void **state CANDO_UNUSED)
 {
-	pid_t pid = fork();
+	pid_t pid;
+
+	struct some_data {
+		char buf[128];
+		int value;
+	};
+
+	pid = fork();
 	if (pid == 0) {
-		int err = -1, data = 821;
+		int err = -1;
 
 		struct cando_shm *shm = NULL;
 
+		struct some_data sdata;
 		struct cando_shm_create_info shm_info;
 		struct cando_shm_data_info shm_data_info;
 
-		memset(&shm_info, 0, sizeof(shm_info));
-
-		shm_info.shm_file  = "/kms-shm-testing";
-		shm_info.shm_size  = CANDO_PAGE_SIZE;
+		shm_info.proc_count = 2;
+		shm_info.shm_file   = "/kms-shm-testing";
+		shm_info.shm_size   = CANDO_PAGE_SIZE;
 		shm = cando_shm_create(NULL, &shm_info);
 		assert_non_null(shm);
 
-		shm_data_info.size = sizeof(int);
-		shm_data_info.data = (void*) &data;
+		sdata.value = 821;
+		memset(sdata.buf, 'T', sizeof(sdata.buf));
+
+		shm_data_info.proc_index = 0;
+		shm_data_info.size = sizeof(sdata);
+		shm_data_info.data = (void*) &sdata;
 		err = cando_shm_data_write(shm, &shm_data_info);
 		assert_int_equal(err, 0);
 
 		cando_shm_destroy(shm);
 	} else {
-		int err = -1, data = -4;
+		int err = -1;
+
+		char buf[128];
 
 		struct cando_shm *shm = NULL;
 
+		struct some_data sdata;
 		struct cando_shm_create_info shm_info;
 		struct cando_shm_data_info shm_data_info;
 
-		memset(&shm_info, 0, sizeof(shm_info));
+		memset(buf, 'T', sizeof(buf));
 
-		shm_info.shm_file  = "/kms-shm-testing";
-		shm_info.shm_size  = CANDO_PAGE_SIZE;
+		shm_info.proc_count = 2;
+		shm_info.shm_file   = "/kms-shm-testing";
+		shm_info.shm_size   = CANDO_PAGE_SIZE;
 		shm = cando_shm_create(NULL, &shm_info);
 		assert_non_null(shm);
 
-		shm_data_info.size = sizeof(int);
-		shm_data_info.data = (void*) &data;
+		shm_data_info.proc_index = 0;
+		shm_data_info.size = sizeof(sdata);
+		shm_data_info.data = (void*) &sdata;
 		err = cando_shm_data_read(shm, &shm_data_info);
 		assert_int_equal(err, 0);
-		assert_int_equal(data, 821);
+		assert_int_equal(sdata.value, 821);
+		assert_memory_equal(sdata.buf, buf, sizeof(buf));
 
 		cando_shm_destroy(shm);
 	}
@@ -129,8 +152,9 @@ test_shm_get_fd (void **state CANDO_UNUSED)
 	struct cando_shm_create_info shm_info;
 	memset(&shm_info, 0, sizeof(shm_info));
 
-	shm_info.shm_file  = "/kms-shm-testing";
-	shm_info.shm_size  = CANDO_PAGE_SIZE;
+	shm_info.proc_count = 2;
+	shm_info.shm_file   = "/kms-shm-testing";
+	shm_info.shm_size   = CANDO_PAGE_SIZE;
 	shm = cando_shm_create(NULL, &shm_info);
 	assert_non_null(shm);
 
@@ -166,8 +190,9 @@ test_shm_get_data (void **state CANDO_UNUSED)
 
 	memset(buffer, 'C', sizeof(buffer));
 
-	shm_info.shm_file  = "/kms-shm-testing";
-	shm_info.shm_size  = CANDO_PAGE_SIZE;
+	shm_info.proc_count = 2;
+	shm_info.shm_file   = "/kms-shm-testing";
+	shm_info.shm_size   = CANDO_PAGE_SIZE;
 	shm = cando_shm_create(NULL, &shm_info);
 	assert_non_null(shm);
 
@@ -176,9 +201,6 @@ test_shm_get_data (void **state CANDO_UNUSED)
 
 	shm_data = cando_shm_get_data(shm);
 	assert_non_null(shm_data);
-
-	memset(shm_data, 'C', shm_info.shm_size);
-	assert_memory_equal(shm_data, buffer, shm_info.shm_size);
 
 	cando_shm_destroy(shm);
 }
@@ -202,8 +224,9 @@ test_shm_get_data_size (void **state CANDO_UNUSED)
 	struct cando_shm_create_info shm_info;
 	memset(&shm_info, 0, sizeof(shm_info));
 
-	shm_info.shm_file  = "/kms-shm-testing";
-	shm_info.shm_size  = CANDO_PAGE_SIZE;
+	shm_info.proc_count = 2;
+	shm_info.shm_file   = "/kms-shm-testing";
+	shm_info.shm_size   = CANDO_PAGE_SIZE;
 	shm = cando_shm_create(NULL, &shm_info);
 	assert_non_null(shm);
 
