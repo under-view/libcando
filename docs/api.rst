@@ -7,6 +7,7 @@
 
 	log
 	file-ops
+	futex
 	mm
 	shm
 	sock-tcp
