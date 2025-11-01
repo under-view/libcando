@@ -13,19 +13,26 @@ struct cando_shm;
  * @brief Structure passed to cando_shm_create() used
  *        to define shared memory and semaphore names.
  *
- * @param shm_file  - Shared memory file name. Must start
- *                    with the character '/'.
- * @param shm_size  - Size of shared memory.
+ * @param shm_file   - Shared memory file name. Must start
+ *                     with the character '/'.
+ * @param shm_size   - Size of shared memory.
+ * @param proc_count - Amount of processes able to watch
+ *                     the given shared memory block.
  */
 struct cando_shm_create_info
 {
-	const char *shm_file;
-	size_t     shm_size;
+	const char   *shm_file;
+	size_t       shm_size;
+	unsigned int proc_count;
 };
 
 
 /*
- * @brief Creates POSIX shared memory and semaphores.
+ * @brief Creates POSIX shared memory and futexes.
+ *        Each process gets:
+ *        	1. Read futex (initialized to locked)
+ *        	2. Write futex (initialized to unlocked)
+ *        	3. Segment within shared memory to store data.
  *
  * @param shm      - May be NULL or a pointer to a struct cando_shm.
  *                   If NULL memory will be allocated and return to
@@ -52,14 +59,16 @@ cando_shm_create (struct cando_shm *shm,
  *        and data to retrieve during calls to
  *        cando_shm_data_read() and cando_shm_data_write().
  *
- * @member data      - Pointer to a buffer that will either be used
- *                     to store shm data or write to shm data.
- * @member size      - Size in bytes to read from or write to shared memory.
+ * @member data       - Pointer to a buffer that will either be used
+ *                      to store shm data or write to shm data.
+ * @member size       - Size in bytes to read from or write to shared memory.
+ * @member proc_index - Index of process to write data to or read data from.
  */
 struct cando_shm_data_info
 {
-	void          *data;
-	size_t        size;
+	void         *data;
+	size_t       size;
+	unsigned int proc_index;
 };
 
 
