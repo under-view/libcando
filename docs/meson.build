@@ -3,6 +3,7 @@ docs_src = [
   'docs/build.rst',
   'docs/csock-raw.rst',
   'docs/file-ops.rst',
+  'docs/futex.rst',
   'docs/index.rst',
   'docs/log.rst',
   'docs/mm.rst',
