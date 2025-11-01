@@ -1,7 +1,6 @@
 main_headers_dict = {}
 
 main_headers = [
-  'atomic.h',
   'futex.h',
   'log.h',
   'macros.h',
