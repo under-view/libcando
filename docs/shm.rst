@@ -144,7 +144,7 @@ cando_shm_create_info
 	:c:member:`shm_size`
 		| Size of shared memory.
 
-	:c:memer:`proc_count`
+	:c:member:`proc_count`
 		| Amount of processes able to read and
 		| write to and from the shared memory
 		| block.
