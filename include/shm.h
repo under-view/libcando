@@ -11,13 +11,15 @@ struct cando_shm;
 
 /*
  * @brief Structure passed to cando_shm_create() used
- *        to define shared memory and semaphore names.
+ *        to define shared memory file name, shm size,
+ *        and process count.
  *
  * @param shm_file   - Shared memory file name. Must start
  *                     with the character '/'.
  * @param shm_size   - Size of shared memory.
- * @param proc_count - Amount of processes able to watch
- *                     the given shared memory block.
+ * @param proc_count - Amount of processes able to read and
+ *                     write to and from the shared memory
+ *                     block.
  */
 struct cando_shm_create_info
 {
@@ -32,7 +34,7 @@ struct cando_shm_create_info
  *        Each process gets:
  *        	1. Read futex (initialized to locked)
  *        	2. Write futex (initialized to unlocked)
- *        	3. Segment within shared memory to store data.
+ *        	3. Segment within shared memory to store data
  *
  * @param shm      - May be NULL or a pointer to a struct cando_shm.
  *                   If NULL memory will be allocated and return to
@@ -125,15 +127,16 @@ cando_shm_get_fd (struct cando_shm *shm);
 
 
 /*
- * @brief Returns mmap(2) map'd POSIX shared memory buffer
+ * @brief Returns starting address of a processes segment
+ *        in the mmap(2) map'd POSIX shared memory buffer
  *        created after call to cando_shm_create().
  *
  * @param shm        - Pointer to a valid struct cando_shm.
- * @param proc_index - Process index to acquire it shared
+ * @param proc_index - Process index to acquire it's shared
  *                     memory segment starting address.
  *
  * @return
- *	on success: Pointer to map'd shared memory buffer
+ *	on success: Pointer to processes SHM segment
  *	on failure: NULL
  */
 CANDO_API
@@ -143,15 +146,16 @@ cando_shm_get_data (struct cando_shm *shm,
 
 
 /*
- * @brief Returns size of POSIX shared memory buffer
- *        created after call to cando_shm_create().
+ * @brief Returns size of a given process POSIX shared
+ *        memory segment size created after call to
+ *        cando_shm_create().
  *
  * @param shm        - Pointer to a valid struct cando_shm.
  * @param proc_index - Process index to acquire it's shared
  *                     memory segment size.
  *
  * @return
- *	on success: Size of POSIX shared memory buffer
+ *	on success: Size of processes SHM segment
  *	on failure: Maximum size or -1
  */
 CANDO_API

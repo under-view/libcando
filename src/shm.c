@@ -22,7 +22,7 @@
 
 
 /*
- * @brief Struct defining the cando_shm_proc
+ * @brief Structure defining the cando_shm_proc
  *        (Cando Shared Memory Process) instance.
  *
  * @member rd_fux  - Pointer to a given process read futex
@@ -59,7 +59,6 @@ struct cando_shm_proc
  * @member shm_file - Name of the POSIX shared memory file starting with '/'.
  * @member data     - Pointer to mmap(2) map'd shared memory data.
  * @member data_sz  - Total size of the shared memory region mapped with mmap(2).
- *                    to read semaphores.
  * @member procs    - An array storing the shared memory locations
  *                    of each processes futexes and data.
  */
@@ -69,8 +68,8 @@ struct cando_shm
 	bool                          free;
 	int                           fd;
 	char                          shm_file[SHM_FILE_NAME_MAX];
-	size_t                        data_sz;
 	void                          *data;
+	size_t                        data_sz;
 	struct cando_shm_proc         procs[SHM_PROC_MAX];
 };
 
