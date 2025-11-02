@@ -25,19 +25,24 @@
  * @brief Struct defining the cando_shm_proc
  *        (Cando Shared Memory Process) instance.
  *
- * @member rd_fux - Pointer to a given process read futex
- *                  stored in front segment of shared memory.
- * @member wr_fux - Pointer to a given process write futex
- *                  stored in front segment of shared memory.
- * @member data   - Unsigned long long int storing the integer
- *                  representation of a pointer to a location
- *                  within shared memory.
+ * @member rd_fux  - Pointer to a given process read futex
+ *                   stored in front segment of shared memory.
+ * @member wr_fux  - Pointer to a given process write futex
+ *                   stored in front segment of shared memory.
+ * @member data    - Unsigned long long int storing the integer
+ *                   representation of a pointer to a location
+ *                   within shared memory. This pointer is a
+ *                   given processes shared memory segment
+ *                   staring address.
+ * @member data_sz - Stores the size of a given processes
+ *                   shared memory segment.
  */
 struct cando_shm_proc
 {
 	cando_atomic_u32  *rd_fux;
 	cando_atomic_u32  *wr_fux;
 	cando_atomic_addr data;
+	size_t            data_sz;
 };
 
 
@@ -81,6 +86,8 @@ p_shm_create (struct cando_shm *shm,
 	unsigned int p;
 
 	int err = -1, len;
+
+	const unsigned int zero = 0, one = 1;
 
 	size_t data_off, fux_off, proc_data_sz;
 
@@ -151,6 +158,7 @@ p_shm_create (struct cando_shm *shm,
 	proc_data_sz = (shm->data_sz - data_off) / shm_info->proc_count;
 
 	for (p = 0; p < shm_info->proc_count; p++) {
+		shm->procs[p].data_sz = proc_data_sz;
 		shm->procs[p].data = (cando_atomic_addr)((char*)shm->data + data_off);
 
 		shm->procs[p].rd_fux = (cando_atomic_u32*)((char*)shm->data + fux_off);
@@ -158,10 +166,18 @@ p_shm_create (struct cando_shm *shm,
 				fux_off + sizeof(cando_atomic_u32));
 
 		/* Initialize read futex to lock state */
-		__atomic_store_n(shm->procs[p].rd_fux, 1, __ATOMIC_RELEASE);
+		if (!__atomic_compare_exchange_n(shm->procs[p].rd_fux, (void*)&one, one, \
+		                            0, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST))
+		{
+			__atomic_store_n(shm->procs[p].rd_fux, one, __ATOMIC_RELEASE);
+		}
 
 		/* Initialize write futex to unlocked state */
-		__atomic_store_n(shm->procs[p].wr_fux, 0, __ATOMIC_RELEASE);
+		if (!__atomic_compare_exchange_n(shm->procs[p].wr_fux, (void*)&zero, zero, \
+		                            0, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST))
+		{
+			__atomic_store_n(shm->procs[p].rd_fux, zero, __ATOMIC_RELEASE);
+		}
 
 		data_off += proc_data_sz;
 		fux_off += (2 * sizeof(cando_atomic_u32));
@@ -326,22 +342,24 @@ cando_shm_get_fd (struct cando_shm *shm)
 
 
 void *
-cando_shm_get_data (struct cando_shm *shm)
+cando_shm_get_data (struct cando_shm *shm,
+                    const unsigned int proc_index)
 {
-	if (!shm)
+	if (!shm || p_check_proc_count(shm, proc_index))
 		return NULL;
 
-	return shm->data;
+	return shm->procs[proc_index].data;
 }
 
 
 size_t
-cando_shm_get_data_size (struct cando_shm *shm)
+cando_shm_get_data_size (struct cando_shm *shm,
+                         const unsigned int proc_index)
 {
-	if (!shm)
+	if (!shm || p_check_proc_count(shm, proc_index))
 		return -1;
 
-	return shm->data_sz;
+	return shm->procs[proc_index].data_sz;
 }
 
 /************************************

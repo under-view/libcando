@@ -179,16 +179,16 @@ test_shm_get_fd (void **state CANDO_UNUSED)
 static void CANDO_UNUSED
 test_shm_get_data (void **state CANDO_UNUSED)
 {
-	void *shm_data = NULL;
+	char buffer[512];
 
-	char buffer[CANDO_PAGE_SIZE];
+	void *shm_data = NULL;
 
 	struct cando_shm *shm = NULL;
 
 	struct cando_shm_create_info shm_info;
 	memset(&shm_info, 0, sizeof(shm_info));
 
-	memset(buffer, 'C', sizeof(buffer));
+	memset(buffer, 'Q', sizeof(buffer));
 
 	shm_info.proc_count = 2;
 	shm_info.shm_file   = "/kms-shm-testing";
@@ -196,11 +196,17 @@ test_shm_get_data (void **state CANDO_UNUSED)
 	shm = cando_shm_create(NULL, &shm_info);
 	assert_non_null(shm);
 
-	shm_data = cando_shm_get_data(NULL);
+	shm_data = cando_shm_get_data(NULL, 0);
 	assert_null(shm_data);
 
-	shm_data = cando_shm_get_data(shm);
+	shm_data = cando_shm_get_data(shm, (1<<6));
+	assert_null(shm_data);
+
+	shm_data = cando_shm_get_data(shm, 0);
 	assert_non_null(shm_data);
+
+	memset(shm_data, 'Q', sizeof(buffer));
+	assert_memory_equal(shm_data, buffer, sizeof(buffer));
 
 	cando_shm_destroy(shm);
 }
@@ -217,9 +223,9 @@ test_shm_get_data (void **state CANDO_UNUSED)
 static void CANDO_UNUSED
 test_shm_get_data_size (void **state CANDO_UNUSED)
 {
-	size_t data_sz = 0;
-
 	struct cando_shm *shm = NULL;
+
+	size_t data_sz = 0, seg_sz = 0;
 
 	struct cando_shm_create_info shm_info;
 	memset(&shm_info, 0, sizeof(shm_info));
@@ -230,11 +236,14 @@ test_shm_get_data_size (void **state CANDO_UNUSED)
 	shm = cando_shm_create(NULL, &shm_info);
 	assert_non_null(shm);
 
-	data_sz = cando_shm_get_data_size(NULL);
+	data_sz = cando_shm_get_data_size(NULL, 0);
 	assert_int_equal(data_sz, -1);
 
-	data_sz = cando_shm_get_data_size(shm);
-	assert_int_equal(data_sz, shm_info.shm_size);
+	data_sz = sizeof(cando_atomic_u32) + (2 * sizeof(cando_atomic_u32) * shm_info.proc_count);
+	seg_sz = (shm_info.shm_size - data_sz) / shm_info.proc_count;
+
+	data_sz = cando_shm_get_data_size(shm, 0);
+	assert_int_equal(data_sz, seg_sz);
 
 	cando_shm_destroy(shm);
 }

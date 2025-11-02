@@ -128,7 +128,9 @@ cando_shm_get_fd (struct cando_shm *shm);
  * @brief Returns mmap(2) map'd POSIX shared memory buffer
  *        created after call to cando_shm_create().
  *
- * @param shm - Pointer to a valid struct cando_shm.
+ * @param shm        - Pointer to a valid struct cando_shm.
+ * @param proc_index - Process index to acquire it shared
+ *                     memory segment starting address.
  *
  * @return
  *	on success: Pointer to map'd shared memory buffer
@@ -136,14 +138,17 @@ cando_shm_get_fd (struct cando_shm *shm);
  */
 CANDO_API
 void *
-cando_shm_get_data (struct cando_shm *shm);
+cando_shm_get_data (struct cando_shm *shm,
+                    const unsigned int proc_index);
 
 
 /*
  * @brief Returns size of POSIX shared memory buffer
  *        created after call to cando_shm_create().
  *
- * @param shm - Pointer to a valid struct cando_shm.
+ * @param shm        - Pointer to a valid struct cando_shm.
+ * @param proc_index - Process index to acquire it's shared
+ *                     memory segment size.
  *
  * @return
  *	on success: Size of POSIX shared memory buffer
@@ -151,7 +156,8 @@ cando_shm_get_data (struct cando_shm *shm);
  */
 CANDO_API
 size_t
-cando_shm_get_data_size (struct cando_shm *shm);
+cando_shm_get_data_size (struct cando_shm *shm,
+                         const unsigned int proc_index);
 
 
 /*
