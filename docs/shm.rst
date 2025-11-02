@@ -44,6 +44,40 @@ Functions
 API Documentation
 ~~~~~~~~~~~~~~~~~
 
+========================
+cando_shm_proc (private)
+========================
+
+| Structure defining the cando_shm_proc
+| (Cando Shared Memory Process) instance.
+
+.. c:struct:: cando_shm_proc
+
+	.. c:member::
+		cando_atomic_u32  *rd_fux;
+		cando_atomic_u32  *wr_fux;
+		cando_atomic_addr data;
+		size_t            data_sz;
+
+	:c:member:`rd_fux`
+		| Pointer to a given process read futex
+		| stored in front segment of shared memory.
+
+	:c:member:`wr_fux`
+		| Pointer to a given process write futex
+		| stored in front segment of shared memory.
+
+	:c:member:`data`
+		| Unsigned long long int storing the integer
+		| representation of a pointer to a location
+		| within shared memory. This pointer is a
+		| given processes shared memory segment
+		| staring address.
+
+	:c:member:`data_sz`
+		| Stores the size of a given processes
+		| shared memory segment.
+
 ===================
 cando_shm (private)
 ===================
@@ -57,8 +91,9 @@ cando_shm (private)
 		bool                          free;
 		int                           fd;
 		char                          shm_file[SHM_FILE_NAME_MAX];
-		size_t                        data_sz;
 		void                          *data;
+		size_t                        data_sz;
+		struct cando_shm_proc         procs[SHM_PROC_MAX];
 
 	:c:member:`err`
 		| Stores information about the error that occured
@@ -82,6 +117,10 @@ cando_shm (private)
 	:c:member:`data_sz`
 		| Total size of the shared memory region mapped with `mmap(2)`_.
 
+	:c:member:`procs`
+		| An array storing the shared memory locations
+		| of each processes futexes and data.
+
 =========================================================================================================================================
 
 =====================
@@ -89,7 +128,8 @@ cando_shm_create_info
 =====================
 
 | Structure passed to :c:func:`cando_shm_create` used
-| to define shared memory and semaphore names.
+| to define shared memory file name, shm size,
+| and process count.
 
 .. c:struct:: cando_shm_create_info
 
@@ -104,9 +144,66 @@ cando_shm_create_info
 	:c:member:`shm_size`
 		| Size of shared memory.
 
+	:c:memer:`proc_count`
+		| Amount of processes able to read and
+		| write to and from the shared memory
+		| block.
+
 .. c:function:: struct cando_shm *cando_shm_create(struct cando_shm *shm, const void *shm_info);
 
-| Creates POSIX shared memory and semaphores.
+| Creates POSIX shared memory and futexes.
+| Each process gets:
+| 1. Read futex (initialized to locked)
+| 2. Write futex (initialized to unlocked)
+| 3. Segment within shared memory to store data
+
+	.. list-table:: Shared Memory Block (3 Processes)
+		:header-rows: 1
+
+		* - Data Stored
+		  - Offset In Bytes
+		  - Byte Size
+		  - Initial Value
+		* - Process Count
+		  - 0
+		  - 4
+		  - 0
+		* - P1 Read Futex
+		  - 4
+		  - 4
+		  - 1
+		* - P1 Write Futex
+		  - 8
+		  - 4
+		  - 0
+		* - P2 Read Futex
+		  - 12
+		  - 4
+		  - 1
+		* - P2 Write Futex
+		  - 16
+		  - 4
+		  - 0
+		* - P3 Read Futex
+		  - 20
+		  - 4
+		  - 1
+		* - P3 Write Futex
+		  - 24
+		  - 4
+		  - 0
+		* - P1 Data Segment
+		  - 28
+		  - Varies based upon ``shm_size``
+		  - 0
+		* - P2 Data Segment
+		  - Varies based upon ``shm_size``
+		  - Varies based upon ``shm_size``
+		  - 0
+		* - P3 Data Segment
+		  - Varies based upon ``shm_size``
+		  - Varies based upon ``shm_size``
+		  - 0
 
 	.. list-table::
 		:header-rows: 1
@@ -142,8 +239,9 @@ cando_shm_data_info
 .. c:struct:: cando_shm_data_info
 
 	.. c:member::
-		void          *data;
-		size_t        size;
+		void         *data;
+		size_t       size;
+		unsigned int proc_index;
 
 	:c:member:`data`
 		| Pointer to a buffer that will either be used
@@ -151,6 +249,9 @@ cando_shm_data_info
 
 	:c:member:`size`
 		| Size in bytes to read from or write to shared memory.
+
+	:c:member:`proc_index`
+		| Index of process to write data to or read data from.
 
 ===================
 cando_shm_data_read
@@ -229,9 +330,10 @@ cando_shm_get_fd
 cando_shm_get_data
 ==================
 
-.. c:function:: void *cando_shm_get_data(struct cando_shm *shm);
+.. c:function:: void *cando_shm_get_data(struct cando_shm *shm, const unsigned int proc_index);
 
-| Returns `mmap(2)`_ map'd POSIX shared memory buffer
+| Returns starting address of a processes segment
+| in the `mmap(2)`_ map'd POSIX shared memory buffer
 | created after call to :c:func:`cando_shm_create`.
 
 	.. list-table::
@@ -241,9 +343,12 @@ cando_shm_get_data
 	          - Decription
 		* - shm
 		  - | Pointer to a valid ``struct`` :c:struct:`cando_shm`.
+		* - proc_index
+		  - | Process index to acquire it's shared
+		    | memory segment starting address.
 
 	Returns:
-		| **on success:** Pointer to map'd shared memory buffer
+		| **on success:** Pointer to processes SHM segment
 		| **on failure:** NULL
 
 =========================================================================================================================================
@@ -252,10 +357,11 @@ cando_shm_get_data
 cando_shm_get_data_size
 =======================
 
-.. c:function:: size_t cando_shm_get_data_size(struct cando_shm *shm);
+.. c:function:: size_t cando_shm_get_data_size(struct cando_shm *shm, const unsigned int proc_index);
 
-| Returns size of POSIX shared memory buffer
-| created after call to :c:func:`cando_shm_create`.
+| Returns size of a given process POSIX shared
+| memory segment size created after call to
+| :c:func:`cando_shm_create`.
 
 	.. list-table::
 		:header-rows: 1
@@ -264,9 +370,12 @@ cando_shm_get_data_size
 	          - Decription
 		* - shm
 		  - | Pointer to a valid ``struct`` :c:struct:`cando_shm`.
+		* - proc_index
+		  - | Process index to acquire it's shared
+		    | memory segment starting address.
 
 	Returns:
-		| **on success:** Size of POSIX shared memory buffer
+		| **on success:** Size of processes SHM segment
 		| **on failure:** Maximum size or -1
 
 =========================================================================================================================================
