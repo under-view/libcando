@@ -100,6 +100,6 @@
 CANDO_ATOMIC_DEF(cando_atomic_int, int);
 CANDO_ATOMIC_DEF(cando_atomic_bool, unsigned char);
 CANDO_ATOMIC_DEF(cando_atomic_u32, unsigned int);
-CANDO_ATOMIC_DEF(cando_atomic_addr, unsigned long long int);
+CANDO_ATOMIC_DEF(cando_atomic_addr, unsigned char *);
 
 #endif /* CANDO_MACROS_H */
