@@ -36,9 +36,6 @@ p_is_futex_funlock (cando_atomic_u32 *fux)
 void
 cando_futex_lock (cando_atomic_u32 *fux)
 {
-	unsigned int expected = CANDO_FUTEX_UNLOCK;
-	const unsigned int desired = CANDO_FUTEX_LOCK;
-
 	if (!fux)
 		return;
 
@@ -49,13 +46,15 @@ cando_futex_lock (cando_atomic_u32 *fux)
 			break;
 		}
 
-		if (__atomic_compare_exchange_n(fux, &expected,
-			desired, 0, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST))
+		if (__atomic_compare_exchange_n(fux, \
+			&(cando_atomic_u32){CANDO_FUTEX_UNLOCK}, \
+			CANDO_FUTEX_LOCK, 0, __ATOMIC_SEQ_CST, \
+			__ATOMIC_SEQ_CST))
 		{
 			break;
 		}
 
-		futex(fux, FUTEX_WAIT, desired, NULL, NULL, 0);
+		futex(fux, FUTEX_WAIT, CANDO_FUTEX_LOCK, NULL, NULL, 0);
 	}
 }
 
