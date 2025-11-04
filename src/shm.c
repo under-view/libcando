@@ -20,6 +20,8 @@
 #define SHM_PROC_MAX (1<<4)
 #define SHM_FILE_NAME_MAX (1<<5)
 
+#define CANDO_FUTEX_LOCK 1
+#define CANDO_FUTEX_UNLOCK 0
 
 /*
  * @brief Structure defining the cando_shm_proc
@@ -85,8 +87,6 @@ p_shm_create (struct cando_shm *shm,
 	unsigned int p;
 
 	int err = -1, len;
-
-	const unsigned int zero = 0, one = 1;
 
 	size_t data_off, fux_off, proc_data_sz;
 
@@ -165,18 +165,16 @@ p_shm_create (struct cando_shm *shm,
 				fux_off + sizeof(cando_atomic_u32));
 
 		/* Initialize read futex to lock state */
-		if (!__atomic_compare_exchange_n(shm->procs[p].rd_fux, (void*)&one, one, \
-		                            0, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST))
-		{
-			__atomic_store_n(shm->procs[p].rd_fux, one, __ATOMIC_RELEASE);
-		}
+		__atomic_compare_exchange_n(shm->procs[p].rd_fux, \
+			&(cando_atomic_u32){CANDO_FUTEX_UNLOCK}, \
+			CANDO_FUTEX_LOCK, 0, __ATOMIC_SEQ_CST, \
+			__ATOMIC_SEQ_CST);
 
-		/* Initialize write futex to unlocked state */
-		if (!__atomic_compare_exchange_n(shm->procs[p].wr_fux, (void*)&zero, zero, \
-		                            0, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST))
-		{
-			__atomic_store_n(shm->procs[p].rd_fux, zero, __ATOMIC_RELEASE);
-		}
+		/* Initialize write futex to unlocked state (just in case). */
+		__atomic_compare_exchange_n(shm->procs[p].wr_fux, \
+			&(cando_atomic_u32){CANDO_FUTEX_UNLOCK}, \
+			CANDO_FUTEX_UNLOCK, 0, __ATOMIC_SEQ_CST, \
+			__ATOMIC_SEQ_CST);
 
 		data_off += proc_data_sz;
 		fux_off += (2 * sizeof(cando_atomic_u32));
