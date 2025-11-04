@@ -36,9 +36,23 @@ p_is_futex_funlock (cando_atomic_u32 *fux)
 void
 cando_futex_lock (cando_atomic_u32 *fux)
 {
+	int i;
+
 	if (!fux)
 		return;
 
+	/* Handle Low Contention Case (Spin Loop/Spin Lock) */
+	for (i = 0; i < 10000; i++) {
+		if (__atomic_compare_exchange_n(fux, \
+			&(cando_atomic_u32){CANDO_FUTEX_UNLOCK}, \
+			CANDO_FUTEX_LOCK, 1, __ATOMIC_SEQ_CST, \
+			__ATOMIC_SEQ_CST))
+		{
+			return;
+		}
+	}
+
+	/* Blocking Or Sleeping Wait */
 	while (1) {
 		if (p_is_futex_funlock(fux))
 		{
