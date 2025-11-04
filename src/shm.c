@@ -225,10 +225,10 @@ cando_shm_create (struct cando_shm *p_shm,
 
 CANDO_STATIC_INLINE
 unsigned char
-p_check_proc_count (struct cando_shm *shm,
+p_check_proc_index (struct cando_shm *shm,
                     const unsigned int proc_index)
 {
-	return proc_index >= __atomic_load_n((cando_atomic_u32*) \
+	return proc_index > __atomic_load_n((cando_atomic_u32*) \
 			shm->data, __ATOMIC_ACQUIRE);
 }
 
@@ -249,7 +249,7 @@ cando_shm_data_read (struct cando_shm *shm,
 
 	if (!shm_info || \
 	    !(shm_info->data) || \
-	    p_check_proc_count(shm, shm_info->proc_index))
+	    p_check_proc_index(shm, shm_info->proc_index))
 	{
 		cando_log_set_error(shm, CANDO_LOG_ERR_INCORRECT_DATA, "");
 		return -1;
@@ -295,7 +295,7 @@ cando_shm_data_write (struct cando_shm *shm,
 
 	if (!shm_info || \
 	    !(shm_info->data) || \
-	    p_check_proc_count(shm, shm_info->proc_index))
+	    p_check_proc_index(shm, shm_info->proc_index))
 	{
 		cando_log_set_error(shm, CANDO_LOG_ERR_INCORRECT_DATA, "");
 		return -1;
@@ -342,7 +342,7 @@ void *
 cando_shm_get_data (struct cando_shm *shm,
                     const unsigned int proc_index)
 {
-	if (!shm || p_check_proc_count(shm, proc_index))
+	if (!shm || p_check_proc_index(shm, proc_index))
 		return NULL;
 
 	return shm->procs[proc_index].data;
@@ -353,7 +353,7 @@ size_t
 cando_shm_get_data_size (struct cando_shm *shm,
                          const unsigned int proc_index)
 {
-	if (!shm || p_check_proc_count(shm, proc_index))
+	if (!shm || p_check_proc_index(shm, proc_index))
 		return -1;
 
 	return shm->procs[proc_index].data_sz;
