@@ -9,7 +9,7 @@
 project = 'libcando'
 copyright = '2024-2026, Vincent Davis Jr.'
 author = 'Vincent Davis Jr.'
-release = '0.1.9'
+release = '0.1.10'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
