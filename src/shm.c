@@ -150,6 +150,15 @@ p_shm_create (struct cando_shm *shm,
 	 * The next X amount of bytes (2 * 4 * proc_count)
 	 * stores each processes read/write futexes.
 	 */
+	if (__atomic_load_n((cando_atomic_u32*)shm->data, \
+	    __ATOMIC_ACQUIRE) >= shm_info->proc_count)
+	{
+		cando_log_set_error(shm, CANDO_LOG_ERR_UNCOMMON,
+		                    "Unsupported process count (%u:%u)",
+		                    shm_info->proc_count, SHM_PROC_MAX);
+		return -1;
+	}
+
 	__atomic_add_fetch((cando_atomic_u32*)shm->data, 1, __ATOMIC_SEQ_CST);
 
 	fux_off = sizeof(cando_atomic_u32);
