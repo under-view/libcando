@@ -1,16 +1,19 @@
+#include <string.h>
 #include <unistd.h>
 #include <errno.h>
 #include <time.h>
 #include <limits.h>
 #include <linux/futex.h>  /* Definition of FUTEX_* constants */
 #include <sys/syscall.h>  /* Definition of SYS_* constants */
+#include <sys/mman.h>
 
+#include "log.h"
 #include "futex.h"
 
 #define CANDO_FUTEX_LOCK 1
 #define CANDO_FUTEX_UNLOCK 0
 #define CANDO_FUTEX_UNLOCK_FORCE 0x66AFB55C
-#define CONTENTION_LOOP_CNT  999999999
+#define CONTENTION_LOOP_CNT 999999999
 
 /*****************************************
  * Start of global to C source functions *
@@ -32,6 +35,34 @@ futex (void *uaddr,
 /***************************************
  * End of global to C source functions *
  ***************************************/
+
+
+/*****************************************
+ * Start of cando_futex_create functions *
+ *****************************************/
+
+cando_atomic_u32 *
+cando_futex_create (void)
+{
+	cando_atomic_u32 *fux;
+
+	fux = mmap(NULL, sizeof(cando_atomic_u32),
+	           PROT_READ|PROT_WRITE,
+                   MAP_SHARED|MAP_ANONYMOUS,
+	           -1, 0);
+	if (fux == (void*)-1) {
+		cando_log_error("mmap: %s\n", strerror(errno));
+		return NULL;
+	}
+
+	__atomic_store_n(fux, 1, __ATOMIC_RELEASE);
+
+	return fux;
+}
+
+/*****************************************
+ * Start of cando_futex_create functions *
+ *****************************************/
 
 
 /***************************************
@@ -121,3 +152,21 @@ cando_futex_unlock_force (cando_atomic_u32 *fux)
 /***************************************
  * End of cando_futex_unlock functions *
  ***************************************/
+
+
+/******************************************
+ * Start of cando_futex_destroy functions *
+ ******************************************/
+
+void
+cando_futex_destroy (cando_atomic_u32 *fux)
+{
+	if (!fux)
+		return;
+
+	munmap(fux, sizeof(cando_atomic_u32));
+}
+
+/****************************************
+ * End of cando_futex_destroy functions *
+ ****************************************/
