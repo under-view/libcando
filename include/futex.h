@@ -13,7 +13,7 @@
  *        state.
  *
  * @return
- *	on success: Pointer to a struct cando_atomic_u32
+ *	on success: Pointer to a cando_atomic_u32
  *	on failure: NULL
  */
 CANDO_API
