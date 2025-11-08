@@ -12,6 +12,10 @@
 #define CANDO_FUTEX_UNLOCK_FORCE 0x66AFB55C
 #define CONTENTION_LOOP_CNT  999999999
 
+/*****************************************
+ * Start of global to C source functions *
+ *****************************************/
+
 CANDO_STATIC_INLINE
 int
 futex (void *uaddr,
@@ -25,6 +29,14 @@ futex (void *uaddr,
 	               timeout, uaddr2, val3);
 }
 
+/***************************************
+ * End of global to C source functions *
+ ***************************************/
+
+
+/***************************************
+ * Start of cando_futex_lock functions *
+ ***************************************/
 
 CANDO_STATIC_INLINE
 unsigned char
@@ -76,6 +88,14 @@ cando_futex_lock (cando_atomic_u32 *fux)
 	}
 }
 
+/*************************************
+ * End of cando_futex_lock functions *
+ *************************************/
+
+
+/*****************************************
+ * Start of cando_futex_unlock functions *
+ *****************************************/
 
 void
 cando_futex_unlock (cando_atomic_u32 *fux)
@@ -97,3 +117,7 @@ cando_futex_unlock_force (cando_atomic_u32 *fux)
 	__atomic_store_n(fux, CANDO_FUTEX_UNLOCK_FORCE, __ATOMIC_RELEASE);
 	futex(fux, FUTEX_WAKE, INT_MAX, NULL, NULL, 0);
 }
+
+/***************************************
+ * End of cando_futex_unlock functions *
+ ***************************************/
