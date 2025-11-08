@@ -22,7 +22,10 @@ test_futex_create (void CANDO_UNUSED **state)
 {
 	cando_atomic_u32 *fux;
 
-	fux = cando_futex_create();
+	fux = cando_futex_create(0);
+	assert_null(fux);
+
+	fux = cando_futex_create(1);
 	assert_non_null(fux);
 
 	cando_futex_destroy(fux);
@@ -44,7 +47,7 @@ test_futex_lock_unlock (void CANDO_UNUSED **state)
 
 	cando_atomic_u32 *fux;
 
-	fux = cando_futex_create();
+	fux = cando_futex_create(1);
 	assert_non_null(fux);
 
 	pid = fork();
@@ -77,7 +80,7 @@ test_futex_lock_unlock_force (void CANDO_UNUSED **state)
 
 	cando_atomic_u32 *fux;
 
-	fux = cando_futex_create();
+	fux = cando_futex_create(1);
 	assert_non_null(fux);
 
 	pid = fork();

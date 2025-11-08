@@ -12,13 +12,16 @@
  *        By default the futex is initilized in the locked
  *        state.
  *
+ * @param count - Amount of futexes stored in a single
+ *                shared memory block.
+ *
  * @return
  *	on success: Pointer to a cando_atomic_u32
  *	on failure: NULL
  */
 CANDO_API
 cando_atomic_u32 *
-cando_futex_create (void);
+cando_futex_create (const unsigned int count);
 
 
 /*

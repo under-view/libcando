@@ -42,20 +42,32 @@ futex (void *uaddr,
  *****************************************/
 
 cando_atomic_u32 *
-cando_futex_create (void)
+cando_futex_create (const unsigned int count)
 {
+	unsigned int f;
+
 	cando_atomic_u32 *fux;
 
-	fux = mmap(NULL, sizeof(cando_atomic_u32),
+	if (!count) {
+		cando_log_error("Incorrect data passed\n");
+		return NULL;
+	}
+
+	/* mmap will just allocate a page anyways */
+	fux = mmap(NULL, count * sizeof(cando_atomic_u32),
 	           PROT_READ|PROT_WRITE,
-                   MAP_SHARED|MAP_ANONYMOUS,
+	           MAP_SHARED|MAP_ANONYMOUS,
 	           -1, 0);
 	if (fux == (void*)-1) {
 		cando_log_error("mmap: %s\n", strerror(errno));
 		return NULL;
 	}
 
-	__atomic_store_n(fux, 1, __ATOMIC_RELEASE);
+	for (f = 0; f < count; f++) {
+		__atomic_store_n((cando_atomic_u32 *) \
+			((char*)fux+(f*sizeof(cando_atomic_u32))),
+			1, __ATOMIC_RELEASE);
+	}
 
 	return fux;
 }
