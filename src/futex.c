@@ -10,6 +10,7 @@
 #define CANDO_FUTEX_LOCK 1
 #define CANDO_FUTEX_UNLOCK 0
 #define CANDO_FUTEX_UNLOCK_FORCE 0x66AFB55C
+#define CONTENTION_LOOP_CNT  999999999
 
 CANDO_STATIC_INLINE
 int
@@ -42,13 +43,16 @@ cando_futex_lock (cando_atomic_u32 *fux)
 		return;
 
 	/* Handle Low Contention Case (Spin Loop/Spin Lock) */
-	for (i = 0; i < 10000; i++) {
+	for (i = 0; i < CONTENTION_LOOP_CNT; i++) {
 		if (__atomic_compare_exchange_n(fux, \
 			&(cando_atomic_u32){CANDO_FUTEX_UNLOCK}, \
 			CANDO_FUTEX_LOCK, 1, __ATOMIC_SEQ_CST, \
 			__ATOMIC_SEQ_CST))
 		{
 			return;
+		} else if (p_is_futex_funlock(fux)) {
+			errno = EINTR;
+			break;
 		}
 	}
 
