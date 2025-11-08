@@ -107,7 +107,7 @@ cando_futex_lock (cando_atomic_u32 *fux)
 			return;
 		} else if (p_is_futex_funlock(fux)) {
 			errno = EINTR;
-			break;
+			return;
 		}
 	}
 
@@ -116,7 +116,7 @@ cando_futex_lock (cando_atomic_u32 *fux)
 		if (p_is_futex_funlock(fux))
 		{
 			errno = EINTR;
-			break;
+			return;
 		}
 
 		if (__atomic_compare_exchange_n(fux, \
@@ -124,7 +124,7 @@ cando_futex_lock (cando_atomic_u32 *fux)
 			CANDO_FUTEX_LOCK, 0, __ATOMIC_SEQ_CST, \
 			__ATOMIC_SEQ_CST))
 		{
-			break;
+			return;
 		}
 
 		futex(fux, FUTEX_WAIT, CANDO_FUTEX_LOCK, NULL, NULL, 0);
