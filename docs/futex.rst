@@ -41,15 +41,44 @@ API Documentation
 cando_futex_create
 ==================
 
-.. c:function:: cando_atomic_u32 *cando_futex_create(void);
+.. c:function:: cando_atomic_u32 *cando_futex_create(const unsigned int count);
 
 | Allocates shared memory space that may be used
 | to store a futex. This function usage should
 | be limited to processes/threads that were created
 | via `fork()`_ or `pthread_create()`_. For processes
 | created without `fork()`_ see `shm.c`_ implementation.
-| By default the futex is initilized in the locked
+| By default all futexes are initialize in the locked
 | state.
+
+	.. list-table:: Futex Memory Block (3 futexes)
+		:header-rows: 1
+
+		* - Data Stored
+		  - Offset In Bytes
+		  - Byte Size
+		  - Initial Value
+		* - P1 Futex
+		  - 0
+		  - 4
+		  - 1 (locked)
+		* - P2 Futex
+		  - 4
+		  - 4
+		  - 1 (locked)
+		* - P3 Futex
+		  - 8
+		  - 4
+		  - 1 (locked)
+
+	.. list-table::
+		:header-rows: 1
+
+		* - Param
+	          - Decription
+		* - count
+		  - | Amount of futexes stored in a single
+		    | shared memory block.
 
 	Returns:
 		| **on success:** Pointer to a ``cando_atomic_u32``

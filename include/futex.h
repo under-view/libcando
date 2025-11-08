@@ -9,7 +9,7 @@
  *        be limited to processes/threads that were created
  *        via fork() or pthread_create(). For processes
  *        created without fork() see shm.c implementation.
- *        By default the futex is initilized in the locked
+ *        By default all futexes are initialize in the locked
  *        state.
  *
  * @param count - Amount of futexes stored in a single
