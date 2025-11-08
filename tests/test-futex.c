@@ -2,7 +2,6 @@
 #include <unistd.h>
 #include <errno.h>
 #include <sys/wait.h>
-#include <sys/mman.h>
 
 /* Required by cmocka */
 #include <stdarg.h>
@@ -14,6 +13,26 @@
 #include "log.h"
 #include "futex.h"
 
+/****************************************
+ * Start of test_futex_create functions *
+ ****************************************/
+
+static void CANDO_UNUSED
+test_futex_create (void CANDO_UNUSED **state)
+{
+	cando_atomic_u32 *fux;
+
+	fux = cando_futex_create();
+	assert_non_null(fux);
+
+	cando_futex_destroy(fux);
+}
+
+/**************************************
+ * End of test_futex_create functions *
+ **************************************/
+
+
 /*********************************************
  * Start of test_futex_lock_unlock functions *
  *********************************************/
@@ -23,15 +42,10 @@ test_futex_lock_unlock (void CANDO_UNUSED **state)
 {
 	pid_t pid;
 
-	cando_atomic_u32 *fux = NULL;
+	cando_atomic_u32 *fux;
 
-	fux = mmap(NULL, sizeof(cando_atomic_u32),
-	           PROT_READ | PROT_WRITE,
-                   MAP_SHARED | MAP_ANONYMOUS,
-	           -1, 0);
+	fux = cando_futex_create();
 	assert_non_null(fux);
-
-	__atomic_store_n(fux, 1, __ATOMIC_RELEASE);
 
 	pid = fork();
 	if (pid == 0) {
@@ -41,7 +55,10 @@ test_futex_lock_unlock (void CANDO_UNUSED **state)
 	}
 
 	cando_futex_lock(fux);
-	munmap(fux, sizeof(cando_atomic_u32));
+
+	wait(NULL);
+
+	cando_futex_destroy(fux);
 }
 
 /*******************************************
@@ -58,17 +75,10 @@ test_futex_lock_unlock_force (void CANDO_UNUSED **state)
 {
 	pid_t pid;
 
-	cando_atomic_u32 *fux = NULL;
+	cando_atomic_u32 *fux;
 
-	fux = mmap(NULL, sizeof(cando_atomic_u32),
-	           PROT_READ | PROT_WRITE,
-                   MAP_SHARED | MAP_ANONYMOUS,
-	           -1, 0);
+	fux = cando_futex_create();
 	assert_non_null(fux);
-
-	cando_log_set_level(CANDO_LOG_ALL);
-
-	__atomic_store_n(fux, 1, __ATOMIC_RELEASE);
 
 	pid = fork();
 	if (pid == 0) {
@@ -79,7 +89,10 @@ test_futex_lock_unlock_force (void CANDO_UNUSED **state)
 
 	cando_futex_lock(fux);
 	assert_int_equal(errno, EINTR);
-	munmap(fux, sizeof(cando_atomic_u32));
+
+	wait(NULL);
+
+	cando_futex_destroy(fux);
 }
 
 /*************************************************
@@ -90,6 +103,7 @@ int
 main (void)
 {
 	const struct CMUnitTest tests[] = {
+		cmocka_unit_test(test_futex_create),
 		cmocka_unit_test(test_futex_lock_unlock),
 		cmocka_unit_test(test_futex_lock_unlock_force),
 	};
