@@ -1,7 +1,7 @@
 project(
   'cando',
   'c',
-  version: '0.1.9',
+  version: '0.1.10',
   license: 'MIT',
   meson_version: '>=1.3.1',
   default_options: [
