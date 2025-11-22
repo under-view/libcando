@@ -95,7 +95,7 @@
  * @param type - Data type of the atomic type.
  */
 #define CANDO_ATOMIC_DEF(name, type) \
-	typedef _Atomic typeof(type) name;
+	typedef _Atomic __typeof__(type) name;
 
 CANDO_ATOMIC_DEF(cando_atomic_int, int);
 CANDO_ATOMIC_DEF(cando_atomic_bool, unsigned char);
